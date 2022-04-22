@@ -20,7 +20,7 @@ const getCleanUrl = (url) => {
 }
 
 export default function Index({urls}) {
-    const [selectedPage, setSelectedPage] = useState('info')
+    const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [showTwitterLinks, setShowTwitterLinks] = useState(false)
 
