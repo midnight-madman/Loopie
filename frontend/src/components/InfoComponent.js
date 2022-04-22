@@ -403,9 +403,9 @@ export default function InfoComponent() {
                         <h2 className="text-3xl font-extrabold text-blue-gray-900" id="timeline-heading">
                             Details
                         </h2>
-                        <div className="mt-6 pt-10 space-x-8 md:grid md:grid-cols-2">
+                        <div className="mt-6 pt-10 space-x-2 space-y-4 md:space-x-8 md:grid md:grid-cols-2">
                             <TimelineComponent />
-                            <div>
+                            <div className="align-left">
                                 <h3 className="text-xl font-extrabold text-blue-gray-900">
                                     Accounts we're tracking
                                 </h3>

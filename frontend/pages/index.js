@@ -1,10 +1,10 @@
 import {Fragment, useState} from 'react'
-import {Dialog, Transition} from '@headlessui/react'
+import {Dialog, Popover, Transition} from '@headlessui/react'
 import {ArrowsExpandIcon, HomeIcon, InformationCircleIcon, MenuIcon, XIcon,} from '@heroicons/react/outline'
 import Papa from 'papaparse';
 import {isEmpty} from "lodash/lang";
 import {replace, split} from "lodash/string";
-import {map} from "lodash";
+import {map, max} from "lodash";
 import {take} from "lodash/array";
 import {filter, includes} from "lodash/collection";
 import InfoComponent from "../src/components/InfoComponent";
@@ -19,7 +19,7 @@ const getCleanUrl = (url) => {
     return url
 }
 
-export default function Index({urls}) {
+export default function Index({urls, updatedAt}) {
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [showTwitterLinks, setShowTwitterLinks] = useState(false)
@@ -62,14 +62,14 @@ export default function Index({urls}) {
         const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
 
         return (<tr key={urlObj.url}>
-            <td className="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+            <td className="whitespace-nowrap pl-2 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                 <div className="flex items-center">
                     <div className="font-bold">
                         {index + 1})
                     </div>
                 </div>
             </td>
-            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+            <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-6 md:py-4">
                 <div className="flex items-center">
                     <div className="">
                         <a
@@ -93,9 +93,48 @@ export default function Index({urls}) {
     function renderPageContent() {
         switch (selectedPage) {
             case 'news':
-                return (<div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    {renderNewsPageContent()}
-                </div>)
+                return (<>
+                        <Popover as="header" className="relative">
+                            <div className="bg-gray-900 py-4 hidden md:block">
+                                <nav
+                                    className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
+                                    aria-label="Global"
+                                >
+                                    <div className="flex items-center flex-1">
+                                        <div className="space-x-2 lg:space-x-4 flex md:ml-10">
+                                            <h1 className="text-2xl font-semibold text-gray-100">Web3 News</h1>
+                                            <h3 className="text-md pt-1.5 hidden lg:block font-semibold text-gray-200">
+                                                Stay in the Loopie with us
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div className="hidden md:flex md:items-center md:space-x-6">
+                                        <p
+                                            href="#"
+                                            className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                                        >
+                                            Last update: {updatedAt.split('GMT')[0]}
+                                        </p>
+                                    </div>
+                                </nav>
+                            </div>
+
+                            <Transition
+                                as={Fragment}
+                                enter="duration-150 ease-out"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="duration-100 ease-in"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                            </Transition>
+                        </Popover>
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                            {renderNewsPageContent()}
+                        </div>
+                    </>
+                )
             case 'info':
                 return <InfoComponent/>
             default:
@@ -142,13 +181,6 @@ export default function Index({urls}) {
                 </div>
             </div>
         )
-    }
-
-    function renderPageHeader() {
-        return selectedPage === 'news' && (<div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8">
-            <h1 className="text-2xl font-semibold text-gray-900">Web3 News</h1>
-            <h3 className="text-lg font-semibold text-gray-700">Stay in the Loopie with us</h3>
-        </div>)
     }
 
     function renderAccountSection() {
@@ -320,7 +352,6 @@ export default function Index({urls}) {
                     </div>
                     <main className="">
                         <div className="">
-                            {renderPageHeader()}
                             {renderPageContent()}
                         </div>
                     </main>
@@ -343,6 +374,13 @@ export async function getStaticProps(context) {
             error: reject,
         }),
     ).then(result => {
-        return {props: {urls: result.data}}
+        const latestShareDates = map(result.data, (row) => {
+            let createdAts = replace(row.created_ats, /(\[')|('])|(')/g, '').split(",")
+            createdAts = map(createdAts, (createdAt) => new Date(createdAt))
+            const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
+            return latestShareDate
+        })
+        const updatedAt = max(latestShareDates)
+        return {props: {urls: result.data, updatedAt: updatedAt.toString()}}
     })
 }
