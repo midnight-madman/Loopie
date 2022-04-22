@@ -12,12 +12,15 @@ function MyApp({Component, pageProps}: AppProps) {
     const isProd = process.env.NODE_ENV === 'production';
 
     return (<html className="h-full bg-white">
-    {isProd && renderAnalyticsScripts()}
-    <title>Stay in the Loopie</title>
+    <head>
+        {isProd && renderAnalyticsScripts()}
+        <title>Stay in the Loopie</title>
+    </head>
     <body className="h-full">
-    <Component {...pageProps} />
+        <Component {...pageProps} />
     </body>
-    </html>)
+    </html>
+    )
 }
 
 export default MyApp

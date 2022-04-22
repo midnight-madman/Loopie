@@ -2,21 +2,15 @@ import {Fragment, useState} from 'react'
 import {Dialog, Popover, Transition} from '@headlessui/react'
 import {ArrowsExpandIcon, HomeIcon, InformationCircleIcon, MenuIcon, XIcon,} from '@heroicons/react/outline'
 import Papa from 'papaparse';
-import {isEmpty} from "lodash/lang";
-import {replace, split} from "lodash/string";
 import {map, max} from "lodash";
 import {take} from "lodash/array";
 import {filter, includes} from "lodash/collection";
 import InfoComponent from "../src/components/InfoComponent";
+import RowUrlComponent from "../src/components/RowUrlComponent";
+import {replace} from "lodash/string";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
-}
-
-const getCleanUrl = (url) => {
-    url = replace(url, /^(https?:\/\/?)|(www\.)/ig, '')
-    url = split(url, '?utm_source')[0]
-    return url
 }
 
 export default function Index({urls, updatedAt}) {
@@ -25,12 +19,19 @@ export default function Index({urls, updatedAt}) {
     const [showTwitterLinks, setShowTwitterLinks] = useState(false)
 
     let navigation = [
-        {name: 'News', onClick: () => setSelectedPage('news'), icon: HomeIcon, current: selectedPage === 'news'},
+        {
+            name: 'News',
+            onClick: () => setSelectedPage('news'),
+            icon: HomeIcon,
+            current: selectedPage === 'news',
+            className: "hover:cursor-pointer"
+        },
         {
             name: 'About Loopie',
             onClick: () => setSelectedPage('info'),
             icon: InformationCircleIcon,
-            current: selectedPage === 'info'
+            current: selectedPage === 'info',
+            className: "hover:cursor-pointer"
         },
         // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
         // { name: 'Documents', href: '#', icon: InboxIcon, current: false },
@@ -48,46 +49,6 @@ export default function Index({urls, updatedAt}) {
 
     if (!showTwitterLinks) {
         urls = filter(urls, (urlObj) => !includes(urlObj.url, 'twitter.com'))
-    }
-
-    urls = take(urls, 100)
-
-    function renderUrlRow(urlObj, index) {
-        const hasTitle = !isEmpty(urlObj.url_title)
-        const url = getCleanUrl(urlObj.url)
-        const rowTitle = hasTitle ? `${urlObj.url_title} (${url})` : url
-
-        let createdAts = replace(urlObj.created_ats, /(\[')|('])|(')/g, '').split(",")
-        createdAts = map(createdAts, (createdAt) => new Date(createdAt))
-        const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
-
-        return (<tr key={urlObj.url}>
-            <td className="whitespace-nowrap pl-2 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                <div className="flex items-center">
-                    <div className="font-bold mb-3">
-                        {index + 1})
-                    </div>
-                </div>
-            </td>
-            <td className="whitespace-normal max-w-xs py-2 pl-4 pr-3 text-sm sm:pl-6 md:py-4">
-                <div className="flex items-center">
-                    <div className="">
-                        <a
-                            href={urlObj.url} target="_blank" rel="noreferrer noopener"
-                            className="font-medium text-gray-900 hover:underline hover:text-gray-700">
-                            {rowTitle}
-                        </a>
-                        <div className="text-gray-500">
-                            {urlObj.tweet_count > 1 ? `${urlObj.tweet_count} shares` : "shared once"} | latest
-                            share {latestShareDate.toDateString().toLowerCase()}
-                        </div>
-                    </div>
-                </div>
-            </td>
-            {/*<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.title}</td>*/}
-            {/*<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.email}</td>*/}
-            {/*<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>*/}
-        </tr>)
     }
 
     function renderPageContent() {
@@ -172,7 +133,7 @@ export default function Index({urls, updatedAt}) {
                                     {/*</tr>*/}
                                     {/*</thead>*/}
                                     <tbody className="">
-                                    {urls.map((url, index) => renderUrlRow(url, index))}
+                                    {urls.map((url, index) => <RowUrlComponent url={url} index={index}/>)}
                                     </tbody>
                                 </table>
                             </div>
@@ -372,7 +333,6 @@ export async function getStaticProps(context) {
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
             header: true,
-            // download: true,
             complete: resolve,
             error: reject,
         }),
@@ -383,7 +343,10 @@ export async function getStaticProps(context) {
             const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
             return latestShareDate
         })
-        const updatedAt = max(latestShareDates)
-        return {props: {urls: result.data, updatedAt: updatedAt.toString()}}
+        const updatedAt = max(latestShareDates).toString()
+        let urls = result.data
+        urls = filter(urls, (urlObj) => !includes(urlObj.url, 'twitter.com'))
+        urls = take(urls, 100);
+        return {props: {urls, updatedAt}}
     })
 }
