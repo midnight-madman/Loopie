@@ -64,12 +64,12 @@ export default function Index({urls, updatedAt}) {
         return (<tr key={urlObj.url}>
             <td className="whitespace-nowrap pl-2 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                 <div className="flex items-center">
-                    <div className="font-bold">
+                    <div className="font-bold mb-3">
                         {index + 1})
                     </div>
                 </div>
             </td>
-            <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-6 md:py-4">
+            <td className="whitespace-normal max-w-xs py-2 pl-4 pr-3 text-sm sm:pl-6 md:py-4">
                 <div className="flex items-center">
                     <div className="">
                         <a
@@ -144,9 +144,9 @@ export default function Index({urls, updatedAt}) {
 
     function renderNewsPageContent() {
         return (<div className="px-4 sm:px-6 lg:px-8">
-                <div className="mt-8 flex flex-col">
-                    <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="inline-block min-w-full py-2 align-middle">
+                <div className="mt-2 lg:mt-8 flex flex-col">
+                    <div className="-mx-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full align-middle">
                             <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
                                 <table className="min-w-full">
                                     {/*<thead className="bg-gray-50">*/}
@@ -171,7 +171,7 @@ export default function Index({urls, updatedAt}) {
                                     {/*  </th>*/}
                                     {/*</tr>*/}
                                     {/*</thead>*/}
-                                    <tbody className="bg-white">
+                                    <tbody className="">
                                     {urls.map((url, index) => renderUrlRow(url, index))}
                                     </tbody>
                                 </table>
@@ -340,7 +340,7 @@ export default function Index({urls, updatedAt}) {
                     </div>
                 </div>
                 <div className="md:pl-64 flex flex-col flex-1">
-                    <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
+                    <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100 flex">
                         <button
                             type="button"
                             className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -349,6 +349,9 @@ export default function Index({urls, updatedAt}) {
                             <span className="sr-only">Open sidebar</span>
                             <MenuIcon className="h-6 w-6" aria-hidden="true"/>
                         </button>
+                        <h3 className="text-md pl-2 pt-2.5 sm:hidden font-semibold text-gray-800">
+                            Stay in the Loopie with us
+                        </h3>
                     </div>
                     <main className="">
                         <div className="">
