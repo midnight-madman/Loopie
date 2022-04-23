@@ -9,13 +9,6 @@ Stay in the loop with web3
 Have different sets of public accounts (NFTs, vs Ethereum Merge, vs Binance, etc)
 Scrape accounts that a user follows and allow for custom-per-user dashboard of links
 
-
-# Todo
-- Find urls in last weeks tweets
-- Only scrape from last scraped tweets (avoids running into API limitation)
-- Run tweet scraper periodically
-
-
 # Decentralized
 ## Frontend
 - store on decentralized

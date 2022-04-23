@@ -1,12 +1,13 @@
-import {Fragment, useState} from 'react'
+import {Fragment, useState, useEffect} from 'react'
 import {Dialog, Popover, Transition} from '@headlessui/react'
-import {ArrowsExpandIcon, HomeIcon, InformationCircleIcon, MenuIcon, XIcon,} from '@heroicons/react/outline'
+import {ArrowsExpandIcon, HomeIcon, SpeakerphoneIcon, InformationCircleIcon, MenuIcon, XIcon,} from '@heroicons/react/outline'
 import Papa from 'papaparse';
 import {map, max} from "lodash";
 import {take} from "lodash/array";
 import {filter, includes} from "lodash/collection";
 import InfoComponent from "../src/components/InfoComponent";
 import RowUrlComponent from "../src/components/RowUrlComponent";
+import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
 import {replace} from "lodash/string";
 
 function classNames(...classes) {
@@ -17,6 +18,8 @@ export default function Index({urls, updatedAt}) {
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [showTwitterLinks, setShowTwitterLinks] = useState(false)
+    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+
 
     let navigation = [
         {
@@ -32,6 +35,12 @@ export default function Index({urls, updatedAt}) {
             icon: InformationCircleIcon,
             current: selectedPage === 'info',
             className: "hover:cursor-pointer"
+        },{
+            name: 'Submit Feedback',
+            onClick: () => setIsFeedbackModalOpen(true),
+            icon: SpeakerphoneIcon,
+            current: false,
+            className: "hover:cursor-pointer"
         },
         // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
         // { name: 'Documents', href: '#', icon: InboxIcon, current: false },
@@ -45,11 +54,6 @@ export default function Index({urls, updatedAt}) {
     //         className: "hover:cursor-pointer"
     //     },)
     // }
-
-
-    if (!showTwitterLinks) {
-        urls = filter(urls, (urlObj) => !includes(urlObj.url, 'twitter.com'))
-    }
 
     function renderPageContent() {
         switch (selectedPage) {
@@ -72,10 +76,17 @@ export default function Index({urls, updatedAt}) {
                                     <div className="hidden md:flex md:items-center md:space-x-6">
                                         <p
                                             href="#"
-                                            className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                                            className="inline-flex items-center text-light font-small rounded-md text-white"
                                         >
                                             Last update: {updatedAt.split('GMT')[0]}
                                         </p>
+                                        <button
+                                            onClick={() => setIsFeedbackModalOpen(true)}
+                                            href="#"
+                                            className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                                        >
+                                            Feedback
+                                        </button>
                                     </div>
                                 </nav>
                             </div>
@@ -97,7 +108,7 @@ export default function Index({urls, updatedAt}) {
                     </>
                 )
             case 'info':
-                return <InfoComponent/>
+                return <InfoComponent openFeedbackModal={() => setIsFeedbackModalOpen(true)}/>
             default:
                 return <p>coming soon</p>
         }
@@ -157,11 +168,17 @@ export default function Index({urls, updatedAt}) {
                     </div>
                     <div className="ml-3">
                         <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                            Your profile
+                            Your profile (soon...)
                         </p>
-                        <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                            coming soon
-                        </p>
+                        <button
+                            onClick={() => setIsFeedbackModalOpen(true)}
+                            className="inline-flex items-center px-1 border border-transparent text-light font-small rounded-md text-white bg-gray-300 hover:bg-gray-500"
+                        >
+                            Submit Feedback
+                        </button>
+                        {/*<p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">*/}
+                        {/*    coming soon*/}
+                        {/*</p>*/}
                     </div>
                 </div>
             </a>
@@ -170,6 +187,8 @@ export default function Index({urls, updatedAt}) {
 
     return (
         <>
+            <script id="reform-script" async src="https://embed.reform.app/v1/embed.js"/>
+            {isFeedbackModalOpen && (<FeedbackModalComponent open={isFeedbackModalOpen} setOpen={setIsFeedbackModalOpen}/>)}
             <div>
                 <Transition.Root show={sidebarOpen} as={Fragment}>
                     <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={setSidebarOpen}>

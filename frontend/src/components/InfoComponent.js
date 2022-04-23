@@ -4,7 +4,7 @@ import {ChipIcon, NewspaperIcon, UsersIcon, XIcon} from '@heroicons/react/outlin
 import TimelineComponent from "./TimelineComponent";
 
 const HEADER_TITLE = 'Build Loopie with us';
-const HEADER_SUBTITLE = 'We want to be the #1 news source for all things web3 - starting with link aggregation'
+const HEADER_SUBTITLE = 'We will be the #1 news source for web3 - starting with collaborative link aggregation'
 
 const navigation = [
     {name: 'Changelog', href: '#'},
@@ -17,7 +17,7 @@ const supportLinks = [
         name: 'Governance',
         href: '#',
         description:
-            'Who are the authors and twitter accounts we rely on to submit fresh links? Let\'s create on-chain governance and vote on it!',
+            'Who are the authors and twitter accounts we rely on to submit content? Let\'s create on-chain governance and vote on it!',
         icon: UsersIcon,
         linkText: 'WAGMI'
     },
@@ -92,7 +92,7 @@ const footerNavigation = {
         // },
         {
             name: 'Twitter',
-            href: '#',
+            href: 'https://www.twitter.com/@MadmanMidnight',
             icon: (props) => (
                 <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
                     <path
@@ -102,7 +102,7 @@ const footerNavigation = {
         },
         {
             name: 'GitHub',
-            href: '#',
+            href: 'https://github.com/midnight-madman/',
             icon: (props) => (
                 <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
                     <path
@@ -128,53 +128,8 @@ const footerNavigation = {
         // },
     ],
 }
-const accounts = ['VitalikButerin',
-    'FEhrsam',
-    'haydenzadams',
-    'zhusu',
-    'balajis',
-    'StaniKulechov',
-    'cburniske',
-    'twobitidiot',
-    'spencernoon',
-    'ljxie',
-    'cobie',
-    'rleshner',
-    'danrobinson',
-    'samczsun',
-    'arjunblj',
-    'kaiynne',
-    'lawmaster',
-    'Melt_Dem',
-    'gakonst',
-    'ErikVoorhees',
-    'laurashin',
-    'ethereumJoseph',
-    'KyleSamani',
-    'sassal0x',
-    'tarunchitra',
-    'CamiRusso',
-    'matthuang',
-    'AriDavidPaul',
-    'bantg',
-    'NeerajKA',
-    'nic__carter',
-    'jchervinsky',
-    'jessewldn',
-    'iamDCinvestor',
-    'QwQiao',
-    'Cooopahtroopa',
-    'tayvano_',
-    '0xMaki',
-    'DegenSpartan',
-    'mdudas',
-    'mayazi',
-    'ohmzeus',
-    'austingriffith',
-    'zachxbt',
-    'hasufl',]
 
-export default function InfoComponent() {
+export default function InfoComponent({openFeedbackModal}) {
     function renderNewsletterSection() {
         return <></>;
         return (<section
@@ -384,11 +339,13 @@ export default function InfoComponent() {
                                         <p className="mt-4 text-base text-blue-gray-500">{link.description}</p>
                                     </div>
                                     <div className="p-6 bg-blue-gray-50 rounded-bl-2xl rounded-br-2xl md:px-8">
-                                        <a href={link.href}
+                                        <button
+                                            onClick={() => openFeedbackModal()}
+                                            // href={link.href}
                                            className="text-base font-medium text-blue-700 hover:text-blue-600">
                                             {link.linkText}
                                             <span aria-hidden="true"> &rarr;</span>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             ))}
