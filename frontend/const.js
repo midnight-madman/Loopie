@@ -59,3 +59,5 @@ const accounts = [
     'pet3rpan_',
     'dougfeagin',
 ]
+
+export default accounts;

@@ -2,6 +2,7 @@ import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {ChipIcon, NewspaperIcon, UsersIcon, XIcon} from '@heroicons/react/outline'
 import TimelineComponent from "./TimelineComponent";
+import accounts from "../../const";
 
 const HEADER_TITLE = 'Build Loopie with us';
 const HEADER_SUBTITLE = 'We will be the #1 news source for web3 - starting with collaborative link aggregation'
