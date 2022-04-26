@@ -3,6 +3,8 @@ import {Popover, Transition} from '@headlessui/react'
 import {ChipIcon, NewspaperIcon, UsersIcon, XIcon} from '@heroicons/react/outline'
 import TimelineComponent from "./TimelineComponent";
 import accounts from "../../const";
+import {take} from "lodash";
+
 
 const HEADER_TITLE = 'Build Loopie with us';
 const HEADER_SUBTITLE = 'We will be the #1 news source for web3 - starting with collaborative link aggregation'
@@ -365,10 +367,10 @@ export default function InfoComponent({openFeedbackModal}) {
                             <TimelineComponent />
                             <div className="align-left">
                                 <h3 className="text-xl font-extrabold text-blue-gray-900">
-                                    Accounts we're tracking
+                                    25 Accounts we're tracking and {accounts.length - 25} more
                                 </h3>
                                 <ul role="list" className="divide-y divide-gray-200">
-                                    {accounts.map((account) => (
+                                    {take(accounts, 25).map((account) => (
                                         <li key={account} className="py-4 flex">
                                             <img className="h-10 w-10 rounded-full"
                                                  src={`https://unavatar.io/twitter/${account}`}

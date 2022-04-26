@@ -1,25 +1,38 @@
-import {Fragment, useState, useEffect} from 'react'
+import {Fragment, useState} from 'react'
 import {Dialog, Popover, Transition} from '@headlessui/react'
-import {ArrowsExpandIcon, HomeIcon, SpeakerphoneIcon, InformationCircleIcon, MenuIcon, XIcon,} from '@heroicons/react/outline'
+import {
+    ArrowsExpandIcon,
+    HomeIcon,
+    InformationCircleIcon,
+    MenuIcon,
+    SpeakerphoneIcon,
+    XIcon,
+} from '@heroicons/react/outline'
 import Papa from 'papaparse';
-import {map, max} from "lodash";
-import {take} from "lodash/array";
-import {filter, includes} from "lodash/collection";
+import {map, max, split, isEmpty, take, filter, includes, replace, takeRight} from "lodash";
 import InfoComponent from "../src/components/InfoComponent";
 import RowUrlComponent from "../src/components/RowUrlComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
-import {replace} from "lodash/string";
+import * as fs from 'fs';
+import {GetStaticProps} from 'next'
+import {create} from 'ipfs-http-client';
 
+// @ts-ignore
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Index({urls, updatedAt}) {
+interface IndexProps {
+    urls: Array<object>;
+    updatedAt: string;
+}
+
+const Index = (props: IndexProps ) => {
+    const {urls, updatedAt} = props;
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [showTwitterLinks, setShowTwitterLinks] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-
 
     let navigation = [
         {
@@ -35,7 +48,7 @@ export default function Index({urls, updatedAt}) {
             icon: InformationCircleIcon,
             current: selectedPage === 'info',
             className: "hover:cursor-pointer"
-        },{
+        }, {
             name: 'Submit Feedback',
             onClick: () => setIsFeedbackModalOpen(true),
             icon: SpeakerphoneIcon,
@@ -75,14 +88,12 @@ export default function Index({urls, updatedAt}) {
                                     </div>
                                     <div className="hidden md:flex md:items-center md:space-x-6">
                                         <p
-                                            href="#"
                                             className="inline-flex items-center text-light font-small rounded-md text-white"
                                         >
                                             Last update: {updatedAt.split('GMT')[0]}
                                         </p>
                                         <button
                                             onClick={() => setIsFeedbackModalOpen(true)}
-                                            href="#"
                                             className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                                         >
                                             Feedback
@@ -185,10 +196,12 @@ export default function Index({urls, updatedAt}) {
         </div>)
     }
 
+    // @ts-ignore
     return (
         <>
             <script id="reform-script" async src="https://embed.reform.app/v1/embed.js"/>
-            {isFeedbackModalOpen && (<FeedbackModalComponent open={isFeedbackModalOpen} setOpen={setIsFeedbackModalOpen}/>)}
+            {isFeedbackModalOpen && (
+                <FeedbackModalComponent open={isFeedbackModalOpen} setOpen={setIsFeedbackModalOpen}/>)}
             <div>
                 <Transition.Root show={sidebarOpen} as={Fragment}>
                     <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={setSidebarOpen}>
@@ -247,6 +260,7 @@ export default function Index({urls, updatedAt}) {
                                         {navigation.map((item) => (
                                             <a
                                                 key={item.name}
+                                                // @ts-ignore
                                                 href={!item.onClick && item.href}
                                                 onClick={() => item.onClick && item.onClick()}
                                                 className={classNames(
@@ -294,6 +308,7 @@ export default function Index({urls, updatedAt}) {
                                 {navigation.map((item) => (
                                     <a
                                         key={item.name}
+                                        // @ts-ignore
                                         href={item.onClick ? undefined : item.href}
                                         onClick={() => item.onClick && item.onClick()}
                                         className={classNames(
@@ -345,27 +360,54 @@ export default function Index({urls, updatedAt}) {
 }
 
 
-const fs = require('fs')
+// @ts-ignore
+export const getStaticProps: GetStaticProps = async context => {
+    const isProd = true; process.env.NODE_ENV === 'production';
 
-export async function getStaticProps(context) {
-    const file = fs.createReadStream('public/weekly_leaderboard.csv')
+    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard.csv');
+    console.log(file)
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
             header: true,
             complete: resolve,
             error: reject,
         }),
-    ).then(result => {
+    ).then((result) : object => {
+        // @ts-ignore
         const latestShareDates = map(result.data, (row) => {
             let createdAts = replace(row.created_ats, /(\[')|('])|(')/g, '').split(",")
+            // @ts-ignore
             createdAts = map(createdAts, (createdAt) => new Date(createdAt))
             const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
             return latestShareDate
         })
+        // @ts-ignore
         const updatedAt = max(latestShareDates).toString()
+        // @ts-ignore
         let urls = result.data
         urls = filter(urls, (urlObj) => !includes(urlObj.url, 'twitter.com'))
         urls = take(urls, 100);
-        return {props: {urls, updatedAt}}
+        return {props: {urls, updatedAt}};
     })
 }
+
+const getLatestFileFromIpfs = async (): Promise<string> => {
+    const ipfsHashHistory = fs.readFileSync("public/ipfs_hash_history.txt", "utf8");
+    const lastHash = takeRight(filter(split(ipfsHashHistory, '\n'), (hash) => !isEmpty(hash)))[0];
+    const ipfs = create({ host: 'gateway.ipfs.io', port: 443, protocol: 'https' })
+    return readIpfsFile(ipfs, lastHash);
+}
+
+// @ts-ignore
+const readIpfsFile = async (ipfs: IPFS, cid: CID|string): Promise<string> => {
+    const decoder = new TextDecoder()
+    let content = ''
+    for await (const chunk of ipfs.cat(cid)) {
+        console.log(chunk)
+        content += decoder.decode(chunk)
+    }
+
+    return content
+}
+
+export default Index;
