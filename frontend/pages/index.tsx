@@ -362,10 +362,9 @@ const Index = (props: IndexProps ) => {
 
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
-    const isProd = true; process.env.NODE_ENV === 'production';
+    const isProd = process.env.NODE_ENV === 'production';
 
     const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard.csv');
-    console.log(file)
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
             header: true,
@@ -403,10 +402,8 @@ const readIpfsFile = async (ipfs: IPFS, cid: CID|string): Promise<string> => {
     const decoder = new TextDecoder()
     let content = ''
     for await (const chunk of ipfs.cat(cid)) {
-        console.log(chunk)
         content += decoder.decode(chunk)
     }
-
     return content
 }
 
