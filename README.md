@@ -27,3 +27,11 @@ Scrape accounts that a user follows and allow for custom-per-user dashboard of l
 2. Upload data to IPFS / ???
 3. Trigger new next.js build via Github Actions
 4. Build new static site
+
+
+# Todo
+##
+- upload files with urls and tweet_ids to ipfs
+- use files from ipfs instead of local ones
+- add scripts to git
+- run script via github action periodically
