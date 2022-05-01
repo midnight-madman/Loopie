@@ -1,7 +1,7 @@
 name: Update data
 on:
-  schedule:
-    - cron: '0 * * * *'
+#  schedule:
+#    - cron: '* 0,3,6,9,12,15,18,21 * * *'
   push:
     branches:
       - main
