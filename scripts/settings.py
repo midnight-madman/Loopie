@@ -1,8 +1,10 @@
-TWITTER_BEARER_TOKEN = ''
+import os
 
-IPFS_ENDPOINT = ''
-INFURA_USERNAME = ''
-INFURA_PASSWORD = ''
+TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
+
+IPFS_ENDPOINT = os.environ.get('IPFS_ENDPOINT')
+INFURA_USERNAME = os.environ.get('INFURA_USERNAME')
+INFURA_PASSWORD = os.environ.get('INFURA_PASSWORD')
 
 DATA_DIR = 'data/'
 URL_FILES_IPFS_HASHES_FNAME = f'{DATA_DIR}url_files_ipfs_hashes.txt'
