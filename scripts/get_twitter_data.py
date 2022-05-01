@@ -121,14 +121,18 @@ def download_tweets_to_file_from_scratch() -> str:
     start_time_str = (datetime.datetime.utcnow() - timespan).isoformat() + 'Z'
     df = get_tweets_since_time_or_id(start_time=start_time_str)
     df_urls = get_urls_from_tweets_dataframe(df)
-    df_urls.to_csv(f'data/urls_{timespan_days}days_since_{start_time_str}.csv', index=False)
+    fname = f'data/urls_{timespan_days}days_since_{start_time_str}.csv'
+    df_urls.to_csv(fname, index=False)
+    return fname
 
 
 def download_tweets_to_file_since_last_tweet_id(latest_tweet_id: str) -> str:
     df = get_tweets_since_time_or_id(since_id=latest_tweet_id)
     # df.to_csv(f'data/tweets_since_id_{latest_tweet_id}.csv', index=False)
     df_urls = get_urls_from_tweets_dataframe(df)
-    df_urls.to_csv(f'data/urls_since_id_{latest_tweet_id}.csv', index=False)
+    fname = f'data/urls_since_id_{latest_tweet_id}.csv'
+    df_urls.to_csv(fname, index=False)
+    return fname
 
 
 def get_latest_tweet_id_from_url_files(csv_files) -> str:
@@ -155,7 +159,6 @@ def get_twitter_data() -> str:
     csv_files = get_local_url_filenames()
     start_from_scratch = not csv_files
 
-    fname = ''
     if start_from_scratch:
         fname = download_tweets_to_file_from_scratch()
     else:
