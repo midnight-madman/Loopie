@@ -15,8 +15,10 @@ def get_dataframe_from_ipfs_hash(ipfs_hash: str) -> pd.DataFrame:
     df = pd.read_csv(StringIO(response.content.decode('utf-8')))
     # name of the first column is the ipfs hash instead of "url", replace here when reading
     df.rename(columns={df.columns[0]: "url"}, inplace=True)
-
-    print(f'read file {ipfs_hash} from IPFS, length: {len(df)}, columns: {df.columns}')
+    df = df[df['url'].notna()]
+    df['tweet_id'] = df['tweet_id'].astype('int64')
+    df['author_id'] = df['author_id'].astype('int64')
+    print(f'read file {ipfs_hash} from IPFS, length: {len(df)}, columns: {list(df.columns)}')
     return df
 
 
