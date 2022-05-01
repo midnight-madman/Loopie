@@ -391,7 +391,9 @@ export const getStaticProps: GetStaticProps = async context => {
 }
 
 const getLatestFileFromIpfs = async (): Promise<string> => {
-    const ipfsHashHistory = fs.readFileSync("public/ipfs_hash_history.txt", "utf8");
+    // TODO: replace with url from Github repo (so we don't need to duplicate files in repo)
+    const hashHistoryFname = 'weekly_leaderboard_ipfs_hash_history.txt';
+    const ipfsHashHistory = fs.readFileSync(`public/${hashHistoryFname}`, "utf8");
     const lastHash = takeRight(filter(split(ipfsHashHistory, '\n'), (hash) => !isEmpty(hash)))[0];
     const ipfs = create({ host: 'gateway.ipfs.io', port: 443, protocol: 'https' })
     return readIpfsFile(ipfs, lastHash);

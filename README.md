@@ -30,8 +30,11 @@ Scrape accounts that a user follows and allow for custom-per-user dashboard of l
 
 
 # Todo
-##
-- upload files with urls and tweet_ids to ipfs
-- use files from ipfs instead of local ones
+## Update website periodically
 - add scripts to git
 - run script via github action periodically
+
+## Improve ranking
+- count multiple url shares only once per twitter account
+- give each url a score
+    - add retweets / nr. of links to tweet to score
