@@ -2,6 +2,9 @@ name: Update data
 on:
   schedule:
     - cron: '* 0,6,12,18 * * *'
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
