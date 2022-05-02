@@ -3,7 +3,7 @@ from io import StringIO
 import pandas as pd
 import requests
 
-from scripts.settings import IPFS_ENDPOINT, INFURA_USERNAME, INFURA_PASSWORD
+from settings import IPFS_ENDPOINT, INFURA_USERNAME, INFURA_PASSWORD
 
 
 def get_dataframe_from_ipfs_hash(ipfs_hash: str) -> pd.DataFrame:
