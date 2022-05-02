@@ -16,9 +16,10 @@ const parseStrToList = (s) => replace(s, /(\['?)|('?])|(')/g, '').split(", ")
 const RowUrlComponent = ({url, index}) => {
     const [isExpandendRow, setIsExpandedRow] = useState(false);
 
-    const hasTitle = !isEmpty(url.url_title)
     const cleanUrl = getCleanUrl(url.url)
-    const rowTitle = hasTitle ? `${url.url_title} (${truncate(cleanUrl, {'length': 45})})` : cleanUrl
+    const hasTitle = !isEmpty(url.url_title)
+    const rowTitle = hasTitle ? url.url_title : cleanUrl
+    const rowSubtitle = hasTitle && `(${truncate(cleanUrl, {'length': 45})})`
 
     let createdAts = parseStrToList(url.created_ats)
     createdAts = map(createdAts, (createdAt) => new Date(createdAt))
@@ -38,29 +39,30 @@ const RowUrlComponent = ({url, index}) => {
         </div>
     }
 
-    return (<tr key={`url-row-${cleanUrl}`}>
-        <td className="whitespace-nowrap pl-2 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-            <div className="flex items-center">
-                <div className="font-bold mb-3">
+    return (<tr key={`url-row-${index}`}>
+        <td className="whitespace-nowrap text-sm font-medium text-gray-900 relative">
+            <div className="absolute top-2.5 left-2">
+                <div className="font-semibold">
                     {index + 1})
                 </div>
             </div>
         </td>
-        <td className="whitespace-normal max-w-xs py-2 pl-4 pr-3 text-sm sm:pl-6 md:py-4">
+        <td className="whitespace-normal max-w-xs pl-8 py-2 text-sm md:py-4">
             <div className="flex items-center">
                 <div className="">
                     <a
                         href={url.url} target="_blank" rel="noreferrer noopener"
                         className="font-medium text-gray-900 hover:underline hover:text-gray-700">
-                        {rowTitle}
+                        {rowTitle}{' '}
+                        <span className="font-normal text-gray-500">{rowSubtitle}</span>
                     </a>
                     <div className="text-gray-500">
                         <div className="flex">
-                            {url.tweet_count > 1 ? `${url.tweet_count} shares` : "shared once"} | latest
-                            share {latestShareDate.toDateString().toLowerCase()} |
+                            {url.tweet_count > 1 ? `${url.tweet_count} shares` : "shared once"} | last
+                            shared {latestShareDate.toDateString().toLowerCase()} |
                             <span className="flex hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandendRow)}>
-                            <p className="ml-1">{isExpandendRow ? 'collapse' : 'show'}</p>
+                            <p className="ml-1">{isExpandendRow ? 'hide' : 'show'}</p>
                                 {isExpandendRow ?
                                     <ArrowSmUpIcon
                                         className='text-gray-400 group-hover:text-gray-500 flex-shrink-0 h-5 w-5'

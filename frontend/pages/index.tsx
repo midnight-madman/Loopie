@@ -138,7 +138,7 @@ const Index = (props: IndexProps ) => {
     }
 
     function renderNewsPageContent() {
-        return (<div className="px-4 sm:px-6 lg:px-8">
+        return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
                 <div className="mt-2 lg:mt-8 flex flex-col">
                     <div className="-mx-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full align-middle">
@@ -374,8 +374,7 @@ const Index = (props: IndexProps ) => {
 
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
-    const isProd = true; process.env.NODE_ENV === 'production';
-
+    const isProd = process.env.NODE_ENV === 'production';
     const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard_test.csv');
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
