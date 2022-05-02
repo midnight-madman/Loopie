@@ -6,8 +6,9 @@ import pandas as pd
 
 from api.twitter_api import get_tweets_from_account
 from const import ACCOUNTS
-from settings import DATA_DIR
+from settings import DATA_DIR, USE_IPFS_TO_READ_DATA
 from utils import get_local_url_filenames, read_url_file_ipfs_hashes_from_local_history
+from api.ipfs import get_dataframe_from_ipfs_hash
 
 
 def get_tweets_dataframe_from_account(username: str, start_time: str, since_id: str) -> Optional[pd.DataFrame]:
