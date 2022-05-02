@@ -1,7 +1,7 @@
 import datetime
 import time
 from typing import Optional
-
+from tqdm import tqdm
 import pandas as pd
 
 from api.twitter_api import get_tweets_from_account
@@ -45,32 +45,44 @@ def get_tweets_since_time_or_id(start_time=None, since_id=None):
     if not start_time and not since_id:
         raise Exception('method needs either start_time or since_id')
 
-    print(f'getting tweets for accounts {ACCOUNTS} since id {since_id} or start time {start_time}')
+    print(f'getting tweets for {len(ACCOUNTS)} accounts since id {since_id} or start time {start_time}')
     tweets_dataframes = []
-    for account in ACCOUNTS:
+    for account in tqdm(ACCOUNTS):
         tweets_df = get_tweets_dataframe_from_account(account, start_time, since_id)
         time.sleep(1)
 
         if tweets_df is not None:
             tweets_dataframes.append(tweets_df)
 
+    if not tweets_dataframes:
+        print('got no new tweets from Twitter API')
+        return None
+
+    print(f'got {len(tweets_dataframes)} dataframes with tweets')
     df = pd.concat(tweets_dataframes)
+    print(f'got {len(df)} tweets')
     return df
 
 
-def download_tweets_to_file_from_scratch() -> str:
+def download_tweets_to_file_from_scratch() -> Optional[str]:
     timespan_days = 6
     timespan = datetime.timedelta(days=timespan_days)
     start_time_str = (datetime.datetime.utcnow() - timespan).isoformat() + 'Z'
     df = get_tweets_since_time_or_id(start_time=start_time_str)
+    if df is None:
+        return None
+
     df_urls = get_urls_from_tweets_dataframe(df)
     fname = f'{DATA_DIR}urls_{timespan_days}days_since_{start_time_str}.csv'
     df_urls.to_csv(fname, index=False)
     return fname
 
 
-def download_tweets_to_file_since_last_tweet_id(latest_tweet_id: str) -> str:
+def download_tweets_to_file_since_last_tweet_id(latest_tweet_id: str) -> Optional[str]:
     df = get_tweets_since_time_or_id(since_id=latest_tweet_id)
+    if df is None:
+        return None
+
     # df.to_csv(f'data/tweets_since_id_{latest_tweet_id}.csv', index=False)
     df_urls = get_urls_from_tweets_dataframe(df)
     fname = f'{DATA_DIR}urls_since_id_{latest_tweet_id}.csv'
@@ -121,7 +133,8 @@ def get_twitter_data() -> str:
             latest_tweet_id = get_latest_tweet_id_from_url_files(csv_files)
         fname = download_tweets_to_file_since_last_tweet_id(latest_tweet_id)
 
-    print(f'downloaded new tweets to {fname}')
+    if fname:
+        print(f'downloaded new tweets to {fname}')
     return fname
 
 

@@ -6,6 +6,10 @@ from get_twitter_data import get_twitter_data
 
 def main():
     twitter_data_fname = get_twitter_data()
+    if not twitter_data_fname:
+        print("No new twitter data, exiting...")
+        return
+
     get_metadata_for_url_file(twitter_data_fname)
     upload_url_file_to_ipfs(twitter_data_fname)
 
