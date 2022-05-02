@@ -1,7 +1,7 @@
 from generate_url_rankings import generate_url_rankings
-from utils import upload_url_file_to_ipfs, upload_ranking_file_to_ipfs
 from get_metadata_for_urls import get_metadata_for_url_file
 from get_twitter_data import get_twitter_data
+from utils import upload_url_file_to_ipfs, upload_ranking_file_to_ipfs
 
 
 def main():

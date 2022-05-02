@@ -1,7 +1,7 @@
 from glob import glob
 
 from api.ipfs import upload_file_to_ipfs
-from settings import URL_FILES_IPFS_HASHES_FNAME, WEEKLY_LEADERBOARD_IPFS_HASH_HISTORY_FNAME
+from settings import URL_FILES_IPFS_HASHES_FNAME, WEEKLY_LEADERBOARD_IPFS_HASH_HISTORY_FNAME, UPLOAD_DATA_TO_IPFS
 
 
 def append_string_to_file(fname, string, newline=True):
@@ -19,6 +19,10 @@ def get_local_url_filenames():
 
 
 def upload_file_and_append_ipfs_hash_to_file(upload_file_name, append_file_name):
+    if not UPLOAD_DATA_TO_IPFS:
+        print('Not uploading data to IPFS according to settings')
+        return
+
     ipfs_hash = upload_file_to_ipfs(upload_file_name)
     append_string_to_file(append_file_name, ipfs_hash)
 
