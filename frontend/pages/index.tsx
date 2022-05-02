@@ -376,7 +376,8 @@ const Index = (props: IndexProps ) => {
 export const getStaticProps: GetStaticProps = async context => {
     const isProd = process.env.NODE_ENV === 'production';
 
-    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard.csv');
+    // @ts-ignore
+    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream(process.env.leaderboardIpfsHashHistory);
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
             header: true,
