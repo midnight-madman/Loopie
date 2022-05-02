@@ -42,12 +42,12 @@ const RowUrlComponent = ({url, index}) => {
     return (<tr key={`url-row-${index}`}>
         <td className="whitespace-nowrap text-sm font-medium text-gray-900 relative">
             <div className="absolute top-2.5 left-2">
-                <div className="font-semibold">
-                    {index + 1})
+                <div className="font-normal text-gray-500">
+                    {index + 1}.
                 </div>
             </div>
         </td>
-        <td className="whitespace-normal max-w-xs pl-8 py-2 text-sm md:py-4">
+        <td className="whitespace-normal max-w-xs pl-8 py-2 text-sm">
             <div className="flex items-center">
                 <div className="">
                     <a
