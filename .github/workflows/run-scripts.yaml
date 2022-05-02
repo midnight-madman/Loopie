@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: 3.8.12
       - uses: browser-actions/setup-geckodriver@latest
-        run: geckodriver --version
+      - run: geckodriver --version
       - name: Install pipenv
         run: |
           pip install pipenv
