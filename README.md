@@ -1,40 +1,30 @@
 # Loopie
 
-Stay in the loop with web3
+Stay in the loop with everything that's happening in web3 - a simple HackerNews-style page with the most frequently shared links
 
-# One public aggregation of public voted twitter accounts
-
-
-# Future
-Have different sets of public accounts (NFTs, vs Ethereum Merge, vs Binance, etc)
-Scrape accounts that a user follows and allow for custom-per-user dashboard of links
-
-# Decentralized
-## Frontend
-- store on decentralized
-
-## Scraping
-- Twitter API public via many people scraping and comparing results
-
-## Governance
-- Store list of main influencers on-chain
+![pika-2022-04-27T09_02_45 917Z](https://user-images.githubusercontent.com/94986441/166223538-b32dc96e-b6b0-470e-8f22-4d68a714357a.png)
 
 
 
+## 💡 Ideas for Governance
+- Allow community members to vote on the list of Twitter accounts
 
-# How the site is built
-1. Fetch new data from Twitter
-2. Upload data to IPFS / ???
-3. Trigger new next.js build via Github Actions
-4. Build new static site
+## 🏗 How the site is built
+1. Check for previous runs and find last tweet id that was saved before
+2. Fetch new tweets with urls since last tweet id via Twitter API
+3. Find urls and save titles of the websites
+4. Upload data to IPFS
+5. Build leaderboard for site based on urls shared in the last week
 
 
-# Todo
-## Update website periodically
-- add scripts to git
-- run script via github action periodically
-
-## Improve ranking
+## 🔝 Todo to improve ranking
 - count multiple url shares only once per twitter account
 - give each url a score
     - add retweets / nr. of links to tweet to score
+
+## 🎢 Todo to improve user experience
+- create tag for each page based on urls and accounts that shared it
+- create switch to show daily, weekly, (monthly?) most shared links
+
+## ⚡️ Todo for more awareness of Loopie
+- reply on Twitter to most shared links / tweets
