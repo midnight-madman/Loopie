@@ -17,6 +17,15 @@ import * as fs from 'fs';
 import {GetStaticProps} from 'next'
 import {create} from 'ipfs-http-client';
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs().format()
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
+
+
 // @ts-ignore
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -31,8 +40,8 @@ const Index = (props: IndexProps ) => {
     const {urls, updatedAt} = props;
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [showTwitterLinks, setShowTwitterLinks] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+    // const [showTwitterLinks, setShowTwitterLinks] = useState(false)
 
     let navigation = [
         {
@@ -68,6 +77,9 @@ const Index = (props: IndexProps ) => {
     //     },)
     // }
 
+    const updatedAtTime = dayjs.utc(updatedAt.split('GMT')[0])
+
+
     function renderPageContent() {
         switch (selectedPage) {
             case 'news':
@@ -90,7 +102,7 @@ const Index = (props: IndexProps ) => {
                                         <p
                                             className="inline-flex items-center text-light font-small rounded-md text-white"
                                         >
-                                            Last update: {updatedAt.split('GMT')[0]}
+                                            Updated {updatedAtTime.fromNow()}
                                         </p>
                                         <button
                                             onClick={() => setIsFeedbackModalOpen(true)}
