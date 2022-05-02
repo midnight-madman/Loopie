@@ -1,12 +1,13 @@
 name: Update data
 on:
-#  schedule:
-#    - cron: '* 0,3,6,9,12,15,18,21 * * *'
+  schedule:
+    - cron: '* 0,6,12,18 * * *'
   push:
     branches:
       - main
 jobs:
   run-scripts:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

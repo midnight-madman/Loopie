@@ -2,7 +2,8 @@ import datetime
 
 import pandas as pd
 
-from utils import get_local_url_filenames, get_dataframe_from_ipfs_hash
+from utils import get_local_url_filenames
+from api.ipfs import get_dataframe_from_ipfs_hash
 from settings import USE_IPFS_TO_READ_DATA, URL_FILES_IPFS_HASHES_FNAME
 
 
