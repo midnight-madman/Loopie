@@ -374,10 +374,9 @@ const Index = (props: IndexProps ) => {
 
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
-    const isProd = process.env.NODE_ENV === 'production';
+    const isProd = true; process.env.NODE_ENV === 'production';
 
-    // @ts-ignore
-    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream(process.env.leaderboardIpfsHashHistory);
+    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard_test.csv');
     return new Promise((resolve, reject) =>
         Papa.parse(file, {
             header: true,
@@ -402,11 +401,14 @@ export const getStaticProps: GetStaticProps = async context => {
         return {props: {urls, updatedAt}};
     })
 }
+import fetch from 'node-fetch';
 
 const getLatestFileFromIpfs = async (): Promise<string> => {
-    // TODO: replace with url from Github repo (so we don't need to duplicate files in repo)
-    const hashHistoryFname = 'weekly_leaderboard_ipfs_hash_history.txt';
-    const ipfsHashHistory = fs.readFileSync(`public/${hashHistoryFname}`, "utf8");
+    console.log('get ipfs hashes from remote url', process.env.leaderboardIpfsHashHistory)
+    // @ts-ignore
+    const response = await fetch(process.env.leaderboardIpfsHashHistory);
+    const ipfsHashHistory = await response.text();
+    // const ipfsHashHistory = fs.readFileSync("tmpFile.csv", "utf8");
     const lastHash = takeRight(filter(split(ipfsHashHistory, '\n'), (hash) => !isEmpty(hash)))[0];
     const ipfs = create({ host: 'gateway.ipfs.io', port: 443, protocol: 'https' })
     return readIpfsFile(ipfs, lastHash);

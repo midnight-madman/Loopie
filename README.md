@@ -28,3 +28,6 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews-
 
 ## ⚡️ Todo for more awareness of Loopie
 - reply on Twitter to most shared links / tweets
+
+## 🧑‍🔧 Fix
+- fix the bug when tweet_ids change after saving? (sometimes linked tweets in leaderboard disappear/are wrong?!)

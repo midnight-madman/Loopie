@@ -5,13 +5,13 @@ from settings import URL_FILES_IPFS_HASHES_FNAME, WEEKLY_LEADERBOARD_IPFS_HASH_H
 
 
 def append_string_to_file(fname, string, newline=True):
+    print(f'append {string} to file {fname}')
+
     if newline:
         string = f'{string}\n'
 
     with open(fname, 'a') as f:
         f.write(string)
-
-    print(f'appended {string} to file {fname}')
 
 
 def get_local_url_filenames():

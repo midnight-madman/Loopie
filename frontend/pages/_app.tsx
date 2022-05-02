@@ -14,7 +14,7 @@ function MyApp({Component, pageProps}: AppProps) {
     return (<html className="h-full bg-white">
     <head>
         {isProd && renderAnalyticsScripts()}
-        <title>Stay in the Loopie</title>
+        <title>Loopie.Link</title>
     </head>
     <body className="h-full">
         <Component {...pageProps} />

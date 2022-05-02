@@ -14,8 +14,10 @@ def get_dataframe_from_ipfs_hash(ipfs_hash: str) -> pd.DataFrame:
     # name of the first column is the ipfs hash instead of "url", replace here when reading
     df.rename(columns={df.columns[0]: "url"}, inplace=True)
     df = df[df['url'].notna()]
-    df['tweet_id'] = df['tweet_id'].astype('int64')
-    df['author_id'] = df['author_id'].astype('int64')
+    if 'tweet_id' in df.columns:
+        df['tweet_id'] = df['tweet_id'].astype('int64')
+    if 'author_id' in df.columns:
+        df['author_id'] = df['author_id'].astype('int64')
     print(f'read file {ipfs_hash} from ipfs, length: {len(df)}, columns: {list(df.columns)}')
     return df
 

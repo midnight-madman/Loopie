@@ -36,6 +36,11 @@ def create_ranking_df(df):
                            'author_id': 'author_ids',
                            'author_username': 'author_usernames',
                            'created_at': 'created_ats'}, inplace=True)
+
+    # make columns have unique values
+    for col in ['tweet_ids', 'author_ids', 'author_usernames', 'created_ats']:
+        df_new[col] = df_new[col].apply(lambda x: list(set(x)))
+
     return df_new
 
 
@@ -45,6 +50,7 @@ def generate_url_rankings():
     else:
         df_urls = load_all_local_url_files_as_dataframe()
 
+    df_urls = df_urls[df_urls.duplicated(subset=['tweet_id',])]
     one_week_ago = pd.Timestamp.utcnow() - pd.offsets.Day(7)
     df_urls_last_week = df_urls[df_urls.created_at > one_week_ago]
     df_ranking_last_week = create_ranking_df(df_urls_last_week)
