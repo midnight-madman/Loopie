@@ -7,7 +7,7 @@ import pandas as pd
 from api.twitter_api import get_tweets_from_account
 from const import ACCOUNTS
 from settings import DATA_DIR
-from utils import get_local_url_filenames
+from utils import get_local_url_filenames, read_url_file_ipfs_hashes_from_local_history
 
 
 def get_tweets_dataframe_from_account(username: str, start_time: str, since_id: str) -> Optional[pd.DataFrame]:
@@ -107,7 +107,7 @@ def get_latest_tweet_id_from_ipfs_files(ipfs_hashes) -> str:
 
 def get_twitter_data() -> str:
     csv_files = get_local_url_filenames()
-    ipfs_hashes = get_ipfs_hash_for_url_files()
+    ipfs_hashes = read_url_file_ipfs_hashes_from_local_history()
     has_ipfs_hashes = USE_IPFS_TO_READ_DATA and len(ipfs_hashes) > 0
     start_from_scratch = not csv_files and not has_ipfs_hashes
 

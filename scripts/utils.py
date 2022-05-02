@@ -29,3 +29,9 @@ def upload_url_file_to_ipfs(fname):
 
 def upload_ranking_file_to_ipfs(fname):
     upload_file_and_append_ipfs_hash_to_file(fname, WEEKLY_LEADERBOARD_IPFS_HASH_HISTORY_FNAME)
+
+
+def read_url_file_ipfs_hashes_from_local_history():
+    ipfs_hashes = open(URL_FILES_IPFS_HASHES_FNAME, 'r').read().splitlines()
+    ipfs_hashes = [hash for hash in ipfs_hashes if hash and hash.startswith('/ipfs/')]
+    return ipfs_hashes

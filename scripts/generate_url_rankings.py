@@ -2,9 +2,10 @@ import datetime
 
 import pandas as pd
 
+from utils import read_url_file_ipfs_hashes_from_local_history
 from utils import get_local_url_filenames
 from api.ipfs import get_dataframe_from_ipfs_hash
-from settings import USE_IPFS_TO_READ_DATA, URL_FILES_IPFS_HASHES_FNAME
+from settings import USE_IPFS_TO_READ_DATA
 
 
 def load_all_local_url_files_as_dataframe():
@@ -16,14 +17,8 @@ def load_all_local_url_files_as_dataframe():
     return df
 
 
-def get_ipfs_hash_for_url_files():
-    ipfs_hashes = open(URL_FILES_IPFS_HASHES_FNAME, 'r').read().splitlines()
-    ipfs_hashes = [hash for hash in ipfs_hashes if hash and hash.startswith('/ipfs/')]
-    return ipfs_hashes
-
-
 def load_all_url_files_from_ipfs():
-    ipfs_hashes = get_ipfs_hash_for_url_files()
+    ipfs_hashes = read_url_file_ipfs_hashes_from_local_history()
     df = pd.concat([get_dataframe_from_ipfs_hash(hash) for hash in ipfs_hashes])
     df.created_at = pd.to_datetime(df.created_at, utc=True)
     print('loaded all urls via files in IPFS', len(df))
