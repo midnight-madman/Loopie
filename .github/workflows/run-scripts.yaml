@@ -5,9 +5,6 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
 jobs:
   run-scripts:
     if: "${{ github.event_name == 'schedule' }} || contains(github.event.head_commit.message, 'force ci')"
