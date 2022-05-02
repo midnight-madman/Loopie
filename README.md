@@ -31,3 +31,10 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews-
 
 ## 🧑‍🔧 Fix
 - fix the bug when tweet_ids change after saving? (sometimes linked tweets in leaderboard disappear/are wrong?!)
+
+
+## ⚙️ Config to run scripts locally
+Run
+- `pip install pipenv`
+- `pipenv install`
+- `brew cask install geckodriver` (on first run a confirmation in Security Preferences might be required)

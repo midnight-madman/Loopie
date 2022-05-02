@@ -1,22 +1,23 @@
-from glob import glob
-
 import pandas as pd
 import requests
 from lxml.html import fromstring
 from tqdm import tqdm
+
+from scraping.webpage_title_scraper import WebpageTitleScraper
 from utils import get_local_url_filenames
 
 tqdm.pandas()
 import cloudscraper
 
-scraper = cloudscraper.create_scraper(delay=5,
-                                      browser={
-                                          'browser': 'firefox',
-                                          'platform': 'windows',
-                                          'mobile': False
-                                      },
-                                      interpreter='nodejs'
-                                      )
+scraper = cloudscraper.create_scraper(
+    delay=5,
+    browser={
+        'browser': 'firefox',
+        'platform': 'windows',
+        'mobile': False
+    },
+    interpreter='nodejs'
+)
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) '
                   'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
@@ -44,10 +45,7 @@ def clean_title(title: str) -> str:
     return title
 
 
-def get_title_for_url(url: str) -> str:
-    if not can_get_title(url):
-        return ''
-    print('getting title for url', url)
+def get_title_from_python_request(url: str) -> str:
     try:
         r = scraper.get(url)
         # r = requests.get(url, timeout=30, headers=headers)
@@ -59,20 +57,31 @@ def get_title_for_url(url: str) -> str:
 
     tree = fromstring(r.content)
     title = tree.findtext('.//title')
-    if not title:
+    return title or ''
+
+
+def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
+    if not can_get_title(url):
         return ''
 
+
+    title = scraper.get_page_title(url)
     title = clean_title(title)
+    print('got title for url', url, ':', title)
     return title if is_valid_title(title) else ''
 
 
 def get_metadata_for_url_file(fname):
     df = pd.read_csv(fname)
     print(f'scraping {len(df)} titles in file: {fname}')
+
+    scraper = WebpageTitleScraper()
     df['url_title'] = df.progress_apply(
-        lambda row: row['url_title'] if row.get('url_title') else get_title_for_url(row['url']),
+        lambda row: row['url_title'] if row.get('url_title') else get_title_for_url(row['url'], scraper),
         axis=1)
+
     df.to_csv(fname, index=False)
+    scraper.driver.close()
 
 
 def get_metadata_for_all_url_files():
