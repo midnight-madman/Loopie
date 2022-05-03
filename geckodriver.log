@@ -1,0 +1,25 @@
+1651590870786	geckodriver	INFO	Listening on 127.0.0.1:53967
+1651590870821	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "45561" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilejs2E7R"
+*** You are running in headless mode.
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: glxtest: libEGL missing
+1651590875548	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilejs2E7R/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:45561/devtools/browser/807e4319-1018-4e98-b86a-72f2efb30c92
+1651590880604	Marionette	INFO	Listening on port 41311
+Read port: 41311
+1651590880730	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://www.sec.gov/news/press-release/2022-78 line 287 > injectedScript, line 5: ReferenceError: gtmYTplayers is not defined
+1651590891871	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript error: https://www.sec.gov/news/press-release/2022-78 line 287 > injectedScript, line 5: ReferenceError: gtmYTplayers is not defined
+JavaScript warning: https://s.gitcoin.co/static/v2/bundled/js/tip_dependancies.8fb2ba.79daa1968150.js, line 0: Successfully compiled asm.js code (total compilation time 30ms)
+JavaScript warning: https://s.gitcoin.co/static/v2/bundled/js/tip_dependancies.8fb2ba.79daa1968150.js, line 4271: unreachable code after return statement
+JavaScript warning: https://opensea.io/_next/static/chunks/d3dd70f4.fb0e16024264711710ac.js, line 0: Successfully compiled asm.js code (total compilation time 226ms)
+JavaScript warning: https://assets.debank.com/static/js/constModule.8d421b0b.chunk.js, line 1: unreachable code after return statement
+JavaScript warning: https://assets.debank.com/static/js/constModule.8d421b0b.chunk.js, line 1: unreachable code after return statement
+JavaScript warning: https://assets.debank.com/static/js/constModule.8d421b0b.chunk.js, line 1: unreachable code after return statement
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://bitcoinminingcouncil.com"
+1651590918840	Marionette	INFO	Stopped listening on port 41311
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://bitcoinminingcouncil.com"
