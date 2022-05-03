@@ -64,7 +64,6 @@ def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
     if not can_get_title(url):
         return ''
 
-
     title = scraper.get_page_title(url)
     title = clean_title(title)
     print('got title for url', url, ':', title)
@@ -76,9 +75,11 @@ def get_metadata_for_url_file(fname):
     print(f'scraping {len(df)} titles in file: {fname}')
 
     scraper = WebpageTitleScraper()
-    df['url_title'] = df.progress_apply(
-        lambda row: row['url_title'] if row.get('url_title') else get_title_for_url(row['url'], scraper),
-        axis=1)
+    df['url_title'] = df.progress_apply(lambda row:
+                                        row['url_title']
+                                        if row.get('url_title')
+                                        else get_title_for_url(row['url'], scraper),
+                                        axis=1)
 
     df.to_csv(fname, index=False)
     scraper.driver.close()

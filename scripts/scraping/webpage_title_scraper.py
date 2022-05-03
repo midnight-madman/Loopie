@@ -1,4 +1,4 @@
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -26,10 +26,11 @@ class WebpageTitleScraper:
         except TimeoutException:
             print("Timeout happened no page load")
             return ''
-        except selenium.common.exceptions.WebDriverException as e:
+        except WebDriverException as e:
             if 'timeout' in str(e).lower():
                 return ''
             else:
+                print(f'failed to scrape url {url}, got exception {e}')
                 raise e
 
         title = self.driver.title
