@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import type {AppProps} from 'next/app'
+import Head from 'next/head'
 
 function MyApp({Component, pageProps}: AppProps) {
     const renderAnalyticsScripts = () => {
@@ -12,10 +13,11 @@ function MyApp({Component, pageProps}: AppProps) {
     const isProd = process.env.NODE_ENV === 'production';
 
     return (<html className="h-full bg-white">
-    <head>
+    <Head>
         {isProd && renderAnalyticsScripts()}
         <title>Loopie.Link</title>
-    </head>
+        <link rel="shortcut icon" href="/favicon.png" />
+    </Head>
     <body className="h-full">
         <Component {...pageProps} />
     </body>

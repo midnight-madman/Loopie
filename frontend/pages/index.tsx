@@ -59,7 +59,10 @@ const Index = (props: IndexProps ) => {
             className: "hover:cursor-pointer"
         }, {
             name: 'Submit Feedback',
-            onClick: () => setIsFeedbackModalOpen(true),
+            onClick: () => {
+                setIsFeedbackModalOpen(true);
+                setSidebarOpen(false);
+            },
             icon: SpeakerphoneIcon,
             current: false,
             className: "hover:cursor-pointer"
@@ -93,9 +96,6 @@ const Index = (props: IndexProps ) => {
                                     <div className="flex items-center flex-1">
                                         <div className="space-x-2 lg:space-x-4 flex md:ml-10">
                                             <h1 className="text-2xl font-semibold text-gray-100">Web3 News</h1>
-                                            <h3 className="text-md pt-1.5 hidden lg:block font-semibold text-gray-200">
-                                                Stay in the Loopie with us
-                                            </h3>
                                         </div>
                                     </div>
                                     <div className="hidden md:flex md:items-center md:space-x-6">
@@ -265,7 +265,8 @@ const Index = (props: IndexProps ) => {
                                         {/*    src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"*/}
                                         {/*    alt="Workflow"*/}
                                         {/*/>*/}
-                                        <ArrowsExpandIcon className="h-6 w-auto mr-2"/>
+                                        <img src="/favicon.png"  alt="Logo" className="h-10"/>
+                                        {/*<ArrowsExpandIcon className="h-6 w-auto mr-2"/>*/}
                                         <p className="font-medium text-2xl">Loopie</p>
                                     </div>
                                     <nav className="mt-5 px-2 space-y-1">
@@ -313,8 +314,11 @@ const Index = (props: IndexProps ) => {
                                 {/*    src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"*/}
                                 {/*    alt="Workflow"*/}
                                 {/*/>*/}
-                                <ArrowsExpandIcon className="h-6 w-auto mr-2"/>
-                                <p className="font-medium text-2xl">Loopie</p>
+                                <img src="/favicon.png" className="h-10 w-auto" alt="Logo"/>
+                                {/*<ArrowsExpandIcon className="h-6 w-auto mr-2"/>*/}
+                                <p className="font-medium text-2xl">
+                                    Loopie
+                                </p>
                             </div>
                             <nav className="mt-5 flex-1 px-2 bg-white space-y-1">
                                 {navigation.map((item) => (
@@ -356,8 +360,11 @@ const Index = (props: IndexProps ) => {
                             <span className="sr-only">Open sidebar</span>
                             <MenuIcon className="h-6 w-6" aria-hidden="true"/>
                         </button>
-                        <h3 className="text-md pl-2 pt-2.5 sm:hidden font-semibold text-gray-800">
-                            Stay in the Loopie with us
+                        <h3 className="flex text-md pl-2 pt-2.5 sm:hidden font-semibold text-gray-800">
+                            <img src="/favicon.png" className="-mt-1 h-8 w-auto" alt="Logo"/>
+                            <p className="">
+                                Loopie Web3 News
+                            </p>
                         </h3>
                     </div>
                     <main className="">
