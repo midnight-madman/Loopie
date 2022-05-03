@@ -23,3 +23,61 @@ JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch res
 console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://bitcoinminingcouncil.com"
 1651590918840	Marionette	INFO	Stopped listening on port 41311
 console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://bitcoinminingcouncil.com"
+1651602976994	geckodriver	INFO	Listening on 127.0.0.1:46097
+1651602977000	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "39595" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilecKcL46"
+*** You are running in headless mode.
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: glxtest: libEGL missing
+1651602977741	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilecKcL46/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:39595/devtools/browser/d5d24e73-606e-4d57-9811-b34053726c0e
+1651602981790	Marionette	INFO	Listening on port 45917
+Read port: 45917
+1651602981860	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://www.techdirt.com/wp-content/mu-plugins/techdirt-comments/js/build/index.js?ver=30f1b55be4383faea2be4cf548a9279f, line 1: TypeError: l is null
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: WebGL warning: <Create>: WebglAllowWindowsNativeGl:false restricts context creation on this system.
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: WebGL warning: <Create>: WebglAllowWindowsNativeGl:false restricts context creation on this system.
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript error: https://cdn.gotraffic.net/projector/deploy/app/vendor-8cccfd4eaf.js, line 1: TypeError: this.apiSession is undefined
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: WebGL warning: <Create>: WebglAllowWindowsNativeGl:false restricts context creation on this system.
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: WebGL warning: <Create>: WebglAllowWindowsNativeGl:false restricts context creation on this system.
+JavaScript warning: https://z.moatads.com/bloombergprebidheader853620778109/moatheader.js, line 217: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript error: https://assets.bwbx.io/s3/navi/js/foundation-header-dfc8b816c7048bd9eb95.js, line 2: Error: Stack Overflow: Could not resolve intent and state
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
+1651603001969	Marionette	INFO	Stopped listening on port 45917
