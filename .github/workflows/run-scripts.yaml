@@ -42,4 +42,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "[Bot] Stay in the loop ✅"
-          file_pattern: data/*.txt
+#          file_pattern: data/*.txt # throws an error in github action
