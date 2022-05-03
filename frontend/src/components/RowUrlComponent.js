@@ -1,6 +1,6 @@
 import {isEmpty} from "lodash/lang";
 import {replace, split} from "lodash/string";
-import {map, truncate, trimEnd} from "lodash";
+import {map, truncate, trimEnd, take} from "lodash";
 import {useState} from 'react'
 import {ArrowSmDownIcon, ArrowSmUpIcon,} from '@heroicons/react/outline'
 
@@ -59,7 +59,7 @@ const RowUrlComponent = ({url, index}) => {
                     <div className="text-gray-500">
                         <div className="flex">
                             {url.tweet_count > 1 ? `${url.tweet_count} shares` : "shared once"} | last
-                            shared {latestShareDate.toDateString().toLowerCase()} |
+                            shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
                             <span className="flex hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandendRow)}>
                             <p className="ml-1">{isExpandendRow ? 'hide' : 'show'}</p>

@@ -30,8 +30,7 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews-
 - reply on Twitter to most shared links / tweets
 
 ## 🧑‍🔧 Fix
-- fix the bug when tweet_ids change after saving? (sometimes linked tweets in leaderboard disappear/are wrong?!)
-
+- fix: 😔 people delete tweets after they are scraped, they still show up on the leaderboard
 
 ## ⚙️ Config to run scripts locally
 Run
