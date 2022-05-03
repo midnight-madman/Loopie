@@ -81,3 +81,19 @@ JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: Type
 JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
 JavaScript error: https://assets.bwbx.io/s3/sparkle/v6/sparkle.mjs, line 2: TypeError: this.gpt is null
 1651603001969	Marionette	INFO	Stopped listening on port 45917
+1651604022997	geckodriver	INFO	Listening on 127.0.0.1:33911
+1651604023046	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "41685" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileIvp8bN"
+*** You are running in headless mode.
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: glxtest: libEGL missing
+1651604028180	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileIvp8bN/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:41685/devtools/browser/4857b72e-2749-42b3-bd85-e76822755cdc
+1651604032433	Marionette	INFO	Listening on port 33389
+Read port: 33389
+1651604032552	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1651604032577	Marionette	INFO	Stopped listening on port 33389
+
+###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
+
