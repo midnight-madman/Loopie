@@ -97,3 +97,18 @@ Read port: 33389
 
 ###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
 
+1651605340411	geckodriver	INFO	Listening on 127.0.0.1:33193
+1651605340439	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "56353" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileowTfi1"
+*** You are running in headless mode.
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: glxtest: libEGL missing
+1651605347520	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileowTfi1/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:56353/devtools/browser/a9d11fde-fafa-4ae8-8eb1-1d8398d11a00
+1651605355426	Marionette	INFO	Listening on port 36177
+Read port: 36177
+1651605355543	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1651605358635	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1651605360442	Marionette	INFO	Stopped listening on port 36177
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 718: Error: Phase "Sqlite.jsm: wait until all connections are closed" is finished, it is too late to register completion condition "protections.sqlite#0: waiting for shutdown"
