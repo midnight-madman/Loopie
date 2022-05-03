@@ -73,6 +73,7 @@ def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
 def get_metadata_for_url_file(fname):
     df = pd.read_csv(fname)
     print(f'scraping {len(df)} titles in file: {fname}')
+
     scraper = WebpageTitleScraper()
     df['url_title'] = df.progress_apply(lambda row:
                                         row['url_title']

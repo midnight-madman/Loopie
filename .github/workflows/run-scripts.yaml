@@ -2,7 +2,7 @@ name: Update data
 on:
   schedule:
     - cron: '* 0,6,12,18 * * *'
-  pull_request:
+  push:
     branches:
       - main
 jobs:
