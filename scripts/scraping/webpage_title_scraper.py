@@ -25,6 +25,12 @@ class WebpageTitleScraper:
             print("Page load happened")
         except TimeoutException:
             print("Timeout happened no page load")
+            return ''
+        except selenium.common.exceptions.WebDriverException as e:
+            if 'timeout' in str(e).lower():
+                return ''
+            else:
+                raise e
 
         title = self.driver.title
         return title
