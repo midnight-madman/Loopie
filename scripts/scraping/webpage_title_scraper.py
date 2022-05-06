@@ -22,19 +22,18 @@ class WebpageTitleScraper:
         try:
             w = WebDriverWait(self.driver, 10)
             w.until(EC.presence_of_element_located(title_xpath_locator))
-            print("Page load happened")
         except TimeoutException:
             print("Timeout happened no page load")
             return ''
         except WebDriverException as e:
             if 'timeout' in str(e).lower():
+                print("Timeout happened no page load")
                 return ''
             else:
                 print(f'failed to scrape url {url}, got exception {e}')
                 raise e
 
-        title = self.driver.title
-        return title
+        return self.driver.title
 
 
 if __name__ == '__main__':

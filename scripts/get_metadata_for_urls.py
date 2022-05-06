@@ -7,21 +7,18 @@ from scraping.webpage_title_scraper import WebpageTitleScraper
 from utils import get_local_url_filenames
 
 tqdm.pandas()
-import cloudscraper
 
-scraper = cloudscraper.create_scraper(
-    delay=5,
-    browser={
-        'browser': 'firefox',
-        'platform': 'windows',
-        'mobile': False
-    },
-    interpreter='nodejs'
-)
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
-}
+
+# import cloudscraper
+# scraper = cloudscraper.create_scraper(
+#     delay=5,
+#     browser={
+#         'browser': 'firefox',
+#         'platform': 'windows',
+#         'mobile': False
+#     },
+#     interpreter='nodejs'
+# )
 
 
 def can_get_title(url):
