@@ -1,15 +1,8 @@
 import {Fragment, useState} from 'react'
 import {Dialog, Popover, Transition} from '@headlessui/react'
-import {
-    ArrowsExpandIcon,
-    HomeIcon,
-    InformationCircleIcon,
-    MenuIcon,
-    SpeakerphoneIcon,
-    XIcon,
-} from '@heroicons/react/outline'
+import {HomeIcon, InformationCircleIcon, MenuIcon, SpeakerphoneIcon, XIcon,} from '@heroicons/react/outline'
 import Papa from 'papaparse';
-import {map, max, split, isEmpty, take, filter, includes, replace, takeRight} from "lodash";
+import {filter, includes, isEmpty, map, max, replace, split, take, takeRight} from "lodash";
 import InfoComponent from "../src/components/InfoComponent";
 import RowUrlComponent from "../src/components/RowUrlComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
@@ -20,6 +13,7 @@ import {create} from 'ipfs-http-client';
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
+import fetch from 'node-fetch';
 
 dayjs().format()
 dayjs.extend(utc)
@@ -36,7 +30,7 @@ interface IndexProps {
     updatedAt: string;
 }
 
-const Index = (props: IndexProps ) => {
+const Index = (props: IndexProps) => {
     const {urls, updatedAt} = props;
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -265,7 +259,7 @@ const Index = (props: IndexProps ) => {
                                         {/*    src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"*/}
                                         {/*    alt="Workflow"*/}
                                         {/*/>*/}
-                                        <img src="/favicon.png"  alt="Logo" className="h-10"/>
+                                        <img src="/favicon.png" alt="Logo" className="h-10"/>
                                         {/*<ArrowsExpandIcon className="h-6 w-auto mr-2"/>*/}
                                         <p className="font-medium text-2xl">Loopie</p>
                                     </div>
@@ -389,7 +383,7 @@ export const getStaticProps: GetStaticProps = async context => {
             complete: resolve,
             error: reject,
         }),
-    ).then((result) : object => {
+    ).then((result): object => {
         // @ts-ignore
         const latestShareDates = map(result.data, (row) => {
             let createdAts = replace(row.created_ats, /(\[')|('])|(')/g, '').split(",")
@@ -402,26 +396,27 @@ export const getStaticProps: GetStaticProps = async context => {
         const updatedAt = max(latestShareDates).toString()
         // @ts-ignore
         let urls = result.data
-        urls = filter(urls, (urlObj) => !includes(urlObj.url, 'twitter.com'))
+        const excludeList = ['twitter.com', 'etherscan.io']
+        excludeList.forEach((excludeStr) => {
+            urls = filter(urls, (urlObj) => !includes(urlObj.url, excludeStr));
+        });
         urls = take(urls, 100);
         return {props: {urls, updatedAt}};
     })
 }
-import fetch from 'node-fetch';
 
 const getLatestFileFromIpfs = async (): Promise<string> => {
     console.log('get ipfs hashes from remote url', process.env.leaderboardIpfsHashHistory)
     // @ts-ignore
     const response = await fetch(process.env.leaderboardIpfsHashHistory);
     const ipfsHashHistory = await response.text();
-    // const ipfsHashHistory = fs.readFileSync("tmpFile.csv", "utf8");
     const lastHash = takeRight(filter(split(ipfsHashHistory, '\n'), (hash) => !isEmpty(hash)))[0];
-    const ipfs = create({ host: 'gateway.ipfs.io', port: 443, protocol: 'https' })
+    const ipfs = create({host: 'gateway.ipfs.io', port: 443, protocol: 'https'})
     return readIpfsFile(ipfs, lastHash);
 }
 
 // @ts-ignore
-const readIpfsFile = async (ipfs: IPFS, cid: CID|string): Promise<string> => {
+const readIpfsFile = async (ipfs: IPFS, cid: CID | string): Promise<string> => {
     const decoder = new TextDecoder()
     let content = ''
     for await (const chunk of ipfs.cat(cid)) {

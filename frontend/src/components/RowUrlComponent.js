@@ -29,7 +29,7 @@ const RowUrlComponent = ({url, index}) => {
     const renderExpandedRow = () => {
         return <div className="flex space-x-2">
             {map(tweetIds, (tweetId, index) =>
-                <span>{index > 0 && "- "}
+                <span key={`key-${tweetId}-${index}`}>{index > 0 && "- "}
                     <a target="_blank" rel="noreferrer noopener"
                        className="hover:underline"
                        href={`https://twitter.com/x/status/${tweetId}`}>Open Tweet</a>

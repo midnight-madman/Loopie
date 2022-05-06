@@ -21,7 +21,7 @@ tqdm.pandas()
 # )
 
 
-def can_get_title(url):
+def can_get_title_from_url(url):
     # heuristics based on previous failed scraping runs
     if 'twitter.com' in url:
         return False
@@ -58,7 +58,7 @@ def get_title_from_python_request(url: str) -> str:
 
 
 def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
-    if not can_get_title(url):
+    if not can_get_title_from_url(url):
         return ''
 
     title = scraper.get_page_title(url)

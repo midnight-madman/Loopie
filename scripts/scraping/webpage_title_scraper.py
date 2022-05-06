@@ -37,6 +37,6 @@ class WebpageTitleScraper:
 
 
 if __name__ == '__main__':
-    #     title = WebTitleScraper().get_page_title('https://youtube.com/watch?v=35_rr8Vf-4k')
-    title = WebpageTitleScraper().get_page_title('https://twitter.com/OrangeDAOxyz/status/1517218640046792708/photo/1')
-    print('got title', title)
+    tst_url = 'https://youtube.com/watch?v=35_rr8Vf-4k'
+    title = WebTitleScraper().get_page_title(tst_url)
+    print(f'got title for url "{tst_url}": {title}')
