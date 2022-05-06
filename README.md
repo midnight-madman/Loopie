@@ -1,4 +1,4 @@
-# Loopie
+# [Loopie](https://www.loopie.link/)
 
 Stay in the loop with everything that's happening in web3 - a simple HackerNews-style page with the most frequently shared links
 
