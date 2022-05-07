@@ -1,6 +1,6 @@
 import {isEmpty} from "lodash/lang";
 import {replace, split} from "lodash/string";
-import {map, truncate, trimEnd, take} from "lodash";
+import {max, map, truncate, trimEnd, take} from "lodash";
 import {useState} from 'react'
 import {ArrowSmDownIcon, ArrowSmUpIcon,} from '@heroicons/react/outline'
 
@@ -14,7 +14,7 @@ const getCleanUrl = (url) => {
 const parseStrToList = (s) => replace(s, /(\['?)|('?])|(')/g, '').split(", ")
 
 const RowUrlComponent = ({url, index}) => {
-    const [isExpandendRow, setIsExpandedRow] = useState(false);
+    const [isExpandedRow, setIsExpandedRow] = useState(false);
 
     const cleanUrl = getCleanUrl(url.url)
     const hasTitle = !isEmpty(url.url_title)
@@ -23,7 +23,7 @@ const RowUrlComponent = ({url, index}) => {
 
     let createdAts = parseStrToList(url.created_ats)
     createdAts = map(createdAts, (createdAt) => new Date(createdAt))
-    const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
+    const latestShareDate = createdAts.length === 1 ? createdAts[0] : max(createdAts)
     const tweetIds = parseStrToList(url.tweet_ids)
 
     const renderExpandedRow = () => {
@@ -58,12 +58,11 @@ const RowUrlComponent = ({url, index}) => {
                     </a>
                     <div className="text-gray-500">
                         <div className="flex">
-                            {url.tweet_count > 1 ? `${url.tweet_count} shares` : "shared once"} | last
-                            shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
+                            {url.score} points | last shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
                             <span className="flex hover:cursor-pointer"
-                                  onClick={() => setIsExpandedRow(!isExpandendRow)}>
-                            <p className="ml-1">{isExpandendRow ? 'hide' : 'show'}</p>
-                                {isExpandendRow ?
+                                  onClick={() => setIsExpandedRow(!isExpandedRow)}>
+                            <p className="ml-1">{isExpandedRow ? 'hide' : 'show'}</p>
+                                {isExpandedRow ?
                                     <ArrowSmUpIcon
                                         className='text-gray-400 group-hover:text-gray-500 flex-shrink-0 h-5 w-5'
                                         aria-hidden="true"
@@ -73,7 +72,7 @@ const RowUrlComponent = ({url, index}) => {
                                     />}
                         </span>
                         </div>
-                        {isExpandendRow && renderExpandedRow()}
+                        {isExpandedRow && renderExpandedRow()}
                     </div>
                 </div>
             </div>

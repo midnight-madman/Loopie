@@ -9,6 +9,7 @@ INFURA_PASSWORD = os.environ.get('INFURA_PASSWORD')
 DATA_DIR = 'data/'
 URL_FILES_IPFS_HASHES_FNAME = f'{DATA_DIR}url_files_ipfs_hashes.txt'
 WEEKLY_LEADERBOARD_IPFS_HASH_HISTORY_FNAME = f'{DATA_DIR}weekly_leaderboard_ipfs_hash_history.txt'
+ACCOUNT_SCORES_FNAME = f'{DATA_DIR}account_scores.csv'
 
 USE_IPFS_TO_READ_DATA = True
 UPLOAD_DATA_TO_IPFS = True
