@@ -39,8 +39,6 @@ def create_ranking_df(df):
     for col in ['tweet_ids', 'author_ids', 'author_usernames', 'created_ats']:
         df_new[col] = df_new[col].apply(lambda x: list(set(x)))
 
-    df_new['tweet_count'] = df_new.tweet_id.apply(lambda x: len(x))
-
     df_accounts = pd.read_csv(ACCOUNT_SCORES_FNAME)
     df_new['score'] = df_new.author_ids.apply(lambda author_ids: get_score_for_url_based_on_accounts(author_ids, df_accounts))
     df_new.sort_values(by=['score'], ascending=False, inplace=True)
