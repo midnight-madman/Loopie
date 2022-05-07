@@ -7,7 +7,7 @@ on:
       - main
 jobs:
   run-scripts:
-    if: "${{ github.event_name == 'schedule' }} || contains(github.event.head_commit.message, 'force ci')"
+    if: ${{ github.event_name == 'schedule' }} || contains(github.event.head_commit.message, 'force ci')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
