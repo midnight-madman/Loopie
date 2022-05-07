@@ -6,7 +6,7 @@
 
 
 ## Running the scripts
-Downloads data from twitter, so requires a Twitter API Key.1
+Downloads data from twitter, so requires a Twitter API Key.
 Uploads data to IPFS, so requires an INFURA key and password.
 
 

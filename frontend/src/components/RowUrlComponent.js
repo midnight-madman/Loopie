@@ -58,7 +58,7 @@ const RowUrlComponent = ({url, index}) => {
                     </a>
                     <div className="text-gray-500">
                         <div className="flex">
-                            {url.score} points | last shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
+                            {split(url.score, '.')[0] || 2} points | last shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
                             <span className="flex hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandedRow)}>
                             <p className="ml-1">{isExpandedRow ? 'hide' : 'show'}</p>
