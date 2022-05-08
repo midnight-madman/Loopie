@@ -43,8 +43,7 @@ def create_ranking_df(df):
         df_new[col] = df_new[col].apply(lambda x: list(set(x)))
 
     df_new = add_scores_to_ranking_df(df_new)
-
-    df.sort_values(by=['score'], ascending=False, inplace=True)
+    df_new.sort_values(by=['score'], ascending=False, inplace=True)
     return df_new
 
 
