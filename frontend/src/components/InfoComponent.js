@@ -485,25 +485,6 @@ export default function InfoComponent({openFeedbackModal}) {
                 {/* Newsletter Section */}
                 {renderNewsletterSection()}
             </main>
-
-            <footer className="bg-blue-gray-50" aria-labelledby="footer-heading">
-                <h2 id="footer-heading" className="sr-only">
-                    Footer
-                </h2>
-                <div className="max-w-md mx-auto py-12 px-4 sm:max-w-7xl sm:px-6 lg:py-8 lg:px-8">
-                    <div className="flex space-x-6 text-center items-center justify-center">
-                        {footerNavigation.social.map((item) => (
-                            <a key={item.name} href={item.href} className="text-blue-gray-400 hover:text-blue-gray-500">
-                                <span className="sr-only">{item.name}</span>
-                                <item.icon className="h-6 w-6" aria-hidden="true"/>
-                            </a>
-                        ))}
-                    </div>
-                    <p className="mt-2 text-base text-blue-gray-400 xl:text-center">
-                        &copy; 2022 Loopie. All rights reserved.
-                    </p>
-                </div>
-            </footer>
         </div>
     )
 }

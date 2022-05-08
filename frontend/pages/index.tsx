@@ -6,6 +6,7 @@ import {filter, includes, isEmpty, map, max, replace, split, take, takeRight} fr
 import InfoComponent from "../src/components/InfoComponent";
 import RowUrlComponent from "../src/components/RowUrlComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
+import Footer from "../src/components/Footer";
 import * as fs from 'fs';
 import {GetStaticProps} from 'next'
 import {create} from 'ipfs-http-client';
@@ -82,19 +83,19 @@ const Index = (props: IndexProps) => {
             case 'news':
                 return (<>
                         <Popover as="header" className="relative">
-                            <div className="bg-gray-900 py-4 hidden md:block">
+                            <div className="bg-white py-4 hidden md:block border-b border-gray-200">
                                 <nav
                                     className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
                                     aria-label="Global"
                                 >
                                     <div className="flex items-center flex-1">
                                         <div className="space-x-2 lg:space-x-4 flex md:ml-10">
-                                            <h1 className="text-2xl font-semibold text-gray-100">Web3 News</h1>
+                                            <h1 className="text-2xl font-semibold text-gray-900">Web3 News</h1>
                                         </div>
                                     </div>
                                     <div className="hidden md:flex md:items-center md:space-x-6">
                                         <p
-                                            className="inline-flex items-center text-light font-small rounded-md text-white"
+                                            className="inline-flex items-center text-light font-small rounded-md text-gray-700"
                                         >
                                             Updated {updatedAtTime.fromNow()}
                                         </p>
@@ -133,7 +134,7 @@ const Index = (props: IndexProps) => {
 
     function renderNewsPageContent() {
         return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
-                <div className="mt-2 lg:mt-8 flex flex-col">
+                <div className="mt-2 lg:mt-5 flex flex-col">
                     <div className="-mx-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full align-middle">
                             <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
@@ -345,7 +346,7 @@ const Index = (props: IndexProps) => {
                     </div>
                 </div>
                 <div className="md:pl-64 flex flex-col flex-1">
-                    <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100 flex">
+                    <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white border-b border-gray-100 flex">
                         <button
                             type="button"
                             className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -366,6 +367,7 @@ const Index = (props: IndexProps) => {
                             {renderPageContent()}
                         </div>
                     </main>
+                    <Footer/>
                 </div>
             </div>
         </>
