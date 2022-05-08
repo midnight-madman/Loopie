@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
 import pandas as pd
 
 from api.twitter_api import execute_twitter_api_request
@@ -8,6 +6,7 @@ from settings import ACCOUNT_SCORES_FNAME
 
 QUANTILE_THRESHOLDS = [0.2, 0.4, 0.6, 0.8, 1.0]
 VERIFIED_SCORE = 20
+QUANTILE_SCORE_MULTIPLIER = 50
 
 
 def get_twitter_account_stats(account: str) -> dict:
@@ -22,7 +21,7 @@ def create_quantile_score_for_col(df: pd.DataFrame, col: str):
     col_quantiles = df[col].quantile(QUANTILE_THRESHOLDS)
 
     for threshold, quantile in list(zip(QUANTILE_THRESHOLDS, col_quantiles)):
-        df.loc[df[col] >= quantile, f'{col}_score'] = threshold * 100
+        df.loc[df[col] >= quantile, f'{col}_score'] = threshold * QUANTILE_SCORE_MULTIPLIER
 
     return df
 

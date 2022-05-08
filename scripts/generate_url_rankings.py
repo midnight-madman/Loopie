@@ -1,11 +1,14 @@
 import datetime
-
+import pytz
+import dateutil.parser
 import pandas as pd
 
 from api.ipfs import get_dataframe_from_ipfs_hash
 from settings import USE_IPFS_TO_READ_DATA, ACCOUNT_SCORES_FNAME
 from utils import get_local_url_filenames
 from utils import read_url_file_ipfs_hashes_from_local_history
+
+RECENCY_MAX_SCORE = 50
 
 
 def load_all_local_url_files_as_dataframe():
@@ -39,11 +42,24 @@ def create_ranking_df(df):
     for col in ['tweet_ids', 'author_ids', 'author_usernames', 'created_ats']:
         df_new[col] = df_new[col].apply(lambda x: list(set(x)))
 
-    df_accounts = pd.read_csv(ACCOUNT_SCORES_FNAME)
-    df_new['score'] = df_new.author_ids.apply(lambda author_ids: get_score_for_url_based_on_accounts(author_ids, df_accounts))
-    df_new.sort_values(by=['score'], ascending=False, inplace=True)
+    df_new = add_scores_to_ranking_df(df_new)
 
+    df.sort_values(by=['score'], ascending=False, inplace=True)
     return df_new
+
+
+def add_scores_to_ranking_df(df: pd.DataFrame) -> pd.DataFrame:
+    df_accounts = pd.read_csv(ACCOUNT_SCORES_FNAME)
+    df['score'] = df.author_ids.apply(lambda author_ids: get_score_for_url_based_on_accounts(author_ids, df_accounts))
+    df['score'] += df.apply(lambda row: get_recency_score_bonus_based_on_sharing_dates(row), axis=1)
+    return df
+
+
+def get_recency_score_bonus_based_on_sharing_dates(row: pd.Series) -> int:
+    latest_sharing_date = max([dateutil.parser.isoparse(item) for item in row['created_ats']])
+    day_diff = get_day_diff_between_dates(latest_sharing_date, datetime.datetime.utcnow().replace(tzinfo=pytz.UTC))
+    score = RECENCY_MAX_SCORE / (day_diff + 1)
+    return int(score)
 
 
 def get_score_for_url_based_on_accounts(author_ids, df_accounts):
@@ -72,6 +88,10 @@ def generate_url_rankings():
     # df_urls_last_month = df_urls[df_urls.created_at > one_month_ago]
     # df_ranking_last_month = create_ranking_df(df_urls_last_month)
     # df_ranking_last_month.to_csv(f'data/monthly_leaderboard_{datetime.datetime.utcnow()}.csv')
+
+
+def get_day_diff_between_dates(date1, date2):
+    return abs((date1 - date2).days)
 
 
 if __name__ == "__main__":
