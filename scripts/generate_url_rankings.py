@@ -52,6 +52,7 @@ def add_scores_to_ranking_df(df: pd.DataFrame) -> pd.DataFrame:
     df_accounts = pd.read_csv(ACCOUNT_SCORES_FNAME)
     df['score'] = df.author_ids.apply(lambda author_ids: get_score_for_url_based_on_accounts(author_ids, df_accounts))
     df['score'] += df.apply(lambda row: get_recency_score_bonus_based_on_sharing_dates(row), axis=1)
+    df.fillna({"score": 0}, inplace=True)
     return df
 
 
