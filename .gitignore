@@ -4,3 +4,4 @@ frontend/node_modules/
 .idea/
 scripts/dev_settings.py
 geckodriver.log
+*checkpoint.ipynb
