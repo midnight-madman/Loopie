@@ -24,7 +24,7 @@ def get_tweets_from_account(username: str, start_time: str = None, since_id: str
     else:
         raise Exception('method needs start_time or since_id')
 
-    json_response = execute_twitter_api_request(search_url, default_params)
+    json_response = execute_twitter_api_request_with_retry(search_url, default_params)
     if not json_response or json_response["meta"]["result_count"] == 0:
         return []
 
@@ -36,7 +36,8 @@ def get_tweets_from_account(username: str, start_time: str = None, since_id: str
         time.sleep(1)
 
         fetch_more_data_params = {'next_token': next_token}
-        json_response = execute_twitter_api_request(search_url, {**default_params, **fetch_more_data_params})
+        params = {**default_params, **fetch_more_data_params}
+        json_response = execute_twitter_api_request_with_retry(search_url, params)
         tweets.extend(json_response['data'])
         next_token = json_response['meta'].get('next_token')
 
@@ -63,6 +64,25 @@ def execute_twitter_api_request(url, params):
             print('ERROR: found invalid username, please fix in const.py file', url, response.text)
             print('will skip this and continue with scraping')
             return {}
+        elif response.status_code == 429:
+            raise TimeoutError(url, response.text)
         else:
             raise Exception(url, response.status_code, response.text)
     return response.json()
+
+
+MAX_RETRIES = 6
+RETRY_DELAY = 60
+
+
+def execute_twitter_api_request_with_retry(url, params):
+    nr_retries = 0
+
+    while nr_retries < MAX_RETRIES:
+        try:
+            return execute_twitter_api_request(url, params)
+        except TimeoutError:
+            nr_retries += 1
+            sleep_secs = nr_retries ** 2 * RETRY_DELAY
+            print(f'TimeoutError, will sleep for {sleep_secs} and then run retry {nr_retries}')
+            time.sleep(sleep_secs)
