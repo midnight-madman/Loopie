@@ -1,7 +1,6 @@
 import os
 
 TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
-
 IPFS_ENDPOINT = os.environ.get('IPFS_ENDPOINT')
 INFURA_USERNAME = os.environ.get('INFURA_USERNAME')
 INFURA_PASSWORD = os.environ.get('INFURA_PASSWORD')
