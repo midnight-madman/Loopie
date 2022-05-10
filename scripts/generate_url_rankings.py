@@ -8,7 +8,7 @@ from settings import USE_IPFS_TO_READ_DATA, ACCOUNT_SCORES_FNAME
 from utils import get_local_url_filenames
 from utils import read_url_file_ipfs_hashes_from_local_history
 
-RECENCY_MAX_SCORE = 50
+RECENCY_MAX_SCORE = 100
 
 
 def load_all_local_url_files_as_dataframe():

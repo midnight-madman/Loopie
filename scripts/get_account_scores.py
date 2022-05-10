@@ -1,20 +1,24 @@
 import pandas as pd
+from tqdm import tqdm
 
-from api.twitter_api import execute_twitter_api_request
+from api.twitter_api import execute_twitter_api_request_with_retry
 from const import ACCOUNTS
 from settings import ACCOUNT_SCORES_FNAME
 
-QUANTILE_THRESHOLDS = [0.2, 0.4, 0.6, 0.8, 1.0]
+QUANTILE_THRESHOLDS = [0.3, 0.6, 0.9]
 VERIFIED_SCORE = 20
-QUANTILE_SCORE_MULTIPLIER = 50
+QUANTILE_SCORE_MULTIPLIER = 20
 
 
 def get_twitter_account_stats(account: str) -> dict:
     search_url = f"https://api.twitter.com/2/users/by/username/{account}"
     default_params = {'user.fields': 'public_metrics,location,name,verified,entities'}
-    json_response = execute_twitter_api_request(search_url, default_params)
-
-    return json_response['data']
+    json_response = execute_twitter_api_request_with_retry(search_url, default_params)
+    try:
+        return json_response['data']
+    except KeyError:
+        print(f'failed to get account stats for {account}: {json_response}')
+        return {}
 
 
 def create_quantile_score_for_col(df: pd.DataFrame, col: str):
@@ -33,7 +37,8 @@ def get_score_for_row(row):
 
 def create_account_scores_file():
     print(f'loading twitter account stats for {len(ACCOUNTS)} accounts')
-    res = [get_twitter_account_stats(account) for account in ACCOUNTS]
+    res = [get_twitter_account_stats(account) for account in tqdm(ACCOUNTS)]
+    res = [r for r in res if r]
     df = pd.json_normalize(res, sep='_')
 
     print('creating account scores')
