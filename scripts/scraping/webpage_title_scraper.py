@@ -17,9 +17,8 @@ class WebpageTitleScraper:
         # self.driver.implicitly_wait(10)
 
     def get_page_title(self, url):
-        self.driver.get(url)
-
         try:
+            self.driver.get(url)
             w = WebDriverWait(self.driver, 10)
             w.until(EC.presence_of_element_located(title_xpath_locator))
         except TimeoutException:

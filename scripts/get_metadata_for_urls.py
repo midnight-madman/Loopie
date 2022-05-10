@@ -63,7 +63,6 @@ def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
 
     title = scraper.get_page_title(url)
     title = clean_title(title)
-    print('got title for url', url, ':', title)
     return title if is_valid_title(title) else ''
 
 
