@@ -14,7 +14,6 @@ class WebpageTitleScraper:
         options = Options()
         options.headless = True
         self.driver = Firefox(options=options)
-        # self.driver.implicitly_wait(10)
 
     def get_page_title(self, url):
         try:
