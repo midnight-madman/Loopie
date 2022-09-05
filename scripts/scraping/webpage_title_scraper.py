@@ -28,7 +28,7 @@ class WebpageTitleScraper:
             if 'timeout' in exception_text:
                 print("Timeout happened no page load")
                 return ''
-            elif 'about:neterror' in exception_text:
+            elif 'about:neterror' in exception_text or 'failed to decode response' in exception_text:
                 print("couldn't load page")
                 return ''
             else:
