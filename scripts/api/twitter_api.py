@@ -70,7 +70,7 @@ def execute_twitter_api_request(url, params):
         elif response.status_code == 429:
             raise TimeoutError(url, response.text)
         else:
-                raise TwitterApiError(url, response.status_code, response.text)
+            raise TwitterApiError(url, response.status_code, response.text)
     return response.json()
 
 
