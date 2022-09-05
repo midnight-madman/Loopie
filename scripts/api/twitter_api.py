@@ -5,6 +5,9 @@ import requests
 
 from settings import TWITTER_BEARER_TOKEN
 
+class TwitterApiError(Exception):
+    pass
+
 
 def get_tweets_from_account(username: str, start_time: str = None, since_id: str = None) -> List[Dict]:
     search_url = "https://api.twitter.com/2/tweets/search/recent"
@@ -67,7 +70,7 @@ def execute_twitter_api_request(url, params):
         elif response.status_code == 429:
             raise TimeoutError(url, response.text)
         else:
-            raise Exception(url, response.status_code, response.text)
+                raise TwitterApiError(url, response.status_code, response.text)
     return response.json()
 
 

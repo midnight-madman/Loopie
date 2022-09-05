@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from api.ipfs import get_dataframe_from_ipfs_hash
-from api.twitter_api import get_tweets_from_account
+from api.twitter_api import get_tweets_from_account, TwitterApiError
 from const import ACCOUNTS
 from settings import DATA_DIR, USE_IPFS_TO_READ_DATA
 from utils import get_local_url_filenames, read_url_file_ipfs_hashes_from_local_history
@@ -132,7 +132,13 @@ def get_twitter_data() -> str:
             latest_tweet_id = get_latest_tweet_id_from_ipfs_files(ipfs_hashes)
         else:
             latest_tweet_id = get_latest_tweet_id_from_url_files(csv_files)
-        fname = download_tweets_to_file_since_last_tweet_id(latest_tweet_id)
+        try:
+            fname = download_tweets_to_file_since_last_tweet_id(latest_tweet_id)
+        except TwitterApiError as err:
+            url, status_code, response_text = err.args
+            if "Please use a \'since_id\' that is larger than" in response_text:
+                fname = download_tweets_to_file_from_scratch()
+
 
     if fname:
         print(f'downloaded new tweets to {fname}')
