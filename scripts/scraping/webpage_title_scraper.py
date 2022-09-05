@@ -25,8 +25,12 @@ class WebpageTitleScraper:
             print("Timeout happened no page load")
             return ''
         except WebDriverException as e:
-            if 'timeout' in str(e).lower():
+            exception_text = str(e).lower()
+            if 'timeout' in exception_text:
                 print("Timeout happened no page load")
+                return ''
+            elif 'about:neterror' in exception_text:
+                print("couldn't load page")
                 return ''
             else:
                 print(f'failed to scrape url {url}, got exception {e}')
