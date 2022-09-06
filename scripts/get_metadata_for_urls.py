@@ -6,6 +6,8 @@ from tqdm import tqdm
 from scraping.webpage_title_scraper import WebpageTitleScraper
 from utils import get_local_url_filenames
 
+tqdm.pandas()
+
 
 def can_get_title_from_url(url):
     # heuristics based on previous failed scraping runs
