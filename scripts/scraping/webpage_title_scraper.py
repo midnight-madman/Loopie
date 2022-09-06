@@ -33,7 +33,7 @@ class WebpageTitleScraper:
                 return ''
             else:
                 print(f'failed to scrape url {url}, got exception {e}')
-                raise e
+                return ''
 
         return self.driver.title
 

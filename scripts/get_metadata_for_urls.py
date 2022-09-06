@@ -26,6 +26,11 @@ def can_get_title_from_url(url):
     if 'twitter.com' in url:
         return False
 
+    file_suffixes = ['.pdf', '.doc', '.docx']
+    url_has_file_suffix = any([url.endswith(file_suffix) for file_suffix in file_suffixes])
+    if url_has_file_suffix:
+        return False
+
     return True
 
 
