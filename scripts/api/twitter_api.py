@@ -5,6 +5,7 @@ import requests
 
 from settings import TWITTER_BEARER_TOKEN
 
+
 class TwitterApiError(Exception):
     pass
 

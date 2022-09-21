@@ -18,7 +18,7 @@ def get_tweets_dataframe_from_account(username: str, start_time: str, since_id: 
         return None
 
     df = pd.DataFrame(tweets)
-    df.index = df.id
+    # df.index = df.id
     df['author_username'] = username
 
     return df
@@ -42,7 +42,7 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df_urls
 
 
-def get_tweets_since_time_or_id(start_time=None, since_id=None):
+def get_tweets_since_time_or_id(start_time=None, since_id=None) -> pd.DataFrame:
     if not start_time and not since_id:
         raise Exception('method needs either start_time or since_id')
 
@@ -63,6 +63,19 @@ def get_tweets_since_time_or_id(start_time=None, since_id=None):
     df = pd.concat(tweets_dataframes)
     print(f'got {len(df)} tweets')
     return df
+
+
+def get_tweets_since_id_with_retry(since_id: str) -> pd.DataFrame:
+    try:
+        return get_tweets_since_time_or_id(since_id=since_id)
+    except TwitterApiError as err:
+        since_id_error_phrase = "Please use a \\'since_id\\' that is larger than "
+        if since_id_error_phrase in str(err):
+            new_since_id = str(err).split(since_id_error_phrase)[1].split('"')[0]
+            new_since_id = int(new_since_id) + 10
+            return get_tweets_since_time_or_id(since_id=new_since_id)
+        else:
+            raise err
 
 
 def download_tweets_to_file_from_scratch() -> Optional[str]:
@@ -138,7 +151,6 @@ def get_twitter_data() -> str:
             url, status_code, response_text = err.args
             if "Please use a \'since_id\' that is larger than" in response_text:
                 fname = download_tweets_to_file_from_scratch()
-
 
     if fname:
         print(f'downloaded new tweets to {fname}')

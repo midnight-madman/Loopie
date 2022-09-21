@@ -12,6 +12,8 @@ ipfshttpclient = "*"
 cloudscraper = "*"
 python-dateutil = "*"
 selenium = "*"
+luigi = "*"
+supabase = "*"
 
 [dev-packages]
 jupyter = "*"
