@@ -1,6 +1,7 @@
 import datetime
 import time
 from typing import Optional
+import json
 
 import pandas as pd
 from tqdm import tqdm
@@ -18,16 +19,24 @@ def get_tweets_dataframe_from_account(username: str, start_time: str, since_id: 
         return None
 
     df = pd.DataFrame(tweets)
-    df.index = df.id
+    # df.index = df.id
     df['author_username'] = username
 
     return df
 
 
-def get_urls_from_tweets_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+def get_urls_from_tweets_dataframe(df: pd.DataFrame):
     urls_to_store = []
     for index, data in df.iterrows():
-        urls = data.entities and isinstance(data.entities, dict) and data.entities.get('urls')
+        if not data.entities:
+            continue
+
+        try:
+            urls = json.loads(data.entities.replace("'", '"')).get('urls')
+        except JSONDecodeError as err:
+            print('error when trying to read urls from tweets csv file', err)
+            urls = data.entities and isinstance(data.entities, dict) and data.entities.get('urls')
+
         if urls:
             for url in urls:
                 obj = dict(url=url['expanded_url'],
@@ -37,12 +46,9 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                            created_at=data.created_at)
                 urls_to_store.append(obj)
 
-    df_urls = pd.DataFrame(urls_to_store)
-    print(f'got {len(df_urls)} urls')
-    return df_urls
+    return urls_to_store
 
-
-def get_tweets_since_time_or_id(start_time=None, since_id=None):
+def get_tweets_since_time_or_id(start_time=None, since_id=None) -> pd.DataFrame:
     if not start_time and not since_id:
         raise Exception('method needs either start_time or since_id')
 
@@ -65,6 +71,19 @@ def get_tweets_since_time_or_id(start_time=None, since_id=None):
     return df
 
 
+def get_tweets_since_id_with_retry(since_id: str) -> pd.DataFrame:
+    try:
+        return get_tweets_since_time_or_id(since_id=since_id)
+    except TwitterApiError as err:
+        since_id_error_phrase = "Please use a \\'since_id\\' that is larger than "
+        if since_id_error_phrase in str(err):
+            new_since_id = str(err).split(since_id_error_phrase)[1].split('"')[0]
+            new_since_id = int(new_since_id) + 10
+            return get_tweets_since_time_or_id(since_id=new_since_id)
+        else:
+            raise err
+
+
 def download_tweets_to_file_from_scratch() -> Optional[str]:
     timespan_days = 6
     timespan = datetime.timedelta(days=timespan_days)
@@ -73,7 +92,9 @@ def download_tweets_to_file_from_scratch() -> Optional[str]:
     if df is None:
         return None
 
-    df_urls = get_urls_from_tweets_dataframe(df)
+    urls_to_store = get_urls_from_tweets_dataframe(df)
+    df_urls = pd.DataFrame(urls_to_store)
+    print(f'got {len(df_urls)} urls')
     fname = f'{DATA_DIR}urls_{timespan_days}days_since_{start_time_str}.csv'
     df_urls.to_csv(fname, index=False)
     return fname
@@ -84,8 +105,9 @@ def download_tweets_to_file_since_last_tweet_id(latest_tweet_id: str) -> Optiona
     if df is None:
         return None
 
-    # df.to_csv(f'data/tweets_since_id_{latest_tweet_id}.csv', index=False)
-    df_urls = get_urls_from_tweets_dataframe(df)
+    urls_to_store = get_urls_from_tweets_dataframe(df)
+    df_urls = pd.DataFrame(urls_to_store)
+    print(f'got {len(df_urls)} urls')
     fname = f'{DATA_DIR}urls_since_id_{latest_tweet_id}.csv'
     df_urls.to_csv(fname, index=False)
     return fname
@@ -138,7 +160,6 @@ def get_twitter_data() -> str:
             url, status_code, response_text = err.args
             if "Please use a \'since_id\' that is larger than" in response_text:
                 fname = download_tweets_to_file_from_scratch()
-
 
     if fname:
         print(f'downloaded new tweets to {fname}')

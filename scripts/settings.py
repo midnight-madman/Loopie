@@ -14,4 +14,8 @@ ACCOUNT_SCORES_FNAME = f'{DATA_DIR}account_scores.csv'
 USE_IPFS_TO_READ_DATA = True
 UPLOAD_DATA_TO_IPFS = True
 
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+
+
 from dev_settings import *
