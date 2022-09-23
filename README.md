@@ -28,6 +28,7 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews-
 
 ## ⚡️ Todo for more awareness of Loopie
 - reply on Twitter to most shared links / tweets
+- daily post top3 news
 
 ## 🧑‍🔧 Fix
 - fix: 😔 people delete tweets after they are scraped, they still show up on the leaderboard
