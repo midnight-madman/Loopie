@@ -33,8 +33,8 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame):
 
         try:
             urls = json.loads(data.entities.replace("'", '"')).get('urls')
-        except JSONDecodeError as err:
-            print('error when trying to read urls from tweets csv file', err)
+        except ValueError as err:
+            print('error when trying to read urls from tweets csv file', err, data.entities)
             urls = data.entities and isinstance(data.entities, dict) and data.entities.get('urls')
 
         if urls:
