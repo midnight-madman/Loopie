@@ -98,11 +98,15 @@ class FetchLatestTweetUrlsToDB(luigi.Task):
 
         resp_query_urls = self.supabase.table("NewsItem").select('id, url').in_('url', urls).execute()
         existing_news_items_in_db = resp_query_urls.data
+        logger.info(
+            f'Existing news items in DB (with one of {len(urls)} urls in current batch): {len(existing_news_items_in_db)}')
+
         urls_in_db = list(set([obj['url'] for obj in existing_news_items_in_db]))
         urls_to_insert = list(set([url for url in urls if url not in urls_in_db]))
         urls_to_insert = [dict(url=url) for url in urls_to_insert]
         resp_add_news_items = self.supabase.table("NewsItem").insert(urls_to_insert).execute()
         new_news_items_in_db = resp_add_news_items.data
+        logger.info(f'New news items in DB based on {len(urls_to_insert)} urls to insert: {len(new_news_items_in_db)}')
 
         # create NewsItem to Tweets connection
         # url_objs is all urls from file
@@ -134,17 +138,21 @@ class FetchLatestTweetUrlsToDB(luigi.Task):
             delay *= 1.5
 
         resp = self.supabase.table("NewsItemToTweet").insert(news_item_to_tweets).execute()
+        logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')
 
         # insert new authors
         author_ids = list(set([obj['author_id'] for obj in url_objs]))
         resp_query_authors = self.supabase.table("Author").select('twitter_id').in_('twitter_id', author_ids).execute()
         existing_authors = resp_query_authors.data
+        logger.info(f'Existing authors in DB ({len(author_ids)} authors in current batch): {len(existing_authors)}')
+
         existing_author_ids = [obj['twitter_id'] for obj in existing_authors]
         new_authors = [dict(twitter_id=obj['author_id'], twitter_username=obj['author_username'])
                        for obj in url_objs if obj['author_id'] not in existing_author_ids]
         new_authors = {obj['twitter_id']: obj for obj in new_authors}.values()  # make list unique
 
-        self.supabase.table("Author").insert(new_authors).execute()
+        resp_insert_authors = self.supabase.table("Author").insert(new_authors).execute()
+        logger.info(f'Added {len(resp_insert_authors.data)} new authors')
 
 
 def find_obj_based_on_key_value_in_lists(lists, key, value):
