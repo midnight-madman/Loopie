@@ -98,8 +98,7 @@ class FetchLatestTweetUrlsToDB(luigi.Task):
 
         resp_query_urls = self.supabase.table("NewsItem").select('id, url').in_('url', urls).execute()
         existing_news_items_in_db = resp_query_urls.data
-        logger.info(
-            f'Existing news items in DB (with one of {len(urls)} urls in current batch): {len(existing_news_items_in_db)}')
+        logger.info(f'news items in DB {len(existing_news_items_in_db)} - {len(urls)} urls in current batch')
 
         urls_in_db = list(set([obj['url'] for obj in existing_news_items_in_db]))
         urls_to_insert = list(set([url for url in urls if url not in urls_in_db]))
@@ -144,7 +143,7 @@ class FetchLatestTweetUrlsToDB(luigi.Task):
         author_ids = list(set([obj['author_id'] for obj in url_objs]))
         resp_query_authors = self.supabase.table("Author").select('twitter_id').in_('twitter_id', author_ids).execute()
         existing_authors = resp_query_authors.data
-        logger.info(f'Existing authors in DB ({len(author_ids)} authors in current batch): {len(existing_authors)}')
+        logger.info(f'Existing authors in DB: {len(existing_authors)} - new authors in current batch: {len(author_ids)}')
 
         existing_author_ids = [obj['twitter_id'] for obj in existing_authors]
         new_authors = [dict(twitter_id=obj['author_id'], twitter_username=obj['author_username'])
