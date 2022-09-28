@@ -14,9 +14,10 @@ python-dateutil = "*"
 selenium = "*"
 luigi = "*"
 supabase = "*"
+psycopg2 = "*"
 
 [dev-packages]
 jupyter = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"

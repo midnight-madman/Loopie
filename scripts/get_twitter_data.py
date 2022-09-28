@@ -2,6 +2,7 @@ import datetime
 import time
 from typing import Optional
 import json
+import ast
 
 import pandas as pd
 from tqdm import tqdm
@@ -32,21 +33,28 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame):
             continue
 
         try:
-            urls = json.loads(data.entities.replace('"', '\\"').replace("'", '"')).get('urls')
+            # json_data2 = ast.literal_eval(json.dumps(data.entities))
+            # json_data1 = json.loads(data.entities.replace('"', '\\"').replace("'", '"'))
+            json_data = ast.literal_eval(data.entities)
+            urls = json_data.get('urls')
         except ValueError as err:
             print('error when trying to read urls from tweets csv file', err, data.entities)
-            urls = data.entities and isinstance(data.entities, dict) and data.entities.get('urls')
+            continue
 
-        if urls:
-            for url in urls:
-                obj = dict(url=url['expanded_url'],
-                           tweet_id=data.id,
-                           author_id=data.author_id,
-                           author_username=data.author_username,
-                           created_at=data.created_at)
-                urls_to_store.append(obj)
+        for url in urls:
+            obj = dict(
+                url=url['expanded_url'],
+                tweet_id=int(data.id),
+                author_id=int(data.author_id),
+                author_username=data.author_username,
+                created_at=data.created_at,
+                title=url.get('title', ''),
+                description=url.get('description', '')
+            )
+            urls_to_store.append(obj)
 
     return urls_to_store
+
 
 def get_tweets_since_time_or_id(start_time=None, since_id=None) -> pd.DataFrame:
     if not start_time and not since_id:

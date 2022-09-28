@@ -1,5 +1,7 @@
-from typing import Optional
 from glob import glob
+from typing import Optional
+import json
+import re
 
 from settings import URL_FILES_IPFS_HASHES_FNAME, CACHE_DIR
 
@@ -31,3 +33,10 @@ def get_ipfs_hash_local_cache_filename(ipfs_hash: str) -> str:
 def try_get_ipfs_hash_fname_in_local_cache(ipfs_hash: str) -> Optional[str]:
     files = glob(get_ipfs_hash_local_cache_filename(ipfs_hash))
     return files[0] if files else None
+
+
+def find_obj_based_on_key_value_in_list(l, key, value):
+    for obj in l:
+        if obj[key] == value:
+            return obj
+    return None

@@ -1,23 +1,49 @@
-import logging
-import luigi
 import argparse
-from tasks.fetch_latest_tweets_to_db import FetchLatestTweetUrlsToDB, CopyTweetsToDB
+import logging
+from datetime import datetime
+
+import luigi
+from settings import DATE_FORMAT
 from supabase_utils import get_supabase_client
+from tasks.copy_tweets_to_db import CopyTweetsToDB
+from tasks.create_news_items import CreateNewsItems
 
 logger = logging.getLogger(__name__)
+
+task_name_to_config = {
+    'copy-tweets-to-db': {
+        'class': CopyTweetsToDB,
+        'args': ['last_tweet_id', ]
+    },
+    'create-news-items': {
+        'class': CreateNewsItems,
+        'args': ['start_date', ]
+    }
+}
 
 
 def run_from_cli_args(args):
     args_dict = vars(args)
     logger.info(f'running from cli args {args_dict}')
 
-    last_tweet_id = args_dict.get('last_tweet_id')
-    if not last_tweet_id:
-        supabase = get_supabase_client()
-        data = supabase.table("Tweet").select("id").order('id', desc=True).limit(1).execute()
-        last_tweet_id = data.data[0]['id']
+    task_name = args_dict.get('task_name')
+    if task_name:
+        task_config = task_name_to_config[task_name]
+        kwargs = {arg: args_dict.get(arg, None) for arg in task_config['args']}
+        for key, value in kwargs.items():
+            if 'date' in key:
+                kwargs[key] = datetime.strptime(value, DATE_FORMAT)
 
-    tasks = [FetchLatestTweetUrlsToDB(last_tweet_id=last_tweet_id)]
+            if 'last_tweet_id' == key and not value:
+                supabase = get_supabase_client()
+                data = supabase.table("Tweet").select("id").order('id', desc=True).limit(1).execute()
+                last_tweet_id = data.data[0]['id']
+                kwargs[key] = last_tweet_id
+
+        task_instance = task_config['class'](**kwargs)
+        tasks = [task_instance]
+    else:
+        tasks = [CopyTweetsToDB(last_tweet_id=last_tweet_id)]
 
     luigi.build(tasks, workers=1, local_scheduler=True)
 
@@ -36,6 +62,9 @@ def str2bool(v):
 def create_arg_parser():
     parser = argparse.ArgumentParser(description='Run Loopie task pipeline')
     parser.add_argument('--is-test', type=str2bool, nargs='?', const=True, default=False, help=f'')
+    parser.add_argument('--task-name', default=None, help=f'Name of task class')
+    parser.add_argument('--start-date', default=None,
+                        help=f'Start date for relevant task class, format must be YYYY-MM-DD')
     return parser
 
 

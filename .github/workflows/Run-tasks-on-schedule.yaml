@@ -1,4 +1,4 @@
-name: Fetch tweets to DB
+name: Run tasks on schedule
 on:
   schedule:
     - cron: '0 */3 * * *'
@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Set up Python 3.8.12
+      - name: Set up Python 3.9.13
         uses: actions/setup-python@v3
         with:
-          python-version: 3.8.12
+          python-version: 3.9.13
       - uses: browser-actions/setup-geckodriver@latest
       - run: geckodriver --version
       - name: Install pipenv
@@ -37,10 +37,15 @@ jobs:
         if: steps.cache-pipenv.outputs.cache-hit != 'true'
         run: |
           pipenv install
-      - name: Run all scripts
+      - name: Copy tweets to db and create news items
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main_luigi_flow.py
+          pipenv run python scripts/main_luigi_flow.py --task-name copy-tweets-to-db
+          pipenv run python scripts/main_luigi_flow.py --task-name create-news-items
