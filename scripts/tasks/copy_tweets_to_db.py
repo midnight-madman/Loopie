@@ -25,10 +25,6 @@ class CopyTweetsToDB(luigi.Task):
 
         self.supabase.table("Tweet").insert(rows).execute()
 
-        with self.output().open('w') as f:
-            f.write(str(df.id.max()))
-            f.close()
-
     def complete(self):
         # complete if last tweet in Tweet DB table is >= last tweet id
         data = self.supabase.table("Tweet").select("id").gt('id', self.last_tweet_id).order('id', desc=True).limit(
