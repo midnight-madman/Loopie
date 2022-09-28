@@ -1,6 +1,6 @@
 import argparse
 import logging
-from datetime import datetime
+from datetime import datetime, date
 
 import luigi
 from settings import DATE_FORMAT
@@ -31,7 +31,10 @@ def run_from_cli_args(args):
         task_config = task_name_to_config[task_name]
         kwargs = {arg: args_dict.get(arg, None) for arg in task_config['args']}
         for key, value in kwargs.items():
-            if 'date' in key and value:
+            if 'date' in key:
+                if not value:
+                    value = date.today()
+                
                 kwargs[key] = datetime.strptime(value, DATE_FORMAT)
 
             if 'last_tweet_id' == key and not value:
