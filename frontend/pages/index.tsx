@@ -1,20 +1,17 @@
 import {Fragment, useState} from 'react'
 import {Dialog, Popover, Transition} from '@headlessui/react'
 import {HomeIcon, InformationCircleIcon, MenuIcon, SpeakerphoneIcon, XIcon,} from '@heroicons/react/outline'
-import Papa from 'papaparse';
-import {filter, includes, isEmpty, map, max, replace, split, take, takeRight} from "lodash";
 import InfoComponent from "../src/components/InfoComponent";
-import RowUrlComponent from "../src/components/RowUrlComponent";
+import NewsItemRowComponent from "../src/components/NewsItemRowComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
 import Footer from "../src/components/Footer";
-import * as fs from 'fs';
 import {GetStaticProps} from 'next'
-import {create} from 'ipfs-http-client';
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
-import fetch from 'node-fetch';
+import {createClient} from '@supabase/supabase-js'
+import {isNil, maxBy, omitBy} from "lodash";
 
 dayjs().format()
 dayjs.extend(utc)
@@ -27,12 +24,12 @@ function classNames(...classes) {
 }
 
 interface IndexProps {
-    urls: Array<object>;
+    newsItems: Array<object>;
     updatedAt: string;
 }
 
 const Index = (props: IndexProps) => {
-    const {urls, updatedAt} = props;
+    const {newsItems, updatedAt} = props;
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -162,7 +159,8 @@ const Index = (props: IndexProps) => {
                                     {/*</tr>*/}
                                     {/*</thead>*/}
                                     <tbody className="">
-                                    {urls.map((url, index) => <RowUrlComponent url={url} index={index}/>)}
+                                    {newsItems.map((newsItem, index) => <NewsItemRowComponent newsItem={newsItem}
+                                                                                              index={index}/>)}
                                     </tbody>
                                 </table>
                             </div>
@@ -346,7 +344,8 @@ const Index = (props: IndexProps) => {
                     </div>
                 </div>
                 <div className="md:pl-64 flex flex-col flex-1">
-                    <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white border-b border-gray-100 flex">
+                    <div
+                        className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white border-b border-gray-100 flex">
                         <button
                             type="button"
                             className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -374,57 +373,24 @@ const Index = (props: IndexProps) => {
     )
 }
 
-
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
-    const isProd = process.env.NODE_ENV === 'production';
-    const file = isProd ? await getLatestFileFromIpfs() : fs.createReadStream('public/weekly_leaderboard_test.csv');
-    return new Promise((resolve, reject) =>
-        Papa.parse(file, {
-            header: true,
-            complete: resolve,
-            error: reject,
-        }),
-    ).then((result): object => {
-        // @ts-ignore
-        const latestShareDates = map(result.data, (row) => {
-            let createdAts = replace(row.created_ats, /(\[')|('])|(')/g, '').split(",")
-            // @ts-ignore
-            createdAts = map(createdAts, (createdAt) => new Date(createdAt))
-            const latestShareDate = createdAts.length === 1 ? createdAts[0] : createdAts[0]
-            return latestShareDate
-        })
-        // @ts-ignore
-        const updatedAt = max(latestShareDates).toString()
-        // @ts-ignore
-        let urls = result.data
-        const excludeList = ['twitter.com', 'etherscan.io']
-        excludeList.forEach((excludeStr) => {
-            urls = filter(urls, (urlObj) => !includes(urlObj.url, excludeStr));
-        });
-        urls = take(urls, 100);
-        return {props: {urls, updatedAt}};
-    })
-}
+    const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
 
-const getLatestFileFromIpfs = async (): Promise<string> => {
-    console.log('get ipfs hashes from remote url', process.env.leaderboardIpfsHashHistory)
-    // @ts-ignore
-    const response = await fetch(process.env.leaderboardIpfsHashHistory);
-    const ipfsHashHistory = await response.text();
-    const lastHash = takeRight(filter(split(ipfsHashHistory, '\n'), (hash) => !isEmpty(hash)))[0];
-    const ipfs = create({host: 'gateway.ipfs.io', port: 443, protocol: 'https'})
-    return readIpfsFile(ipfs, lastHash);
-}
+    const {data, error} = await supabase
+        .from('NewsItem')
+        .select('*, NewsItemToTweet ( Tweet(created_at, id::text, text, author_username))')
+        .order('created_at', {ascending: false})
+        .limit(50)
 
-// @ts-ignore
-const readIpfsFile = async (ipfs: IPFS, cid: CID | string): Promise<string> => {
-    const decoder = new TextDecoder()
-    let content = ''
-    for await (const chunk of ipfs.cat(cid)) {
-        content += decoder.decode(chunk)
+    if (error || !data) {
+        return {props: {newsItems: [], updatedAt: error}}
     }
-    return content
+    const newsItems = data.map((newsItem) => omitBy(newsItem, isNil));
+
+    const updatedAt = maxBy(data, 'created_at').created_at
+    return {props: {newsItems, updatedAt}}
 }
+
 
 export default Index;

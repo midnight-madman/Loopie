@@ -11,28 +11,25 @@ const getCleanUrl = (url) => {
     return url
 }
 
-const parseStrToList = (s) => replace(s, /(\['?)|('?])|(')/g, '').split(", ")
-
-const RowUrlComponent = ({url, index}) => {
+const NewsItemRowComponent = ({newsItem, index}) => {
     const [isExpandedRow, setIsExpandedRow] = useState(false);
 
-    const cleanUrl = getCleanUrl(url.url)
-    const hasTitle = !isEmpty(url.url_title)
-    const rowTitle = hasTitle ? url.url_title : cleanUrl
+    const cleanUrl = getCleanUrl(newsItem.url)
+    const hasTitle = !isEmpty(newsItem.title)
+    const rowTitle = hasTitle ? newsItem.title : cleanUrl
     const rowSubtitle = hasTitle && `(${truncate(cleanUrl, {'length': 45})})`
 
-    let createdAts = parseStrToList(url.created_ats)
+    let createdAts = map(newsItem.NewsItemToTweet, (newsItemToTweet) => newsItemToTweet.Tweet.created_at)
     createdAts = map(createdAts, (createdAt) => new Date(createdAt))
-    const latestShareDate = createdAts.length === 1 ? createdAts[0] : max(createdAts)
-    const tweetIds = parseStrToList(url.tweet_ids)
+    const latestSharedDate = createdAts.length === 1 ? createdAts[0] : max(createdAts)
 
     const renderExpandedRow = () => {
         return <div className="flex space-x-2">
-            {map(tweetIds, (tweetId, index) =>
-                <span key={`key-${tweetId}-${index}`}>{index > 0 && "- "}
+            {map(newsItem.NewsItemToTweet, (tweetObj, index) =>
+                <span key={`key-${tweetObj.Tweet.id}-${index}`}>{index > 0 && "- "}
                     <a target="_blank" rel="noreferrer noopener"
                        className="hover:underline"
-                       href={`https://twitter.com/x/status/${tweetId}`}>Open Tweet</a>
+                       href={`https://twitter.com/${tweetObj.Tweet.author_username}/status/${tweetObj.Tweet.id}`}>{tweetObj.Tweet.text || "Open tweet"}</a>
                 </span>
             )
             }
@@ -51,14 +48,15 @@ const RowUrlComponent = ({url, index}) => {
             <div className="flex items-center">
                 <div className="">
                     <a
-                        href={url.url} target="_blank" rel="noreferrer noopener"
+                        href={newsItem.url} target="_blank" rel="noreferrer noopener"
                         className="font-medium text-gray-900 hover:underline hover:text-gray-700">
                         {rowTitle}{' '}
                         <span className="font-normal text-gray-500">{rowSubtitle}</span>
                     </a>
                     <div className="text-gray-500">
                         <div className="flex">
-                            {split(url.score, '.')[0] || 2} points | last shared {take(latestShareDate.toDateString().split(' '), 3).join(' ')} |
+                            {/*{split(newsItem.score, '.')[0] || 2} points | */}
+                            last shared {latestSharedDate && take(latestSharedDate.toDateString().split(' '), 3).join(' ')} |
                             <span className="flex hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandedRow)}>
                             <p className="ml-1">{isExpandedRow ? 'hide' : 'show'}</p>
@@ -83,4 +81,4 @@ const RowUrlComponent = ({url, index}) => {
     </tr>)
 }
 
-export default RowUrlComponent;
+export default NewsItemRowComponent;

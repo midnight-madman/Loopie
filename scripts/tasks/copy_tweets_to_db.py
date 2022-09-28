@@ -39,7 +39,3 @@ class CopyTweetsToDB(luigi.Task):
         last_tweet_id_in_db = data.data[0]['id']
 
         return last_tweet_id_in_db >= self.last_tweet_id
-
-    def output(self):
-        return luigi.LocalTarget('new_batch_last_tweet_id.txt')
-

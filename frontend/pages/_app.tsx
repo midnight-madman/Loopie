@@ -15,7 +15,7 @@ function MyApp({Component, pageProps}: AppProps) {
     return (<html className="h-full bg-white">
         <Head>
             {isProd && renderAnalyticsScripts()}
-            <title>Loopie.Link</title>
+            <title>Loopie</title>
             <link rel="shortcut icon" href="/favicon.png"/>
         </Head>
         <body className="h-full">

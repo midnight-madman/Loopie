@@ -66,10 +66,7 @@ class CreateNewsItems(BaseLoopieTask):
 
         urls_in_db = list(set([obj['url'] for obj in existing_news_items_in_db]))
         news_items_to_insert = [url_obj for url_obj in unique_url_objs if url_obj['url'] not in urls_in_db]
-        news_items_to_insert = [
-            dict(url=url_obj['url'], title=url_obj['description'], description=url_obj['description'])
-            for url_obj in news_items_to_insert
-        ]
+        news_items_to_insert = [dict(url=url_obj['url']) for url_obj in news_items_to_insert]
 
         self.supabase.table("NewsItem").insert(news_items_to_insert).execute()
         logger.info(f'Created {len(news_items_to_insert)} new news items in DB')
