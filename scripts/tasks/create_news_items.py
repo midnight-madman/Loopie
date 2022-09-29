@@ -7,6 +7,7 @@ import luigi
 
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
+from supabase_utils import get_supabase_client
 from tasks.base_loopie_task import BaseLoopieTask
 from utils import find_obj_based_on_key_value_in_list
 
@@ -58,7 +59,8 @@ class CreateNewsItems(BaseLoopieTask):
         self.create_news_items(url_objs, existing_news_items_in_db)
         self.create_authors(url_objs)
 
-        time.sleep(20)  # let DB rest a little so we can read and create connections for NewsItems
+        time.sleep(30)  # let DB rest a little so we can read and create connections for NewsItems
+        self.supabase = get_supabase_client()
         self.create_news_item_to_tweets_connections(url_objs, existing_news_items_in_db)
 
     def create_news_items(self, url_objs, existing_news_items_in_db):
@@ -93,6 +95,7 @@ class CreateNewsItems(BaseLoopieTask):
             if not obj:
                 logger.warning(
                     'could not determine news item id for tweet to insert into DB - this can be a timing issue')
+                continue
 
             news_item_ids.append(obj['id'])
             tweet_ids.append(url_obj['tweet_id'])

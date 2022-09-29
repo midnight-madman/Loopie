@@ -28,8 +28,11 @@ const NewsItemRowComponent = ({newsItem, index}) => {
             {map(newsItem.NewsItemToTweet, (tweetObj, index) =>
                 <span key={`key-${tweetObj.Tweet.id}-${index}`}>{index > 0 && "- "}
                     <a target="_blank" rel="noreferrer noopener"
-                       className="hover:underline"
+                       className="mr-1 hover:underline"
                        href={`https://twitter.com/${tweetObj.Tweet.author_username}/status/${tweetObj.Tweet.id}`}>{tweetObj.Tweet.text || "Open tweet"}</a>
+                    by <a target="_blank" rel="noreferrer noopener"
+                                className="hover:underline"
+                                href={`https://twitter.com/@${tweetObj.Tweet.author_username}`}>{tweetObj.Tweet.author_username}</a>
                 </span>
             )
             }

@@ -379,7 +379,7 @@ export const getStaticProps: GetStaticProps = async context => {
 
     const {data, error} = await supabase
         .from('NewsItem')
-        .select('*, NewsItemToTweet ( Tweet(created_at, id::text, text, author_username))')
+        .select('*, NewsItemToTweet!inner( Tweet(created_at, id::text, text, author_username))')
         .order('created_at', {ascending: false})
         .limit(50)
 
