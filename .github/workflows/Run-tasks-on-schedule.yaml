@@ -50,3 +50,4 @@ jobs:
         run: |
           pipenv run python scripts/main_luigi_flow.py --task-name copy-tweets-to-db
           pipenv run python scripts/main_luigi_flow.py --task-name create-news-items
+          pipenv run python scripts/main_luigi_flow.py --task-name get-metadata-for-urls

@@ -3,10 +3,12 @@ import logging
 from datetime import datetime, date
 
 import luigi
+
 from settings import DATE_FORMAT
 from supabase_utils import get_supabase_client
 from tasks.copy_tweets_to_db import CopyTweetsToDB
 from tasks.create_news_items import CreateNewsItems
+from tasks.get_metadata_for_urls import GetMetadataForUrls
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,10 @@ task_name_to_config = {
     },
     'create-news-items': {
         'class': CreateNewsItems,
+        'args': ['start_date', ]
+    },
+    'get-metadata-for-urls': {
+        'class': GetMetadataForUrls,
         'args': ['start_date', ]
     }
 }
