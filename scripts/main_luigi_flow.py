@@ -32,10 +32,11 @@ def run_from_cli_args(args):
         kwargs = {arg: args_dict.get(arg, None) for arg in task_config['args']}
         for key, value in kwargs.items():
             if 'date' in key:
-                if not value:
+                if value:
+                    value = datetime.strptime(value, DATE_FORMAT)
+                else:
                     value = date.today()
-                
-                kwargs[key] = datetime.strptime(value, DATE_FORMAT)
+                kwargs[key] = value
 
             if 'last_tweet_id' == key and not value:
                 supabase = get_supabase_client()
