@@ -24,7 +24,7 @@ class CreateNewsItems(BaseLoopieTask):
                ni.id IS NOT NULL as has_news_item,
                tweet.created_at,
                tweet.entities,
-               tweet.author_id,
+               tweet.author_id
         from "Tweet" tweet
                  left join "NewsItemToTweet" ni2t on tweet.id = ni2t.tweet_id
                  left join "NewsItem" ni on ni2t.news_item_id = ni.id
