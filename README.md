@@ -1,6 +1,6 @@
-# [Loopie](https://www.loopie.link/)
+# [Loopie](https://www.loopie.site/) [![Last update](https://github.com/midnight-madman/Loopie/actions/workflows/Run-tasks-on-schedule.yaml/badge.svg)](https://github.com/midnight-madman/Loopie/actions/workflows/Run-tasks-on-schedule.yaml)
 
-Stay in the loop with everything that's happening in web3 - a simple HackerNews-style page with the most frequently shared links
+Stay in the loop with everything that's happening in web3 - a simple HackerNews/RektNews-style page with the most frequently shared links
 
 ![pika-2022-04-27T09_02_45 917Z](https://user-images.githubusercontent.com/94986441/166223538-b32dc96e-b6b0-470e-8f22-4d68a714357a.png)
 
@@ -29,9 +29,6 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews-
 ## ⚡️ Todo for more awareness of Loopie
 - reply on Twitter to most shared links / tweets
 - daily post top3 news
-
-## 🧑‍🔧 Fix
-- fix: 😔 people delete tweets after they are scraped, they still show up on the leaderboard
 
 ## ⚙️ Config to run scripts locally
 Run
