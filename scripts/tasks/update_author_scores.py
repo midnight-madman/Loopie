@@ -31,7 +31,8 @@ class UpdateAuthorScores(BaseLoopieTask):
 
         df_scores = create_accounts_with_scores_df(list(self.df.twitter_id))
         df_for_upsert = self.df.merge(df_scores, left_on='twitter_id', right_on='id')
-        df_for_upsert['score'] = df_for_upsert.score_y
+        df_for_upsert['score'] = df_for_upsert.score_y.astype(int)
+        df_for_upsert['twitter_username'] = df_for_upsert.username # update or create usernames
         data_for_upsert = df_for_upsert[~df_for_upsert.score.isnull()][['twitter_id', 'twitter_username', 'score']].to_dict(orient='records')
         resp_upsert = self.supabase.table("Author").upsert(data_for_upsert, count="exact").execute()
 

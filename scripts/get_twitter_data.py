@@ -1,9 +1,12 @@
 import ast
+import logging
 
 import pandas as pd
 from tqdm import tqdm
 
 from api.twitter_api import get_tweets_from_accounts, TwitterApiError, MaxQueryLengthTwitterApiError
+
+logger = logging.getLogger(__name__)
 
 
 def get_dataframe_from_tweets(tweets: list[dict]) -> pd.DataFrame:
@@ -23,7 +26,7 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame) -> list[dict]:
             json_data = ast.literal_eval(data.entities)
             urls = json_data.get('urls')
         except ValueError as err:
-            print('error when trying to read urls from tweets csv file', err, data.entities)
+            logger.info('error when trying to read urls from tweets csv file', err, data.entities)
             continue
 
         for url in urls:

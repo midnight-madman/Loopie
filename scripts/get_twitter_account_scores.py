@@ -26,7 +26,7 @@ def get_twitter_accounts_stats_by_ids(user_ids: list[str]) -> list[dict]:
     search_url = f'https://api.twitter.com/2/users/'
 
     account_stats = []
-    for user_id_chunk in user_id_chunks:
+    for user_id_chunk in tqdm(user_id_chunks):
         ids = ','.join([str(user_id) for user_id in user_id_chunk])
         params = {'ids': ids, 'user.fields': 'public_metrics,location,name,verified,entities'}
         json_response = execute_twitter_api_request_with_retry(search_url, params)
