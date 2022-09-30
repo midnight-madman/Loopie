@@ -1,6 +1,6 @@
 import {isEmpty} from "lodash/lang";
 import {replace, split} from "lodash/string";
-import {max, map, truncate, trimEnd, take} from "lodash";
+import {map, take, trimEnd, truncate} from "lodash";
 import {useState} from 'react'
 import {ArrowSmDownIcon, ArrowSmUpIcon,} from '@heroicons/react/outline'
 
@@ -18,10 +18,7 @@ const NewsItemRowComponent = ({newsItem, index}) => {
     const hasTitle = !isEmpty(newsItem.title)
     const rowTitle = hasTitle ? newsItem.title : cleanUrl
     const rowSubtitle = hasTitle && `(${truncate(cleanUrl, {'length': 45})})`
-
-    let createdAts = map(newsItem.NewsItemToTweet, (newsItemToTweet) => newsItemToTweet.Tweet.created_at)
-    createdAts = map(createdAts, (createdAt) => new Date(createdAt))
-    const latestSharedDate = createdAts.length === 1 ? createdAts[0] : max(createdAts)
+    const latestSharedDate = new Date(newsItem.last_tweet_date)
 
     const renderExpandedRow = () => {
         return <div className="flex space-x-2">
@@ -32,8 +29,8 @@ const NewsItemRowComponent = ({newsItem, index}) => {
                        className="mr-1 hover:underline"
                        href={`https://twitter.com/${tweetObj.Tweet.author_username}/status/${tweetObj.Tweet.id}`}>{tweetObj.Tweet.text || "Open tweet"}</a>
                     by <a target="_blank" rel="noreferrer noopener"
-                                className="hover:underline"
-                                href={`https://twitter.com/@${tweetObj.Tweet.author_username}`}>{tweetObj.Tweet.author_username}</a>
+                          className="hover:underline"
+                          href={`https://twitter.com/@${tweetObj.Tweet.author_username}`}>{tweetObj.Tweet.author_username}</a>
                 </span>
             )
             }
@@ -59,8 +56,9 @@ const NewsItemRowComponent = ({newsItem, index}) => {
                     </a>
                     <div className="text-gray-500">
                         <div className="flex">
-                            {/*{split(newsItem.score, '.')[0] || 2} points | */}
-                            last shared {latestSharedDate && take(latestSharedDate.toDateString().split(' '), 3).join(' ')} |
+                            {/*{newsItem.score || 20} points | */}
+                            last
+                            shared {latestSharedDate && take(latestSharedDate.toDateString().split(' '), 3).join(' ')} |
                             <span className="flex hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandedRow)}>
                             <p className="ml-1">{isExpandedRow ? 'hide' : 'show'}</p>

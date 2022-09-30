@@ -158,8 +158,8 @@ const Index = (props: IndexProps) => {
                                     {/*</tr>*/}
                                     {/*</thead>*/}
                                     <tbody className="">
-                                    {newsItems.map((newsItem, index) => <NewsItemRowComponent newsItem={newsItem}
-                                                                                              index={index}/>)}
+                                    {newsItems.map((newsItem, index) =>
+                                        <NewsItemRowComponent newsItem={newsItem} index={index}/>)}
                                     </tbody>
                                 </table>
                             </div>
@@ -377,17 +377,28 @@ export const getStaticProps: GetStaticProps = async context => {
     const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
 
     const {data, error} = await supabase
-        .from('NewsItem')
-        .select('*, NewsItemToTweet!inner( Tweet(created_at, id::text, text, author_username))')
+        .from('scorednewsitem')
+        .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, author_username))')
         .not('title', 'is', null)
-        .order('created_at', {ascending: false})
-        .limit(50)
+        .order('score', {ascending: false})
+        .limit(30)
 
     if (error || !data) {
-        return {props: {newsItems: []}}
+        console.log(error)
+
+        return {
+            props: {
+                newsItems: []
+            }
+        }
     }
     const newsItems = data.map((newsItem) => omitBy(newsItem, isNil));
-    return {props: {newsItems}}
+    return {
+        props: {
+            newsItems,
+        },
+        revalidate: 60 * 60 // every hours
+    }
 }
 
 
