@@ -9,7 +9,7 @@ from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
 from supabase_utils import get_supabase_client
 from tasks.base_loopie_task import BaseLoopieTask
-from utils import find_obj_based_on_key_value_in_list
+from utils import find_obj_based_on_key_value_in_list, chunkify
 
 logger = logging.getLogger('luigi-interface')
 
@@ -35,7 +35,7 @@ class CreateNewsItems(BaseLoopieTask):
         return len(self.df) == 0
 
     def get_existing_news_items_with_urls(self, urls: list[str]) -> list[dict]:
-        url_chunks = [urls[i:i + 50] for i in range(0, len(urls), 50)]  # db query has max size of query length
+        url_chunks = chunkify(urls, 50)  # db query has max size of query length
         existing_news_items_in_db = []
 
         for url_chunk in url_chunks:
@@ -71,7 +71,6 @@ class CreateNewsItems(BaseLoopieTask):
 
         self.supabase.table("NewsItem").insert(news_items_to_insert).execute()
         logger.info(f'Created {len(news_items_to_insert)} new news items in DB')
-
 
     def create_news_item_to_tweets_connections(self, url_objs, existing_news_items_in_db):
         news_item_ids = []

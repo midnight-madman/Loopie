@@ -6,6 +6,7 @@ import pandas as pd
 from const import ACCOUNTS
 from get_twitter_data import get_tweets_since_id_with_retry
 from supabase_utils import get_supabase_client
+from utils import chunkify
 
 logger = logging.getLogger('luigi-interface')
 
@@ -27,7 +28,7 @@ class CopyTweetsToDB(luigi.Task):
 
     def complete(self):
         # complete if last tweet in Tweet DB table is >= last tweet id
-        data = self.supabase.table("Tweet").select("id").gt('id', self.last_tweet_id).order('id', desc=True).limit(
+        data = self.supabase.table('Tweet').select('id').gt('id', self.last_tweet_id).order('id', desc=True).limit(
             1).execute()
         if not data.data:
             return False
@@ -37,15 +38,15 @@ class CopyTweetsToDB(luigi.Task):
         return last_tweet_id_in_db >= self.last_tweet_id
 
     def create_authors(self, df: pd.DataFrame):
-        author_ids = list(df.author_id.values)
-        resp_query_authors = self.supabase.table("Author").select('twitter_id').in_('twitter_id', author_ids).execute()
+        author_ids = list(df.author_id.unique())
+        resp_query_authors = self.supabase.table('Author').select('twitter_id').in_('twitter_id', author_ids).execute()
 
         existing_author_ids = [str(obj['twitter_id']) for obj in resp_query_authors.data]
         df['twitter_id'] = df['author_id']
-        new_authors = df[~df.twitter_id.isin(existing_author_ids)][['twitter_id',]].to_dict(orient='records')
+        new_authors = df[~df.twitter_id.isin(existing_author_ids)][['twitter_id', ]].to_dict(orient='records')
         new_authors = list({obj['twitter_id']: obj for obj in new_authors}.values())  # make list unique
 
-        resp_insert_authors = self.supabase.table("Author").insert(new_authors).execute()
+        resp_insert_authors = self.supabase.table('Author').insert(new_authors).execute()
         logger.info(f'Added {len(resp_insert_authors.data)} new authors')
 
     def create_tweets(self, df: pd.DataFrame):
@@ -53,5 +54,12 @@ class CopyTweetsToDB(luigi.Task):
         TWEET_DB_COLUMNS = ['id', 'referenced_tweets', 'text', 'possibly_sensitive', 'public_metrics', 'author_id',
                             'entities', 'context_annotations', 'attachments', 'created_at']
         tweets_to_insert = df[TWEET_DB_COLUMNS].to_dict(orient='records')
-        resp_insert = self.supabase.table("Tweet").insert(tweets_to_insert, count='exact').execute()
-        logger.info(f'Added {resp_insert.count} tweets to DB')
+
+        tweets_to_insert_chunks = chunkify(tweets_to_insert, 200)
+        count_tweets_inserted = 0
+
+        for tweets_to_insert_chunk in tweets_to_insert_chunks:
+            resp_insert = self.supabase.table('Tweet').insert(tweets_to_insert_chunk, count='exact').execute()
+            count_tweets_inserted += resp_insert.count
+
+        logger.info(f'Added {count_tweets_inserted} tweets to DB')

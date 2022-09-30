@@ -40,3 +40,8 @@ def find_obj_based_on_key_value_in_list(l, key, value):
         if obj[key] == value:
             return obj
     return None
+
+
+def chunkify(arr: list, n: int) -> list[list]:
+    # split list into chunks of n items per chunk ... chunk
+    return [arr[i:i + n] for i in range(0, len(arr), n)]

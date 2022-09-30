@@ -4,7 +4,7 @@ from tqdm import tqdm
 from api.twitter_api import execute_twitter_api_request_with_retry
 from const import ACCOUNTS
 from settings import ACCOUNT_SCORES_FNAME
-
+from utils import chunkify
 QUANTILE_THRESHOLDS = [0.3, 0.6, 0.9]
 VERIFIED_SCORE = 20
 QUANTILE_SCORE_MULTIPLIER = 20
@@ -22,7 +22,7 @@ def get_twitter_account_stats(account: str) -> dict:
 
 
 def get_twitter_accounts_stats_by_ids(user_ids: list[str]) -> list[dict]:
-    user_id_chunks = [user_ids[i:i + 50] for i in range(0, len(user_ids), 50)]  # 100 per chunk is max
+    user_id_chunks = chunkify(user_ids, 50) # 100 per chunk is max
     search_url = f'https://api.twitter.com/2/users/'
 
     account_stats = []

@@ -5,6 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from api.twitter_api import get_tweets_from_accounts, TwitterApiError, MaxQueryLengthTwitterApiError
+from utils import chunkify
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ def get_tweets_since_time_or_id(accounts: list[str], since_id: str) -> pd.DataFr
     logger.info(f'getting tweets for {len(accounts)} accounts since id {since_id}')
 
     tweets_dataframes = []
-    account_chunks = [accounts[i:i + 20] for i in range(0, len(accounts), 20)]  # twitter api query has max size
+    account_chunks = chunkify(accounts, 20)  # twitter api query has max size limit in query length
 
     for account_chunk in tqdm(account_chunks):
         try:
