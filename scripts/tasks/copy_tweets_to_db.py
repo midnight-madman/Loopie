@@ -21,9 +21,9 @@ class CopyTweetsToDB(luigi.Task):
             return None
 
         df.fillna(value='', inplace=True)
-        rows = df.to_dict(orient='records')
-
-        self.supabase.table("Tweet").insert(rows).execute()
+        TWEET_DB_COLUMNS = ['id', 'referenced_tweets', 'text', 'possibly_sensitive', 'public_metrics', 'author_id', 'entities', 'context_annotations', 'attachments', 'author_username']
+        tweets_to_insert = df[TWEET_DB_COLUMNS].to_dict(orient='records')
+        self.supabase.table("Tweet").insert(tweets_to_insert).execute()
 
     def complete(self):
         # complete if last tweet in Tweet DB table is >= last tweet id
