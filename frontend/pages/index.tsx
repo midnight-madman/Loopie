@@ -7,15 +7,15 @@ import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
 import Footer from "../src/components/Footer";
 import {GetStaticProps} from 'next'
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import relativeTime from "dayjs/plugin/relativeTime";
+// import dayjs from "dayjs";
+// import utc from "dayjs/plugin/utc";
+// import relativeTime from "dayjs/plugin/relativeTime";
 import {createClient} from '@supabase/supabase-js'
-import {isNil, maxBy, omitBy} from "lodash";
-
-dayjs().format()
-dayjs.extend(utc)
-dayjs.extend(relativeTime)
+import {isNil, omitBy} from "lodash";
+//
+// dayjs().format()
+// dayjs.extend(utc)
+// dayjs.extend(relativeTime)
 
 
 // @ts-ignore
@@ -25,11 +25,10 @@ function classNames(...classes) {
 
 interface IndexProps {
     newsItems: Array<object>;
-    updatedAt: string;
 }
 
 const Index = (props: IndexProps) => {
-    const {newsItems, updatedAt} = props;
+    const {newsItems} = props;
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -72,7 +71,7 @@ const Index = (props: IndexProps) => {
     //     },)
     // }
 
-    const updatedAtTime = dayjs.utc(updatedAt.split('GMT')[0])
+    // const updatedAtTime = dayjs.utc(updatedAt.split('GMT')[0])
 
 
     function renderPageContent() {
@@ -91,11 +90,11 @@ const Index = (props: IndexProps) => {
                                         </div>
                                     </div>
                                     <div className="hidden md:flex md:items-center md:space-x-6">
-                                        <p
-                                            className="inline-flex items-center text-light font-small rounded-md text-gray-700"
-                                        >
-                                            Updated {updatedAtTime.fromNow()}
-                                        </p>
+                                        {/*<p*/}
+                                        {/*    className="inline-flex items-center text-light font-small rounded-md text-gray-700"*/}
+                                        {/*>*/}
+                                        {/*    Updated {updatedAtTime.fromNow()}*/}
+                                        {/*</p>*/}
                                         <button
                                             onClick={() => setIsFeedbackModalOpen(true)}
                                             className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
@@ -380,16 +379,15 @@ export const getStaticProps: GetStaticProps = async context => {
     const {data, error} = await supabase
         .from('NewsItem')
         .select('*, NewsItemToTweet!inner( Tweet(created_at, id::text, text, author_username))')
+        .not('title', 'is', null)
         .order('created_at', {ascending: false})
         .limit(50)
 
     if (error || !data) {
-        return {props: {newsItems: [], updatedAt: error}}
+        return {props: {newsItems: []}}
     }
     const newsItems = data.map((newsItem) => omitBy(newsItem, isNil));
-
-    const updatedAt = maxBy(data, 'created_at').created_at
-    return {props: {newsItems, updatedAt}}
+    return {props: {newsItems}}
 }
 
 

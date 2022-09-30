@@ -26,7 +26,8 @@ const NewsItemRowComponent = ({newsItem, index}) => {
     const renderExpandedRow = () => {
         return <div className="flex space-x-2">
             {map(newsItem.NewsItemToTweet, (tweetObj, index) =>
-                <span key={`key-${tweetObj.Tweet.id}-${index}`}>{index > 0 && "- "}
+                <span key={`key-${tweetObj.Tweet.id}-${index}`}>
+                    {index > 0 && "- "}
                     <a target="_blank" rel="noreferrer noopener"
                        className="mr-1 hover:underline"
                        href={`https://twitter.com/${tweetObj.Tweet.author_username}/status/${tweetObj.Tweet.id}`}>{tweetObj.Tweet.text || "Open tweet"}</a>
@@ -40,20 +41,20 @@ const NewsItemRowComponent = ({newsItem, index}) => {
     }
 
     return (<tr key={`url-row-${index}`}>
-        <td className="whitespace-nowrap text-sm font-medium text-gray-900 relative">
-            <div className="absolute top-2.5 left-2">
-                <div className="font-normal text-gray-500">
-                    {index + 1}.
-                </div>
-            </div>
-        </td>
+        {/*<td className="whitespace-nowrap text-sm font-medium text-gray-900 relative">*/}
+        {/*    <div className="absolute top-2.5 left-2">*/}
+        {/*        <div className="font-normal text-gray-500">*/}
+        {/*            {index + 1}.*/}
+        {/*        </div>*/}
+        {/*    </div>*/}
+        {/*</td>*/}
         <td className="whitespace-normal max-w-xs pl-8 py-2 text-sm">
             <div className="flex items-center">
                 <div className="">
                     <a
                         href={newsItem.url} target="_blank" rel="noreferrer noopener"
                         className="font-medium text-gray-900 hover:underline hover:text-gray-700">
-                        {rowTitle}{' '}
+                        {truncate(rowTitle, {'length': 150})}{' '}
                         <span className="font-normal text-gray-500">{rowSubtitle}</span>
                     </a>
                     <div className="text-gray-500">
