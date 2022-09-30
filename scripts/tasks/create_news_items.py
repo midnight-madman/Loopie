@@ -72,18 +72,6 @@ class CreateNewsItems(BaseLoopieTask):
         self.supabase.table("NewsItem").insert(news_items_to_insert).execute()
         logger.info(f'Created {len(news_items_to_insert)} new news items in DB')
 
-    def create_authors(self, url_objs):
-        author_ids = list(set([obj['author_id'] for obj in url_objs]))
-        resp_query_authors = self.supabase.table("Author").select('twitter_id').in_('twitter_id', author_ids).execute()
-        existing_authors = resp_query_authors.data
-
-        existing_author_ids = [obj['twitter_id'] for obj in existing_authors]
-        new_authors = [dict(twitter_id=obj['author_id'], twitter_username=obj.get('author_username'))
-                       for obj in url_objs if obj['author_id'] not in existing_author_ids]
-        new_authors = list({obj['twitter_id']: obj for obj in new_authors}.values())  # make list unique
-
-        resp_insert_authors = self.supabase.table("Author").insert(new_authors).execute()
-        logger.info(f'Added {len(resp_insert_authors.data)} new authors')
 
     def create_news_item_to_tweets_connections(self, url_objs, existing_news_items_in_db):
         news_item_ids = []
