@@ -1,5 +1,6 @@
 import argparse
-import logging
+import logging.config
+import sys
 from datetime import datetime, date
 
 import luigi
@@ -9,8 +10,10 @@ from supabase_utils import get_supabase_client
 from tasks.copy_tweets_to_db import CopyTweetsToDB
 from tasks.create_news_items import CreateNewsItems
 from tasks.get_metadata_for_urls import GetMetadataForUrls
+from tasks.update_author_scores import UpdateAuthorScores
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger('luigi-interface')
 
 task_name_to_config = {
     'copy-tweets-to-db': {
@@ -24,6 +27,10 @@ task_name_to_config = {
     'get-metadata-for-urls': {
         'class': GetMetadataForUrls,
         'args': ['start_date', ]
+    },
+    'update-author-scores': {
+        'class': UpdateAuthorScores,
+        'args': ['last_updated_date', ]
     }
 }
 

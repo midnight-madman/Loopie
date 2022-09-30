@@ -11,7 +11,7 @@ from supabase_utils import get_supabase_client
 from tasks.base_loopie_task import BaseLoopieTask
 from utils import find_obj_based_on_key_value_in_list
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('luigi-interface')
 
 
 class CreateNewsItems(BaseLoopieTask):

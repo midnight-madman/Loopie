@@ -23,9 +23,12 @@ def can_get_title_from_url(url):
 
 
 def is_valid_title(title: str) -> bool:
-    if 'access denied' == title.lower():
+    title_low = title.lower()
+    if 'access denied' == title_low:
         return False
-    elif 'Attention Required' in title and 'cloudflare' in title.lower():
+    if 'Attention Required' in title and 'cloudflare' in title_low:
+        return False
+    if 'before you continue to youtube' in title_low:
         return False
     return True
 

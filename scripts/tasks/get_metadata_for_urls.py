@@ -3,13 +3,15 @@ from datetime import datetime
 from typing import Optional
 
 import luigi
+from tqdm import tqdm
 
 from get_metadata_for_urls import get_title_for_url
+from scraping.webpage_title_scraper import WebpageTitleScraper
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
-from scraping.webpage_title_scraper import WebpageTitleScraper
 
-logger = logging.getLogger(__name__)
+tqdm.pandas()
+logger = logging.getLogger('luigi-interface')
 
 
 class GetMetadataForUrls(BaseLoopieTask):
@@ -17,9 +19,10 @@ class GetMetadataForUrls(BaseLoopieTask):
 
     def get_query(self) -> Optional[str]:
         return f'''
-        SELECT *
+        SELECT id::text,created_at::text,url,description, title
         from "NewsItem" ni
-        where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'; 
+        where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'
+        order by ni.created_at desc; 
         '''
 
     def complete(self):
@@ -29,12 +32,15 @@ class GetMetadataForUrls(BaseLoopieTask):
         logger.info(f'scraping {len(self.df)} titles for news items')
 
         scraper = WebpageTitleScraper()
-        self.df['title'] = self.df.apply(lambda row:
-                                        get_title_for_url(row['url'], scraper),
-                                        axis=1)
+        self.df['title'] = self.df.progress_apply(lambda row:
+                                                  get_title_for_url(row['url'], scraper),
+                                                  axis=1)
 
         scraper.driver.close()
 
-        data_for_upsert = self.df[~self.df.title.isnull()][['id', 'title']].to_dict(orient='records')
-        self.supabase.table("NewsItem").upsert(data_for_upsert, count="exact")
-        logger.info(f'Added {len(data_for_upsert)} titles for news items')
+        data_for_upsert = self.df[self.df.title.str.len() > 0][['id', 'created_at', 'url', 'description', 'title']].to_dict(orient='records')
+        if not data_for_upsert:
+            return
+
+        resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact', returning='minimal').execute()
+        logger.info(f'Added {resp_upsert.count} titles for news items')

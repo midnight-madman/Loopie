@@ -5,7 +5,7 @@ import luigi
 from get_twitter_data import get_tweets_since_id_with_retry
 from supabase_utils import get_supabase_client
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('luigi-interface')
 
 
 class CopyTweetsToDB(luigi.Task):
