@@ -57,12 +57,8 @@ def get_tweets_from_accounts(accounts: list[str], start_time: str = None, since_
         tweets.extend(json_response['data'])
         next_token = json_response['meta'].get('next_token')
 
-    # tweets = [tweet for tweet in tweets if not is_retweet(tweet)]
     return tweets
 
-
-# def is_retweet(tweet):
-#     return tweet['entities'].get('referenced_tweets', {}).get('type', '') in ['retweet', 'quoted']
 
 def bearer_oauth(r):
     """
