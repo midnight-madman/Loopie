@@ -1,5 +1,4 @@
 import time
-from typing import List, Dict
 
 import requests
 
@@ -10,21 +9,34 @@ class TwitterApiError(Exception):
     pass
 
 
-def get_tweets_from_account(username: str, start_time: str = None, since_id: str = None) -> List[Dict]:
+class MaxQueryLengthTwitterApiError(Exception):
+    pass
+
+
+# query length constrained from twitter API
+# https://developer.twitter.com/en/docs/twitter-api/tweets/search/integrate/build-a-query#limits
+MAX_TWITTER_QUERY_LENGTH = 512
+
+
+def get_tweets_from_accounts(accounts: list[str], start_time: str = None, since_id: str = None) -> list[dict]:
     search_url = "https://api.twitter.com/2/tweets/search/recent"
 
     # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
     # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
     default_params = {
-        'query': f'(from:{username} url:"https://" -is:retweet)',
+        'query': f'({" OR ".join([f"from:{x}" for x in accounts])}) has:links url:"https://" -is:retweet',
         'max_results': 100,
         'tweet.fields': 'created_at,text,author_id,entities,referenced_tweets,attachments,geo,public_metrics,possibly_sensitive,context_annotations'
     }
 
-    if start_time:
-        default_params['start_time'] = start_time
-    elif since_id:
+    is_query_above_max_limit = len(default_params['query']) > MAX_TWITTER_QUERY_LENGTH
+    if is_query_above_max_limit:
+        raise MaxQueryLengthTwitterApiError(f'query is too long with accounts {accounts}')
+
+    if since_id:
         default_params['since_id'] = since_id
+    elif start_time:
+        default_params['start_time'] = start_time
     else:
         raise Exception('method needs start_time or since_id')
 

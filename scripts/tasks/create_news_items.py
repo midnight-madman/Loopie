@@ -79,7 +79,7 @@ class CreateNewsItems(BaseLoopieTask):
         existing_authors = resp_query_authors.data
 
         existing_author_ids = [obj['twitter_id'] for obj in existing_authors]
-        new_authors = [dict(twitter_id=obj['author_id'], twitter_username=obj['author_username'])
+        new_authors = [dict(twitter_id=obj['author_id'], twitter_username=obj.get('author_username'))
                        for obj in url_objs if obj['author_id'] not in existing_author_ids]
         new_authors = list({obj['twitter_id']: obj for obj in new_authors}.values())  # make list unique
 

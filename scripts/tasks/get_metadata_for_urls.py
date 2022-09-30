@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from typing import Optional
@@ -19,7 +20,7 @@ class GetMetadataForUrls(BaseLoopieTask):
 
     def get_query(self) -> Optional[str]:
         return f'''
-        SELECT id::text,created_at::text,url,description, title
+        SELECT id::text,created_at::text, url, description, title
         from "NewsItem" ni
         where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'
         order by ni.created_at desc; 
@@ -42,5 +43,8 @@ class GetMetadataForUrls(BaseLoopieTask):
         if not data_for_upsert:
             return
 
-        resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact', returning='minimal').execute()
+        try:
+            resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact', returning='minimal').execute()
+        except json.decoder.JSONDecodeError:
+            logger.exception(f'Failed to upsert new titles for news items {data_for_upsert}')
         logger.info(f'Added {resp_upsert.count} titles for news items')
