@@ -40,7 +40,7 @@ jobs:
         run: |
           pipenv install
       - name: Copy tweets to db
-        if: github.event.schedule == '0 */2 * * *'
+        if: github.event.schedule == '0 */2 * * *' || contains(github.event.head_commit.message, 'force ci')
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
@@ -51,7 +51,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           pipenv run python scripts/main_luigi_flow.py --task-name copy-tweets-to-db
-      - name: Create news items and get update metadata
+      - name: Create news items and get update metadata || contains(github.event.head_commit.message, 'force ci')
         if: github.event.schedule == '0 */4 * * *'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -62,7 +62,6 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main_luigi_flow.py --task-name copy-tweets-to-db
           pipenv run python scripts/main_luigi_flow.py --task-name create-news-items
           pipenv run python scripts/main_luigi_flow.py --task-name get-metadata-for-urls
       - name: Update author scores
