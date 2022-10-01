@@ -10,6 +10,7 @@ from get_metadata_for_urls import get_title_for_url
 from scraping.webpage_title_scraper import WebpageTitleScraper
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
+from utils import chunkify
 
 tqdm.pandas()
 logger = logging.getLogger('luigi-interface')
@@ -36,15 +37,21 @@ class GetMetadataForUrls(BaseLoopieTask):
         self.df['title'] = self.df.progress_apply(lambda row:
                                                   get_title_for_url(row['url'], scraper),
                                                   axis=1)
-
         scraper.driver.close()
 
-        data_for_upsert = self.df[self.df.title.str.len() > 0][['id', 'created_at', 'url', 'description', 'title']].to_dict(orient='records')
-        if not data_for_upsert:
+        metadata_for_upsert = self.df[self.df.title.str.len() > 0][
+            ['id', 'created_at', 'url', 'description', 'title']].to_dict(orient='records')
+        if not metadata_for_upsert:
             return
 
-        try:
-            resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact').execute()
-            logger.info(f'Added {resp_upsert.count} titles for news items')
-        except json.decoder.JSONDecodeError:
-            logger.exception(f'Failed to add new titles for news items {data_for_upsert}')
+        metadata_chunks = chunkify(metadata_for_upsert, 50)
+        metadata_added_count = 0
+
+        for metadata_chunk in metadata_chunks:
+            try:
+                resp_upsert = self.supabase.table("NewsItem").upsert(metadata_chunk, count='exact').execute()
+                metadata_added_count += resp_upsert.count
+            except json.decoder.JSONDecodeError:
+                logger.exception(f'Failed to add new titles for news items {metadata_for_upsert}')
+
+        logger.info(f'Added {metadata_added_count} news item metadata')

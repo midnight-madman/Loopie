@@ -55,11 +55,11 @@ class CopyTweetsToDB(luigi.Task):
                             'entities', 'context_annotations', 'attachments', 'created_at']
         tweets_to_insert = df[TWEET_DB_COLUMNS].to_dict(orient='records')
 
-        tweets_to_insert_chunks = chunkify(tweets_to_insert, 200)
-        count_tweets_inserted = 0
+        tweets_to_insert_chunks = chunkify(tweets_to_insert, 50)
+        count_tweets_added_count = 0
 
         for tweets_to_insert_chunk in tweets_to_insert_chunks:
             resp_insert = self.supabase.table('Tweet').insert(tweets_to_insert_chunk, count='exact').execute()
-            count_tweets_inserted += resp_insert.count
+            count_tweets_added_count += resp_insert.count
 
-        logger.info(f'Added {count_tweets_inserted} tweets to DB')
+        logger.info(f'Added {count_tweets_added_count} tweets to DB')
