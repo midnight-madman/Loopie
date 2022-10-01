@@ -2,19 +2,17 @@
 
 Stay in the loop with everything that's happening in web3 - a simple HackerNews/RektNews-style page with the most frequently shared links
 
-![pika-2022-04-27T09_02_45 917Z](https://user-images.githubusercontent.com/94986441/166223538-b32dc96e-b6b0-470e-8f22-4d68a714357a.png)
-
+<img src="https://user-images.githubusercontent.com/94986441/193413164-d66b76b9-b747-4043-b260-258c37a6d979.png" width="600" />
 
 
 ## 💡 Ideas for Governance
 - Allow community members to vote on the list of Twitter accounts
 
 ## 🏗 How the site is built
-1. Check for previous runs and find last tweet id that was saved before
+1. Find last tweet id in DB
 2. Fetch new tweets with urls since last tweet id via Twitter API
 3. Find urls and save titles of the websites
-4. Upload data to IPFS
-5. Build leaderboard for site based on urls shared in the last week
+4. Build leaderboard for site based on urls shared in the previous days
 
 
 ## 🔝 Todo to improve ranking
@@ -22,13 +20,6 @@ Stay in the loop with everything that's happening in web3 - a simple HackerNews/
 - give each url a score
     - add retweets / nr. of links to tweet to score
 
-## 🎢 Todo to improve user experience
-- create tag for each page based on urls and accounts that shared it
-- create switch to show daily, weekly, (monthly?) most shared links
-
-## ⚡️ Todo for more awareness of Loopie
-- reply on Twitter to most shared links / tweets
-- daily post top3 news
 
 ## ⚙️ Config to run scripts locally
 Run
