@@ -44,7 +44,7 @@ class GetMetadataForUrls(BaseLoopieTask):
             return
 
         try:
-            resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact', returning='minimal').execute()
+            resp_upsert = self.supabase.table("NewsItem").upsert(data_for_upsert, count='exact').execute()
+            logger.info(f'Added {resp_upsert.count} titles for news items')
         except json.decoder.JSONDecodeError:
-            logger.exception(f'Failed to upsert new titles for news items {data_for_upsert}')
-        logger.info(f'Added {resp_upsert.count} titles for news items')
+            logger.exception(f'Failed to add new titles for news items {data_for_upsert}')
