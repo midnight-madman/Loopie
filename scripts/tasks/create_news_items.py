@@ -56,7 +56,6 @@ class CreateNewsItems(BaseLoopieTask):
         existing_news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
 
         self.create_news_items(url_objs, existing_news_items_in_db)
-        self.create_authors(url_objs)
 
         time.sleep(30)  # let DB rest a little so we can read and create connections for NewsItems
         self.supabase = get_supabase_client()

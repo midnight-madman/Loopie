@@ -35,7 +35,6 @@ def get_urls_from_tweets_dataframe(df: pd.DataFrame) -> list[dict]:
                 url=url['expanded_url'],
                 tweet_id=int(data.id),
                 author_id=int(data.author_id),
-                author_username=data.author_username,
                 created_at=data.created_at,
                 title=url.get('title', ''),
                 description=url.get('description', '')
