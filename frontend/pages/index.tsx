@@ -85,8 +85,9 @@ const Index = (props: IndexProps) => {
                                     aria-label="Global"
                                 >
                                     <div className="flex items-center flex-1">
-                                        <div className="space-x-2 lg:space-x-4 flex md:ml-10">
-                                            <h1 className="text-2xl font-semibold text-gray-900">Web3 News</h1>
+                                        <div className="space-x-2 flex flex-shrink-0 items-center md:ml-4">
+                                            <img src="/favicon.png" alt="Logo" className="h-12 -ml-2"/>
+                                            <h1 className="font-semibold text-gray-800 text-3xl">Loopie</h1>
                                         </div>
                                     </div>
                                     <div className="hidden md:flex md:items-center md:space-x-6">
@@ -252,13 +253,7 @@ const Index = (props: IndexProps) => {
                                 </Transition.Child>
                                 <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
                                     <div className="flex-shrink-0 flex items-center px-4">
-                                        {/*<img*/}
-                                        {/*    className="h-8 w-auto"*/}
-                                        {/*    src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"*/}
-                                        {/*    alt="Workflow"*/}
-                                        {/*/>*/}
                                         <img src="/favicon.png" alt="Logo" className="h-10"/>
-                                        {/*<ArrowsExpandIcon className="h-6 w-auto mr-2"/>*/}
                                         <p className="font-medium text-2xl">Loopie</p>
                                     </div>
                                     <nav className="mt-5 px-2 space-y-1">
@@ -299,19 +294,13 @@ const Index = (props: IndexProps) => {
                 <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
                     {/* Sidebar component, swap this element with another sidebar if you like */}
                     <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
-                        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                            <div className="flex items-center flex-shrink-0 px-4">
-                                {/*<img*/}
-                                {/*    className="h-8 w-auto"*/}
-                                {/*    src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"*/}
-                                {/*    alt="Workflow"*/}
-                                {/*/>*/}
-                                <img src="/favicon.png" className="h-10 w-auto" alt="Logo"/>
-                                {/*<ArrowsExpandIcon className="h-6 w-auto mr-2"/>*/}
-                                <p className="font-medium text-2xl">
-                                    Loopie
-                                </p>
-                            </div>
+                        <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
+                            {/*<div className="flex items-center flex-shrink-0 px-4">*/}
+                            {/*    <img src="/favicon.png" className="h-10 w-auto" alt="Logo"/>*/}
+                            {/*    <p className="font-medium text-2xl">*/}
+                            {/*        Loopie*/}
+                            {/*    </p>*/}
+                            {/*</div>*/}
                             <nav className="mt-5 flex-1 px-2 bg-white space-y-1">
                                 {navigation.map((item) => (
                                     <a
@@ -356,7 +345,7 @@ const Index = (props: IndexProps) => {
                         <h3 className="flex text-md pl-2 pt-2.5 sm:hidden font-semibold text-gray-800">
                             <img src="/favicon.png" className="-mt-1 h-8 w-auto" alt="Logo"/>
                             <p className="">
-                                Loopie Web3 News
+                                Loopie
                             </p>
                         </h3>
                     </div>

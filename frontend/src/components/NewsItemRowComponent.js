@@ -21,7 +21,7 @@ const NewsItemRowComponent = ({newsItem, index}) => {
     const latestSharedDate = new Date(newsItem.last_tweet_date)
 
     const renderExpandedRow = () => {
-        return <div className="flex space-x-2">
+        return <div className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-300">
             {map(newsItem.NewsItemToTweet, (tweetObj, index) =>
                 <span key={`key-${tweetObj.Tweet.id}-${index}`}>
                     {index > 0 && "- "}
