@@ -15,7 +15,7 @@ const NewsItemRowComponent = ({newsItem, index}) => {
 
     const cleanUrl = getCleanUrl(newsItem.url)
     const rowTitle = newsItem.title
-    const rowSubtitle = truncate(cleanUrl, {'length': 45})
+    const rowSubtitle = truncate(cleanUrl, {'length': 35})
     const latestSharedDate = new Date(newsItem.last_tweet_date)
     const tweets = map(newsItem.NewsItemToTweet, 'Tweet')
 
@@ -43,7 +43,7 @@ const NewsItemRowComponent = ({newsItem, index}) => {
                      className="mr-1 flex hover:underline hover:text-gray-700 cursor-pointer">
             Share{' '}
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                 className="mx-1 mt-1 w-4 h-4">
+                 className="mx-1 mt-1 md:mt-1.5 w-4 h-4">
               <path fillRule="evenodd"
                     d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
                     clipRule="evenodd"/>
@@ -82,37 +82,39 @@ const NewsItemRowComponent = ({newsItem, index}) => {
         {/*        </div>*/}
         {/*    </div>*/}
         {/*</td>*/}
-        <td className="whitespace-normal max-w-xs pl-2 py-2">
+        <td className="whitespace-normal max-w-xs pl-2 py-2 md:py-3">
             <div className="flex items-center">
                 <div className="">
                     <a
                         href={newsItem.url} target="_blank" rel="noreferrer noopener"
                         className="text-gray-900 hover:underline hover:text-gray-700">
-                        <span className="text-lg font-medium">
+                        <span className="text-lg lg:text-xl font-medium">
                         {truncate(rowTitle, {'length': 150})}{' '}
                         </span>
+                        <span className="text-md md:text-lg text-gray-500 truncate">({rowSubtitle})</span>
                     </a>
-                    <div className="text-md text-gray-500">
-                        <div className="flex">
+                    <div className="text-md md:text-lg text-gray-500">
+                        <div className="flex flex-row flex-wrap">
                             <span className="mr-1">
                             {latestSharedDate && take(latestSharedDate.toDateString().split(' '), 3).join(' ')} |
                             </span>
-                            <span className="mr-1">{rowSubtitle}{' '}|</span>
                             {renderShare()}
                             <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
                                   onClick={() => setIsExpandedRow(!isExpandedRow)}>
-                            <p className="">{isExpandedRow ? 'Less' : 'More'}</p>
+                                <p className="">{isExpandedRow ? 'Less' : 'More'}</p>
                                 {isExpandedRow ?
                                     <ArrowSmUpIcon
-                                        className='mt-0.5  flex-shrink-0 h-5 w-5'
+                                        className='mt-1 flex-shrink-0 h-5 w-5'
                                         aria-hidden="true"
                                     /> : <ArrowSmDownIcon
-                                        className='mt-0.5  flex-shrink-0 h-5 w-5'
+                                        className='mt-1  flex-shrink-0 h-5 w-5'
                                         aria-hidden="true"
                                     />}
-                        </span>
+                            </span>
                         </div>
-                        {isExpandedRow && renderExpandedRow()}
+                        <div className="flex">
+                            {isExpandedRow && renderExpandedRow()}
+                        </div>
                     </div>
                 </div>
             </div>
