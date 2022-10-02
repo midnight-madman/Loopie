@@ -376,7 +376,6 @@ export const getStaticProps: GetStaticProps = async context => {
 
     if (error || !data) {
         console.log(error)
-
         return {
             props: {
                 newsItems: []
