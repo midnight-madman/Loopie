@@ -6,16 +6,16 @@ import NewsItemRowComponent from "../src/components/NewsItemRowComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
 import Footer from "../src/components/Footer";
 import {GetStaticProps} from 'next'
-
-// import dayjs from "dayjs";
-// import utc from "dayjs/plugin/utc";
-// import relativeTime from "dayjs/plugin/relativeTime";
 import {createClient} from '@supabase/supabase-js'
 import {isNil, omitBy} from "lodash";
-//
-// dayjs().format()
-// dayjs.extend(utc)
-// dayjs.extend(relativeTime)
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs().format()
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
 
 
 // @ts-ignore
@@ -160,7 +160,8 @@ const Index = (props: IndexProps) => {
                                     {/*</thead>*/}
                                     <tbody className="">
                                     {newsItems.map((newsItem, index) =>
-                                        <NewsItemRowComponent newsItem={newsItem} index={index}/>)}
+                                        <NewsItemRowComponent newsItem={newsItem} index={index}/>
+                                    )}
                                     </tbody>
                                 </table>
                             </div>
@@ -364,11 +365,12 @@ const Index = (props: IndexProps) => {
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
     const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-
+    const tweetStartDate = dayjs().utc().subtract(3, 'days')
     const {data, error} = await supabase
         .from('scorednewsitem')
         .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
         .not('title', 'is', null)
+        .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
         .order('score', {ascending: false})
         .limit(30)
 
@@ -386,7 +388,7 @@ export const getStaticProps: GetStaticProps = async context => {
         props: {
             newsItems,
         },
-        revalidate: 60 * 60 // every hours
+        revalidate: 60 * 60 // every hour
     }
 }
 
