@@ -7,11 +7,13 @@ import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
 import Footer from "../src/components/Footer";
 import {GetStaticProps} from 'next'
 import {createClient} from '@supabase/supabase-js'
-import {isNil, omitBy} from "lodash";
+import {isNil, omitBy, take} from "lodash";
+import {ConnectButton} from '@rainbow-me/rainbowkit';
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {useAccount} from 'wagmi';
 
 dayjs().format()
 dayjs.extend(utc)
@@ -28,11 +30,17 @@ interface IndexProps {
 }
 
 const Index = (props: IndexProps) => {
-    const {newsItems} = props;
+    let {newsItems} = props;
+    const {address, isConnected} = useAccount()
+
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-    // const [showTwitterLinks, setShowTwitterLinks] = useState(false)
+    const [isShowingMore, setIsShowingMore] = useState(false)
+
+    if(!isShowingMore) {
+        newsItems = take(newsItems, 25)
+    }
 
     let navigation = [
         {
@@ -62,24 +70,13 @@ const Index = (props: IndexProps) => {
         // { name: 'Documents', href: '#', icon: InboxIcon, current: false },
         // { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
     ]
-    // if (selectedPage === 'news') {
-    //     navigation.push({
-    //         name: showTwitterLinks ? 'Hide Twitter Links' : 'Show Twitter Links',
-    //         onClick: () => setShowTwitterLinks(!showTwitterLinks),
-    //         icon: FilterIcon,
-    //         className: "hover:cursor-pointer"
-    //     },)
-    // }
-
-    // const updatedAtTime = dayjs.utc(updatedAt.split('GMT')[0])
-
 
     function renderPageContent() {
         switch (selectedPage) {
             case 'news':
                 return (<>
                         <Popover as="header" className="relative">
-                            <div className="bg-white py-4 hidden md:block border-b border-gray-200">
+                            <div className="bg-white py-2 hidden md:block border-b border-gray-200">
                                 <nav
                                     className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
                                     aria-label="Global"
@@ -138,32 +135,30 @@ const Index = (props: IndexProps) => {
                                 <table className="min-w-full">
                                     {/*<thead className="bg-gray-50">*/}
                                     {/*<tr>*/}
-                                    {/*  <th*/}
-                                    {/*      scope="col"*/}
-                                    {/*      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"*/}
-                                    {/*  >*/}
-                                    {/*    Name*/}
-                                    {/*  </th>*/}
-                                    {/*  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">*/}
-                                    {/*    Title*/}
-                                    {/*  </th>*/}
-                                    {/*  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">*/}
-                                    {/*    Email*/}
-                                    {/*  </th>*/}
-                                    {/*  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">*/}
-                                    {/*    Role*/}
-                                    {/*  </th>*/}
-                                    {/*  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">*/}
-                                    {/*    <span className="sr-only">Edit</span>*/}
-                                    {/*  </th>*/}
+                                    {/*    <th*/}
+                                    {/*        scope="col"*/}
+                                    {/*        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"*/}
+                                    {/*    >*/}
+                                    {/*        Name*/}
+                                    {/*    </th>*/}
+                                    {/*    <th scope="col"*/}
+                                    {/*        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">*/}
+                                    {/*        Edit*/}
+                                    {/*        <span className="sr-only">Edit</span>*/}
+                                    {/*    </th>*/}
                                     {/*</tr>*/}
                                     {/*</thead>*/}
                                     <tbody className="">
                                     {newsItems.map((newsItem, index) =>
-                                        <NewsItemRowComponent newsItem={newsItem} index={index}/>
+                                        <NewsItemRowComponent key={`url-row-${index}`} newsItem={newsItem}
+                                                              index={index}/>
                                     )}
                                     </tbody>
                                 </table>
+                                <div className="grid grid-cols place-content-center">
+                                    <button className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                                        onClick={() => setIsShowingMore(!isShowingMore)}>{isShowingMore ? 'Show less' : 'Show more'}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -174,31 +169,23 @@ const Index = (props: IndexProps) => {
 
     function renderAccountSection() {
         return (<div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-            <a href="#" className="flex-shrink-0 w-full group block">
+            <div className="flex-shrink-0 w-full group block">
                 <div className="flex items-center">
-                    <div>
+                    {!isConnected && (<div className="">
                         <img
                             className="inline-block h-9 w-9 rounded-full"
                             src="./profile_mock.png"
                             alt=""
                         />
-                    </div>
+                    </div>)}
                     <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                            Your profile (soon...)
-                        </p>
-                        <button
-                            onClick={() => setIsFeedbackModalOpen(true)}
-                            className="inline-flex items-center px-1 border border-transparent text-light font-small rounded-md text-white bg-gray-300 hover:bg-gray-500"
-                        >
-                            Submit Feedback
-                        </button>
+                        <ConnectButton chainStatus="none" label="Sign in" accountStatus="full" showBalance={false}/>
                         {/*<p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">*/}
                         {/*    coming soon*/}
                         {/*</p>*/}
                     </div>
                 </div>
-            </a>
+            </div>
         </div>)
     }
 
@@ -365,14 +352,14 @@ const Index = (props: IndexProps) => {
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
     const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-    const tweetStartDate = dayjs().utc().subtract(3, 'days')
+    const tweetStartDate = dayjs().utc().subtract(2, 'days')
     const {data, error} = await supabase
         .from('scorednewsitem')
         .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
         .not('title', 'is', null)
         .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
         .order('score', {ascending: false})
-        .limit(30)
+        .limit(50)
 
     if (error || !data) {
         console.log(error)
