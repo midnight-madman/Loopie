@@ -74,7 +74,7 @@ const NewsItemRowComponent = ({newsItem, index}) => {
         </div>
     }
 
-    return (<tr key={`url-row-${index}`}>
+    return (<tr>
         {/*<td className="whitespace-nowrap text-sm font-medium text-gray-900 relative">*/}
         {/*    <div className="absolute top-2.5 left-2">*/}
         {/*        <div className="font-normal text-gray-500">*/}
