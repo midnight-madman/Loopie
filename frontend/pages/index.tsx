@@ -45,14 +45,20 @@ const Index = (props: IndexProps) => {
     let navigation = [
         {
             name: 'News',
-            onClick: () => setSelectedPage('news'),
+            onClick: () => {
+                setSelectedPage('news')
+                setSidebarOpen(false);
+            },
             icon: HomeIcon,
             current: selectedPage === 'news',
             className: "hover:cursor-pointer"
         },
         {
             name: 'About Loopie',
-            onClick: () => setSelectedPage('info'),
+            onClick: () => {
+                setSelectedPage('info');
+                setSidebarOpen(false);
+            },
             icon: InformationCircleIcon,
             current: selectedPage === 'info',
             className: "hover:cursor-pointer"
@@ -179,7 +185,7 @@ const Index = (props: IndexProps) => {
                         />
                     </div>)}
                     <div className="ml-3">
-                        <ConnectButton chainStatus="none" label="Sign in" accountStatus="full" showBalance={false}/>
+                        <ConnectButton chainStatus="none" label="Login" accountStatus="full" showBalance={false}/>
                         {/*<p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">*/}
                         {/*    coming soon*/}
                         {/*</p>*/}
@@ -246,10 +252,9 @@ const Index = (props: IndexProps) => {
                                     </div>
                                     <nav className="mt-5 px-2 space-y-1">
                                         {navigation.map((item) => (
-                                            <a
+                                            <button
                                                 key={item.name}
-                                                // @ts-ignore
-                                                href={!item.onClick && item.href}
+                                                // href={!item.onClick && item.href}
                                                 onClick={() => item.onClick && item.onClick()}
                                                 className={classNames(
                                                     item.current
@@ -267,7 +272,7 @@ const Index = (props: IndexProps) => {
                                                     aria-hidden="true"
                                                 />
                                                 {item.name}
-                                            </a>
+                                            </button>
                                         ))}
                                     </nav>
                                 </div>
