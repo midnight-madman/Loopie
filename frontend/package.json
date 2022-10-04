@@ -20,6 +20,7 @@
     "ipfs-http-client": "^56.0.3",
     "lodash": "^4.17.21",
     "next": "latest",
+    "next-auth": "^4.12.2",
     "node-fetch": "^3.2.4",
     "papaparse": "^5.3.2",
     "react": "^17.0.2",
