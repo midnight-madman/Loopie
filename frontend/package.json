@@ -7,8 +7,8 @@
     "export": "next export"
   },
   "dependencies": {
-    "@headlessui/react": "^1.5.0",
-    "@heroicons/react": "^1.0.6",
+    "@headlessui/react": "^1.7.3",
+    "@heroicons/react": "^2.0.11",
     "@rainbow-me/rainbowkit": "^0.7.0",
     "@rainbow-me/rainbowkit-siwe-next-auth": "^0.1.4",
     "@supabase/supabase-js": "^1.35.7",

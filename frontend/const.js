@@ -1,23 +1,7 @@
 // don't change this file, source of truth for scraping is in scripts/const.py
 // this is just here for frontend rendering and should really be removed
 const accounts = [
-    'VitalikButerin',
-    'FEhrsam',
-    'haydenzadams',
-    'zhusu',
-    'balajis',
-    'StaniKulechov',
-    'cburniske',
-    'twobitidiot',
-    'spencernoon',
-    'ljxie',
-    'cobie',
-    'rleshner',
-    'danrobinson',
-    'samczsun',
-    'arjunblj',
-    'kaiynne',
-    'lawmaster',
+
     'Melt_Dem',
     'gakonst',
     'ErikVoorhees',

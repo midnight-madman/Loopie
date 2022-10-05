@@ -1,6 +1,13 @@
 import {Fragment, useState} from 'react'
-import {Dialog, Popover, Transition} from '@headlessui/react'
-import {HomeIcon, InformationCircleIcon, MenuIcon, SpeakerphoneIcon, XIcon,} from '@heroicons/react/outline'
+import {Dialog, Transition} from '@headlessui/react'
+import {
+    Bars3Icon,
+    HandRaisedIcon,
+    HomeIcon,
+    InformationCircleIcon,
+    MegaphoneIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline'
 import InfoComponent from "../src/components/InfoComponent";
 import NewsItemRowComponent from "../src/components/NewsItemRowComponent";
 import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
@@ -13,7 +20,9 @@ import {ConnectButton} from '@rainbow-me/rainbowkit';
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {useAccount} from 'wagmi';
+import {useSession} from "next-auth/react";
+import {ContributeComponent} from "../src/components/ContributeComponent";
+import {NavBar} from '../src/components/NavBar';
 
 dayjs().format()
 dayjs.extend(utc)
@@ -30,15 +39,21 @@ interface IndexProps {
 }
 
 const Index = (props: IndexProps) => {
+    const {data: session, status} = useSession()
+    console.log('session', session, status)
+    // const {name: address} = user
+    let isConnected = false
+    if (session && session.user && session.user.name) {
+        isConnected = true
+    }
     let {newsItems} = props;
-    const {address, isConnected} = useAccount()
 
     const [selectedPage, setSelectedPage] = useState('news')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
     const [isShowingMore, setIsShowingMore] = useState(false)
 
-    if(!isShowingMore) {
+    if (!isShowingMore) {
         newsItems = take(newsItems, 25)
     }
 
@@ -51,6 +66,16 @@ const Index = (props: IndexProps) => {
             },
             icon: HomeIcon,
             current: selectedPage === 'news',
+            className: "hover:cursor-pointer"
+        },
+        {
+            name: 'Contribute',
+            onClick: () => {
+                setSelectedPage('contribute')
+                setSidebarOpen(false);
+            },
+            icon: HandRaisedIcon,
+            current: selectedPage === 'contribute',
             className: "hover:cursor-pointer"
         },
         {
@@ -68,58 +93,17 @@ const Index = (props: IndexProps) => {
                 setIsFeedbackModalOpen(true);
                 setSidebarOpen(false);
             },
-            icon: SpeakerphoneIcon,
+            icon: MegaphoneIcon,
             current: false,
             className: "hover:cursor-pointer"
         },
-        // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-        // { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-        // { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
     ]
 
     function renderPageContent() {
         switch (selectedPage) {
             case 'news':
                 return (<>
-                        <Popover as="header" className="relative">
-                            <div className="bg-white py-2 hidden md:block border-b border-gray-200">
-                                <nav
-                                    className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
-                                    aria-label="Global"
-                                >
-                                    <div className="flex items-center flex-1">
-                                        <div className="space-x-2 flex flex-shrink-0 items-center md:ml-4">
-                                            <img src="/favicon.png" alt="Logo" className="h-12 -ml-2"/>
-                                            <h1 className="font-semibold text-gray-800 text-3xl">Loopie</h1>
-                                        </div>
-                                    </div>
-                                    <div className="hidden md:flex md:items-center md:space-x-6">
-                                        {/*<p*/}
-                                        {/*    className="inline-flex items-center text-light font-small rounded-md text-gray-700"*/}
-                                        {/*>*/}
-                                        {/*    Updated {updatedAtTime.fromNow()}*/}
-                                        {/*</p>*/}
-                                        <button
-                                            onClick={() => setIsFeedbackModalOpen(true)}
-                                            className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
-                                        >
-                                            Feedback
-                                        </button>
-                                    </div>
-                                </nav>
-                            </div>
-
-                            <Transition
-                                as={Fragment}
-                                enter="duration-150 ease-out"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="duration-100 ease-in"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                            </Transition>
-                        </Popover>
+                        <NavBar/>
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             {renderNewsPageContent()}
                         </div>
@@ -127,6 +111,8 @@ const Index = (props: IndexProps) => {
                 )
             case 'info':
                 return <InfoComponent openFeedbackModal={() => setIsFeedbackModalOpen(true)}/>
+            case 'contribute':
+                return <div className="max-w-5xl mx-auto px-2 sm:px-4 md:px-8"><ContributeComponent/></div>
             default:
                 return <p>coming soon</p>
         }
@@ -162,7 +148,8 @@ const Index = (props: IndexProps) => {
                                     </tbody>
                                 </table>
                                 <div className="grid grid-cols place-content-center">
-                                    <button className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                                    <button
+                                        className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                                         onClick={() => setIsShowingMore(!isShowingMore)}>{isShowingMore ? 'Show less' : 'Show more'}</button>
                                 </div>
                             </div>
@@ -173,7 +160,12 @@ const Index = (props: IndexProps) => {
         )
     }
 
-    function renderAccountSection() {
+    const renderConnectButton = () => <ConnectButton chainStatus="none"
+                                                     label="Login"
+                                                     accountStatus="full"
+                                                     showBalance={false}/>
+
+    const renderAccountSection = () => {
         return (<div className="flex-shrink-0 flex border-t border-gray-200 p-4">
             <div className="flex-shrink-0 w-full group block">
                 <div className="flex items-center">
@@ -185,7 +177,7 @@ const Index = (props: IndexProps) => {
                         />
                     </div>)}
                     <div className="ml-3">
-                        <ConnectButton chainStatus="none" label="Login" accountStatus="full" showBalance={false}/>
+                        {renderConnectButton()}
                         {/*<p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">*/}
                         {/*    coming soon*/}
                         {/*</p>*/}
@@ -195,7 +187,6 @@ const Index = (props: IndexProps) => {
         </div>)
     }
 
-    // @ts-ignore
     return (
         <>
             <script id="reform-script" async src="https://embed.reform.app/v1/embed.js"/>
@@ -241,7 +232,7 @@ const Index = (props: IndexProps) => {
                                             onClick={() => setSidebarOpen(false)}
                                         >
                                             <span className="sr-only">Close sidebar</span>
-                                            <XIcon className="h-6 w-6 text-white" aria-hidden="true"/>
+                                            <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true"/>
                                         </button>
                                     </div>
                                 </Transition.Child>
@@ -333,7 +324,7 @@ const Index = (props: IndexProps) => {
                             onClick={() => setSidebarOpen(true)}
                         >
                             <span className="sr-only">Open sidebar</span>
-                            <MenuIcon className="h-6 w-6" aria-hidden="true"/>
+                            <Bars3Icon className="h-6 w-6" aria-hidden="true"/>
                         </button>
                         <h3 className="flex text-md pl-2 pt-2.5 sm:hidden font-semibold text-gray-800">
                             <img src="/favicon.png" className="-mt-1 h-8 w-auto" alt="Logo"/>
@@ -342,11 +333,7 @@ const Index = (props: IndexProps) => {
                             </p>
                         </h3>
                     </div>
-                    <main className="">
-                        <div className="">
-                            {renderPageContent()}
-                        </div>
-                    </main>
+                    {renderPageContent()}
                     <Footer/>
                 </div>
             </div>

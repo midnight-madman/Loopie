@@ -1,12 +1,10 @@
 import {
     CheckIcon,
-    CollectionIcon,
-    DotsHorizontalIcon,
-    SpeakerphoneIcon,
-    ThumbUpIcon,
-    UserIcon
-} from '@heroicons/react/solid'
-import {ChevronDoubleUpIcon} from "@heroicons/react/outline";
+    ChevronDoubleUpIcon,
+    EllipsisHorizontalIcon,
+    MegaphoneIcon,
+    RectangleStackIcon
+} from '@heroicons/react/24/solid'
 
 const timeline = [
     {
@@ -26,7 +24,7 @@ const timeline = [
         href: '#',
         date: 'April 22',
         datetime: '2022-04-22',
-        icon: CollectionIcon,
+        icon: RectangleStackIcon,
         iconBackground: 'bg-green-500',
     },
     {
@@ -46,7 +44,7 @@ const timeline = [
         href: '#',
         date: 'April 23',
         datetime: '2022-04-23',
-        icon: SpeakerphoneIcon,
+        icon: MegaphoneIcon,
         iconBackground: 'bg-blue-500',
     },
     {
@@ -56,7 +54,7 @@ const timeline = [
         href: '#',
         date: 'April',
         datetime: '2022-04-30',
-        icon: DotsHorizontalIcon,
+        icon: EllipsisHorizontalIcon,
         iconBackground: 'bg-purple-500',
     },
     {
@@ -64,19 +62,19 @@ const timeline = [
         content: 'Add wallet login, ',
         target: 'user accounts and rewards',
         href: '#',
-        date: 'April',
-        datetime: '2022-04-30',
-        icon: DotsHorizontalIcon,
+        date: 'September',
+        datetime: '2022-09-30',
+        icon: EllipsisHorizontalIcon,
         iconBackground: 'bg-purple-500',
     },
     {
         id: 7,
-        content: 'Bring influencer accounts and the governance about the list',
-        target: 'on-chain',
+        content: 'Bring collaboration to web app',
+        target: 'collaboration',
         href: '#',
-        date: 'Q2 22',
-        datetime: '2022-06-30',
-        icon: DotsHorizontalIcon,
+        date: 'Q4 22',
+        datetime: '2022-11-20',
+        icon: EllipsisHorizontalIcon,
         iconBackground: 'bg-purple-500',
     },
 ]
@@ -96,7 +94,8 @@ export default function TimelineComponent() {
                     <li key={event.id}>
                         <div className="relative pb-8">
                             {eventIdx !== timeline.length - 1 ? (
-                                <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true" />
+                                <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+                                      aria-hidden="true"/>
                             ) : null}
                             <div className="relative flex space-x-3">
                                 <div>
@@ -106,7 +105,7 @@ export default function TimelineComponent() {
                           'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
                       )}
                   >
-                    <event.icon className="h-5 w-5 text-white" aria-hidden="true" />
+                    <event.icon className="h-5 w-5 text-white" aria-hidden="true"/>
                   </span>
                                 </div>
                                 <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">

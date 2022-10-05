@@ -1,7 +1,7 @@
 import {replace, split} from "lodash/string";
 import {map, take, trimEnd, truncate} from "lodash";
 import {useEffect, useState} from 'react'
-import {ArrowSmDownIcon, ArrowSmUpIcon} from '@heroicons/react/outline'
+import {ArrowDownIcon, ArrowUpIcon} from '@heroicons/react/20/solid'
 
 const getCleanUrl = (url) => {
     url = replace(url, /^(https?:\/\/?)|(www\.)/ig, '')
@@ -103,10 +103,10 @@ const NewsItemRowComponent = ({newsItem, index}) => {
                                   onClick={() => setIsExpandedRow(!isExpandedRow)}>
                                 <p className="">{isExpandedRow ? 'Less' : 'More'}</p>
                                 {isExpandedRow ?
-                                    <ArrowSmUpIcon
+                                    <ArrowUpIcon
                                         className='mt-1 flex-shrink-0 h-5 w-5'
                                         aria-hidden="true"
-                                    /> : <ArrowSmDownIcon
+                                    /> : <ArrowDownIcon
                                         className='mt-1  flex-shrink-0 h-5 w-5'
                                         aria-hidden="true"
                                     />}

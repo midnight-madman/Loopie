@@ -1,11 +1,26 @@
 import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
-import {ChipIcon, NewspaperIcon, UsersIcon, XIcon} from '@heroicons/react/outline'
+import {CpuChipIcon, NewspaperIcon, UsersIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import TimelineComponent from "./TimelineComponent";
-import accounts from "../../const";
-import {take} from "lodash";
 
-
+const exampleAuthorAccounts = [
+    'VitalikButerin',
+    'FEhrsam',
+    'haydenzadams',
+    'balajis',
+    'StaniKulechov',
+    'cburniske',
+    'twobitidiot',
+    'spencernoon',
+    'ljxie',
+    'cobie',
+    'rleshner',
+    'danrobinson',
+    'samczsun',
+    'arjunblj',
+    'kaiynne',
+    'lawmaster',
+]
 const HEADER_TITLE = 'Build Loopie with us';
 const HEADER_SUBTITLE = 'We will be the #1 news source for web3 - starting with collaborative link aggregation'
 
@@ -29,7 +44,7 @@ const supportLinks = [
         href: '#',
         description:
             'Decentralize all tech from acquiring data, storing it and showing it in this frontend.',
-        icon: ChipIcon,
+        icon: CpuChipIcon,
         linkText: 'WAGMI'
     },
     {
@@ -183,7 +198,7 @@ export default function InfoComponent({openFeedbackModal}) {
     }
 
     function renderFaq() {
-        return ( <section
+        return (<section
             className="max-w-md mx-auto py-24 px-4 divide-y-2 divide-blue-gray-200 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:py-32 lg:px-8"
             aria-labelledby="faq-heading"
         >
@@ -280,7 +295,7 @@ export default function InfoComponent({openFeedbackModal}) {
                                         <Popover.Button
                                             className="bg-white rounded-md p-2 inline-flex items-center justify-center text-blue-gray-400 hover:bg-blue-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
                                             <span className="sr-only">Close menu</span>
-                                            <XIcon className="h-6 w-6" aria-hidden="true"/>
+                                            <XMarkIcon className="h-6 w-6" aria-hidden="true"/>
                                         </Popover.Button>
                                     </div>
                                 </div>
@@ -345,7 +360,7 @@ export default function InfoComponent({openFeedbackModal}) {
                                         <button
                                             onClick={() => openFeedbackModal()}
                                             // href={link.href}
-                                           className="text-base font-medium text-blue-700 hover:text-blue-600">
+                                            className="text-base font-medium text-blue-700 hover:text-blue-600">
                                             {link.linkText}
                                             <span aria-hidden="true"> &rarr;</span>
                                         </button>
@@ -364,17 +379,20 @@ export default function InfoComponent({openFeedbackModal}) {
                             Details
                         </h2>
                         <div className="mt-6 pt-10 space-x-2 space-y-4 md:space-x-8 md:grid md:grid-cols-2">
-                            <TimelineComponent />
+                            <TimelineComponent/>
                             <div className="align-left">
                                 <h3 className="text-xl font-extrabold text-blue-gray-900">
-                                    25 Accounts we're tracking and {accounts.length - 25} more
+                                    Some of the accounts we're tracking
                                 </h3>
+                                <p className="text-lg font-normal text-blue-gray-700"><a className="underline"
+                                                                                         href="https://github.com/midnight-madman/Loopie/blob/main/scripts/const.py">Here
+                                    is the full list</a></p>
                                 <ul role="list" className="divide-y divide-gray-200">
-                                    {take(accounts, 25).map((account) => (
+                                    {exampleAuthorAccounts.map((account) => (
                                         <li key={account} className="py-4 flex">
                                             <img className="h-10 w-10 rounded-full"
                                                  src={`https://unavatar.io/twitter/${account}`}
-                                                 alt="" />
+                                                 alt=""/>
                                             <div className="ml-3">
                                                 <p className="text-sm font-medium text-gray-900">{account}</p>
                                                 {/*<p className="text-sm text-gray-500">{person.email}</p>*/}
