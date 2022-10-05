@@ -28,11 +28,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse<any
 
                     const siwe = new SiweMessage(JSON.parse(credentials?.message || "{}"))
 
-                    const nextAuthUrl =
-                        process.env.NEXTAUTH_URL ||
-                        (process.env.NEXT_PUBLIC_VERCEL_URL
-                            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                            : null)
+                    const nextAuthUrl = process.env.NEXTAUTH_URL || null
 
                     console.log('authorize called for nextAuthUrl', nextAuthUrl)
                     if (!nextAuthUrl) {
