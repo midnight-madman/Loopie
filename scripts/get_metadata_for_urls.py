@@ -25,6 +25,7 @@ def can_get_title_from_url(url):
 TITLE_BLOCKLIST = [
     'before you continue to youtube',
     'just a moment.',
+    'are you a robot?'
 ]
 
 

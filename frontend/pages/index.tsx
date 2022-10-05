@@ -361,7 +361,6 @@ export const getStaticProps: GetStaticProps = async context => {
     const {data, error} = await supabase
         .from('scorednewsitem')
         .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
-        .not('title', 'is', null)
         .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
         .order('score', {ascending: false})
         .limit(50)
