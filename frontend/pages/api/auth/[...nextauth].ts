@@ -35,7 +35,6 @@ export default async function auth (req: NextApiRequest, res: NextApiResponse<an
             return null
           }
 
-          // eslint-disable-next-line node/no-unsupported-features/node-builtins
           const nextAuthHost = new URL(nextAuthUrl).host
           if (siwe.domain !== nextAuthHost) {
             return null

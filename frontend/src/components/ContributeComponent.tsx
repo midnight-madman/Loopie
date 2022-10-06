@@ -88,7 +88,7 @@ export function ContributeComponent () {
   const hasData = !isEmpty(tags) && !isEmpty(newsItems)
 
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-  const tweetStartDate = dayjs().utc()
+  const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const isLoading = status === 'loading'
 
   useEffect(() => {
@@ -166,7 +166,7 @@ export function ContributeComponent () {
       .from<ScoredNewsItem>('scorednewsitem')
       .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
       .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
-      .order('created_at', { ascending: false })
+      .order('score', { ascending: false })
       .range(paginationIndex, paginationIndex + NEWS_ITEMS_PER_PAGE)
 
     if (error || !data) {
