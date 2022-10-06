@@ -1,37 +1,36 @@
-import {Fragment, useState} from 'react'
-import {Dialog, Transition} from '@headlessui/react'
+import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 import {
-    Bars3Icon,
-    HandRaisedIcon,
-    HomeIcon,
-    InformationCircleIcon,
-    MegaphoneIcon,
-    XMarkIcon,
+  Bars3Icon,
+  HandRaisedIcon,
+  HomeIcon,
+  InformationCircleIcon,
+  MegaphoneIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline'
-import InfoComponent from "../src/components/InfoComponent";
-import NewsItemRowComponent from "../src/components/NewsItemRowComponent";
-import FeedbackModalComponent from "../src/components/FeedbackModalComponent";
-import Footer from "../src/components/Footer";
-import {GetStaticProps} from 'next'
-import {createClient} from '@supabase/supabase-js'
-import {isNil, omitBy, take} from "lodash";
-import {ConnectButton} from '@rainbow-me/rainbowkit';
+import InfoComponent from '../src/components/InfoComponent'
+import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
+import FeedbackModalComponent from '../src/components/FeedbackModalComponent'
+import Footer from '../src/components/Footer'
+import { GetStaticProps } from 'next'
+import { createClient } from '@supabase/supabase-js'
+import { isNil, omitBy, take } from 'lodash'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import relativeTime from "dayjs/plugin/relativeTime";
-import {useSession} from "next-auth/react";
-import {ContributeComponent} from "../src/components/ContributeComponent";
-import {NavBar} from '../src/components/NavBar';
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { useSession } from 'next-auth/react'
+import { ContributeComponent } from '../src/components/ContributeComponent'
+import { NavBar } from '../src/components/NavBar'
 
 dayjs().format()
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
 
-
 // @ts-ignore
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
+function classNames (...classes) {
+  return classes.filter(Boolean).join(' ')
 }
 
 interface IndexProps {
@@ -39,87 +38,87 @@ interface IndexProps {
 }
 
 const Index = (props: IndexProps) => {
-    const {data: session, status} = useSession()
-    console.log('session', session, status)
-    // const {name: address} = user
-    let isConnected = false
-    if (session && session.user && session.user.name) {
-        isConnected = true
+  const { data: session, status } = useSession()
+  console.log('session', session, status)
+  // const {name: address} = user
+  let isConnected = false
+  if (session && session.user && session.user.name) {
+    isConnected = true
+  }
+  let { newsItems } = props
+
+  const [selectedPage, setSelectedPage] = useState('news')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
+  const [isShowingMore, setIsShowingMore] = useState(false)
+
+  if (!isShowingMore) {
+    newsItems = take(newsItems, 25)
+  }
+
+  const navigation = [
+    {
+      name: 'News',
+      onClick: () => {
+        setSelectedPage('news')
+        setSidebarOpen(false)
+      },
+      icon: HomeIcon,
+      current: selectedPage === 'news',
+      className: 'hover:cursor-pointer'
+    },
+    {
+      name: 'Contribute',
+      onClick: () => {
+        setSelectedPage('contribute')
+        setSidebarOpen(false)
+      },
+      icon: HandRaisedIcon,
+      current: selectedPage === 'contribute',
+      className: 'hover:cursor-pointer'
+    },
+    {
+      name: 'About Loopie',
+      onClick: () => {
+        setSelectedPage('info')
+        setSidebarOpen(false)
+      },
+      icon: InformationCircleIcon,
+      current: selectedPage === 'info',
+      className: 'hover:cursor-pointer'
+    }, {
+      name: 'Submit Feedback',
+      onClick: () => {
+        setIsFeedbackModalOpen(true)
+        setSidebarOpen(false)
+      },
+      icon: MegaphoneIcon,
+      current: false,
+      className: 'hover:cursor-pointer'
     }
-    let {newsItems} = props;
+  ]
 
-    const [selectedPage, setSelectedPage] = useState('news')
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-    const [isShowingMore, setIsShowingMore] = useState(false)
-
-    if (!isShowingMore) {
-        newsItems = take(newsItems, 25)
-    }
-
-    let navigation = [
-        {
-            name: 'News',
-            onClick: () => {
-                setSelectedPage('news')
-                setSidebarOpen(false);
-            },
-            icon: HomeIcon,
-            current: selectedPage === 'news',
-            className: "hover:cursor-pointer"
-        },
-        {
-            name: 'Contribute',
-            onClick: () => {
-                setSelectedPage('contribute')
-                setSidebarOpen(false);
-            },
-            icon: HandRaisedIcon,
-            current: selectedPage === 'contribute',
-            className: "hover:cursor-pointer"
-        },
-        {
-            name: 'About Loopie',
-            onClick: () => {
-                setSelectedPage('info');
-                setSidebarOpen(false);
-            },
-            icon: InformationCircleIcon,
-            current: selectedPage === 'info',
-            className: "hover:cursor-pointer"
-        }, {
-            name: 'Submit Feedback',
-            onClick: () => {
-                setIsFeedbackModalOpen(true);
-                setSidebarOpen(false);
-            },
-            icon: MegaphoneIcon,
-            current: false,
-            className: "hover:cursor-pointer"
-        },
-    ]
-
-    function renderPageContent() {
-        switch (selectedPage) {
-            case 'news':
-                return (<>
+  function renderPageContent () {
+    switch (selectedPage) {
+      case 'news':
+        return (<>
                         <NavBar/>
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             {renderNewsPageContent()}
                         </div>
                     </>
-                )
-            case 'info':
-                return <InfoComponent openFeedbackModal={() => setIsFeedbackModalOpen(true)}/>
-            case 'contribute':
-                return <div className="max-w-5xl mx-auto px-2 sm:px-4 md:px-8"><ContributeComponent/></div>
-            default:
-                return <p>coming soon</p>
-        }
+        )
+      case 'info':
+        return <InfoComponent openFeedbackModal={() => setIsFeedbackModalOpen(true)}/>
+      case 'contribute':
+        return <div className="max-w-5xl mx-auto px-2 sm:px-4 md:px-8"><ContributeComponent/></div>
+      default:
+        return <p>coming soon</p>
     }
+  }
 
-    function renderNewsPageContent() {
-        return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
+  function renderNewsPageContent () {
+    return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
                 <div className="mt-2 lg:mt-5 flex flex-col">
                     <div className="-mx-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full align-middle">
@@ -157,16 +156,16 @@ const Index = (props: IndexProps) => {
                     </div>
                 </div>
             </div>
-        )
-    }
+    )
+  }
 
-    const renderConnectButton = () => <ConnectButton chainStatus="none"
+  const renderConnectButton = () => <ConnectButton chainStatus="none"
                                                      label="Login"
                                                      accountStatus="full"
                                                      showBalance={false}/>
 
-    const renderAccountSection = () => {
-        return (<div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+  const renderAccountSection = () => {
+    return (<div className="flex-shrink-0 flex border-t border-gray-200 p-4">
             <div className="flex-shrink-0 w-full group block">
                 <div className="flex items-center">
                     {!isConnected && (<div className="">
@@ -185,9 +184,9 @@ const Index = (props: IndexProps) => {
                 </div>
             </div>
         </div>)
-    }
+  }
 
-    return (
+  return (
         <>
             <script id="reform-script" async src="https://embed.reform.app/v1/embed.js"/>
             {isFeedbackModalOpen && (
@@ -248,17 +247,17 @@ const Index = (props: IndexProps) => {
                                                 // href={!item.onClick && item.href}
                                                 onClick={() => item.onClick && item.onClick()}
                                                 className={classNames(
-                                                    item.current
-                                                        ? 'bg-gray-100 text-gray-900'
-                                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                                                    item.className,
-                                                    'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                                  item.current
+                                                    ? 'bg-gray-100 text-gray-900'
+                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                                  item.className,
+                                                  'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                                 )}
                                             >
                                                 <item.icon
                                                     className={classNames(
-                                                        item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                                                        'mr-4 flex-shrink-0 h-6 w-6'
+                                                      item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                                                      'mr-4 flex-shrink-0 h-6 w-6'
                                                     )}
                                                     aria-hidden="true"
                                                 />
@@ -293,17 +292,17 @@ const Index = (props: IndexProps) => {
                                         href={item.onClick ? undefined : item.href}
                                         onClick={() => item.onClick && item.onClick()}
                                         className={classNames(
-                                            item.current
-                                                ? 'bg-gray-100 text-gray-900'
-                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                                            item.className,
-                                            'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                          item.current
+                                            ? 'bg-gray-100 text-gray-900'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                          item.className,
+                                          'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                         )}
                                     >
                                         <item.icon
                                             className={classNames(
-                                                item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                                                'mr-3 flex-shrink-0 h-6 w-6'
+                                              item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                                              'mr-3 flex-shrink-0 h-6 w-6'
                                             )}
                                             aria-hidden="true"
                                         />
@@ -338,36 +337,35 @@ const Index = (props: IndexProps) => {
                 </div>
             </div>
         </>
-    )
+  )
 }
 
 // @ts-ignore
 export const getStaticProps: GetStaticProps = async context => {
-    const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-    const tweetStartDate = dayjs().utc().subtract(2, 'days')
-    const {data, error} = await supabase
-        .from('scorednewsitem')
-        .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
-        .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
-        .order('score', {ascending: false})
-        .limit(50)
+  const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
+  const tweetStartDate = dayjs().utc().subtract(2, 'days')
+  const { data, error } = await supabase
+    .from('scorednewsitem')
+    .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
+    .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
+    .order('score', { ascending: false })
+    .limit(50)
 
-    if (error || !data) {
-        console.log(error)
-        return {
-            props: {
-                newsItems: []
-            }
-        }
-    }
-    const newsItems = data.map((newsItem) => omitBy(newsItem, isNil));
+  if (error || !data) {
+    console.log(error)
     return {
-        props: {
-            newsItems,
-        },
-        revalidate: 60 * 60 // every hour
+      props: {
+        newsItems: []
+      }
     }
+  }
+  const newsItems = data.map((newsItem) => omitBy(newsItem, isNil))
+  return {
+    props: {
+      newsItems
+    },
+    revalidate: 60 * 60 // every hour
+  }
 }
 
-
-export default Index;
+export default Index
