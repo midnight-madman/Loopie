@@ -1,5 +1,5 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Popover } from '@headlessui/react'
+import { ConnectButton } from './ConnectButton'
 
 export function NavBar () {
   return (
@@ -16,10 +16,7 @@ export function NavBar () {
                         </div>
                     </div>
                     <div className="hidden md:flex md:items-center md:space-x-6">
-                        <ConnectButton chainStatus="none"
-                                       label="Login"
-                                       accountStatus="full"
-                                       showBalance={false}/>
+                        <ConnectButton />
                     </div>
                 </nav>
             </div>
