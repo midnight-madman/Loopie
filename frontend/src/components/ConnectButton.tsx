@@ -2,8 +2,11 @@ import { ConnectButton as RainbowKitConnectButton } from '@rainbow-me/rainbowkit
 import { useState } from 'react'
 import { classNames } from '../utils'
 
+const DEFAULT_BUTTON_COLOR = '#adc178'
+const HOVER_BUTTON_COLOR = '#dde5b6'
+
 export const ConnectButton = ({ buttonClassName }: { buttonClassName?: string }) => {
-  const [backgroundColor, setBackgroundColor] = useState('#f08080')
+  const [backgroundColor, setBackgroundColor] = useState(DEFAULT_BUTTON_COLOR)
 
   const renderButton = ({
     text, onClick, children
@@ -11,8 +14,8 @@ export const ConnectButton = ({ buttonClassName }: { buttonClassName?: string })
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setBackgroundColor('#f4978e')}
-      onMouseLeave={() => setBackgroundColor('#f08080')}
+      onMouseEnter={() => setBackgroundColor(HOVER_BUTTON_COLOR)}
+      onMouseLeave={() => setBackgroundColor(DEFAULT_BUTTON_COLOR)}
       style={{ backgroundColor }}
       className={classNames(buttonClassName, 'inline-flex items-center rounded-md border border-transparent px-4 py-2 lg:px-8 lg:py-3 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-200 focus:ring-offset-2')}
     >

@@ -42,7 +42,6 @@ const Index = (props: IndexProps) => {
     data: session,
     status
   } = useSession()
-  console.log('session', session, status)
   // const {name: address} = user
   let isConnected = false
   if (session && session.user && session.user.name) {
