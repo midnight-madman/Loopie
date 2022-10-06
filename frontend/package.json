@@ -7,8 +7,8 @@
     "export": "next export"
   },
   "dependencies": {
-    "@headlessui/react": "^1.5.0",
-    "@heroicons/react": "^1.0.6",
+    "@headlessui/react": "^1.7.3",
+    "@heroicons/react": "^2.0.11",
     "@rainbow-me/rainbowkit": "^0.7.0",
     "@rainbow-me/rainbowkit-siwe-next-auth": "^0.1.4",
     "@supabase/supabase-js": "^1.35.7",
@@ -27,15 +27,21 @@
     "wagmi": "^0.6.7"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^12.3.1",
     "@types/lodash": "^4.14.182",
     "@types/node": "^17.0.4",
     "@types/papaparse": "^5.3.2",
     "@types/react": "^17.0.38",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
     "autoprefixer": "^10.4.0",
+    "eslint": "^8.24.0",
+    "eslint-plugin-node": "^11.1.0",
     "postcss": "^8.4.5",
     "prettier": "^2.5.1",
-    "prettier-plugin-tailwindcss": "^0.1.1",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "standard": "^17.0.0",
     "tailwindcss": "^3.0.7",
-    "typescript": "^4.5.4"
+    "typescript": "^4.8.4"
   }
 }

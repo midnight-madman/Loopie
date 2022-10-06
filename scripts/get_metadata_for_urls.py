@@ -25,7 +25,8 @@ def can_get_title_from_url(url):
 TITLE_BLOCKLIST = [
     'before you continue to youtube',
     'just a moment.',
-    'are you a robot?'
+    'are you a robot?',
+    'subscribe to read'
 ]
 
 
@@ -38,7 +39,7 @@ def is_valid_title(title: str) -> bool:
     if 'Attention Required' in title and 'cloudflare' in title_low:
         return False
 
-    return not any([blocked_title in title for blocked_title in TITLE_BLOCKLIST])
+    return not any([title_low.startswith(blocked_title) for blocked_title in TITLE_BLOCKLIST])
 
 
 def clean_title(title: str) -> str:
