@@ -1,6 +1,5 @@
-
-export function LoadingComponent({subtitle}: {subtitle?: string}) {
-    return <main className="mt-16 ml-8 max-w-7xl px-4">
+export function LoadingComponent ({ subtitle }: { subtitle?: string }) {
+  return <main className="mt-16 ml-8 max-w-7xl px-4">
         <div className="mx-auto item-center text-center">
             <h1 className="text-2xl font-bold text-gray-900">
           <span className="block xl:inline">

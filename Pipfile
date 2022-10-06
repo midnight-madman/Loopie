@@ -15,6 +15,7 @@ selenium = "*"
 luigi = "*"
 supabase = "*"
 psycopg2 = "*"
+httpx = ">=0.23.0" # https://github.com/midnight-madman/Loopie/security/dependabot/5
 
 [dev-packages]
 jupyter = "*"

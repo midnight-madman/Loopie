@@ -1,10 +1,10 @@
-import {ConnectButton} from "@rainbow-me/rainbowkit";
-import {Popover} from '@headlessui/react'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { Popover } from '@headlessui/react'
 
-export function NavBar() {
-    return (
+export function NavBar () {
+  return (
         <Popover as="header" className="relative">
-            <div className="bg-white py-2 hidden md:block border-b border-gray-200">
+            <div className="py-2 hidden md:block border-b border-gray-200">
                 <nav
                     className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
                     aria-label="Global"
@@ -24,5 +24,5 @@ export function NavBar() {
                 </nav>
             </div>
         </Popover>
-    )
+  )
 }
