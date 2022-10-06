@@ -20,9 +20,11 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useSession } from 'next-auth/react'
-import { ContributeComponent } from '../src/components/ContributeComponent'
 import { NavBar } from '../src/components/NavBar'
 import { ConnectButton } from '../src/components/ConnectButton'
+import dynamic from 'next/dynamic'
+// @ts-ignore
+const ContributeComponent = dynamic(() => import('../src/components/ContributeComponent'))
 
 dayjs().format()
 dayjs.extend(utc)

@@ -1,4 +1,3 @@
-// eslint-disable-next-line node/no-unpublished-require
 const colors = require('tailwindcss/colors')
 
 module.exports = {

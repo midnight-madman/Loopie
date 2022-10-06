@@ -15,10 +15,6 @@ module.exports = {
     ecmaVersion: 12
   },
   rules: {
-    'node/no-unsupported-features/es-syntax': [
-      'error',
-      { ignores: ['modules'] }
-    ],
     'node/no-missing-import': 'off',
     '@next/next/no-img-element': 'off'
   },
