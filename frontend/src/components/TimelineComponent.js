@@ -5,6 +5,7 @@ import {
   MegaphoneIcon,
   RectangleStackIcon
 } from '@heroicons/react/24/solid'
+import { classNames } from '../utils'
 
 const timeline = [
   {
@@ -78,10 +79,6 @@ const timeline = [
     iconBackground: 'bg-purple-500'
   }
 ]
-
-function classNames (...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function TimelineComponent () {
   return (

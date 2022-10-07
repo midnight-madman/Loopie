@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
 import { find, findIndex, get, isEmpty, map, split } from 'lodash'
 import { LoadingComponent } from './LoadingComponent'
-import { CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
+import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
 import { ConnectButton } from './ConnectButton'
 
 type Author = {
@@ -241,7 +241,12 @@ export function ContributeComponent () {
             <div className="min-w-0 flex-1">
               <h2 id={'newsItem-title-' + newsItem.id}
                   className="mt-4 text-base font-medium text-gray-900">
-                {newsItem.title}
+                <a target="_blank"
+                   rel="noreferrer noopener"
+                   className="flex hover:underline"
+                   href={newsItem.url}>{newsItem.title}
+                  <ArrowTopRightOnSquareIcon className="ml-2 w-5 h-5"/>
+                </a>
               </h2>
               <p className="text-sm font-medium text-gray-500">
                 <div className="flex">
