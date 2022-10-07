@@ -9,6 +9,12 @@ import { find, findIndex, get, isEmpty, map, split } from 'lodash'
 import { LoadingComponent } from './LoadingComponent'
 import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
 import { ConnectButton } from './ConnectButton'
+import utc from 'dayjs/plugin/utc'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs().format()
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
 
 type Author = {
   twitter_id: string
@@ -91,24 +97,6 @@ export function ContributeComponent () {
   const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const isLoading = status === 'loading'
 
-  useEffect(() => {
-    if (isLoading || !isEmpty(newsItems)) {
-      return
-    }
-    getTagsFromSupabase().then(() => getNewsItemsFromSupabase()).then(() =>
-      setNewsItemIdToState(map(newsItems, 'id').reduce((o, key) => ({
-        ...o,
-        [key]: ''
-      }), {}))
-    )
-  }, [status])
-
-  if (isLoading) {
-    return <div className="h-screen grid grid-cols place-content-center">
-      <ConnectButton/>
-    </div>
-  }
-
   const getTagsFromSupabase = async () => {
     const {
       data,
@@ -124,6 +112,60 @@ export function ContributeComponent () {
 
     console.log('got tags from DB', data)
     setTags(data)
+  }
+
+  const getNewsItemsFromSupabase = async () => {
+    const {
+      data,
+      error
+    } = await supabase
+      .from<ScoredNewsItem>('scorednewsitem')
+      .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
+      .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
+      .order('score', { ascending: false })
+      .range(paginationIndex, paginationIndex + NEWS_ITEMS_PER_PAGE)
+
+    if (error || !data) {
+      console.log(error)
+      return
+    }
+
+    setNewsItems(data)
+  }
+
+  useEffect(() => {
+    if (!isEmpty(newsItems)) {
+      return
+    }
+
+    getTagsFromSupabase().then(() => getNewsItemsFromSupabase()).then(() =>
+      setNewsItemIdToState(map(newsItems, 'id').reduce((o, key) => ({
+        ...o,
+        [key]: ''
+      }), {}))
+    )
+  }, [status])
+
+  const renderWelcomeText = () =>
+    <div className="mx-auto pt-8 px-8">
+      <div className="lg:grid lg:grid-cols-1 lg:items-center lg:gap-24">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Welcome friendly contributor 👋🏼
+          </h2>
+          <p className="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
+            We are excited that you want to help out with Loopie 🎉<br/>
+            Join our Discord or jump in below and support with labeling the latest news
+          </p>
+        </div>
+      </div>
+    </div>
+
+  if (isLoading) {
+    return <div className="h-screen grid grid-cols place-content-center">
+      {renderWelcomeText()}
+      <ConnectButton/>
+    </div>
   }
 
   const removeTagFromNewsItemInSupabase = async (newsItemId: string, tagId: string) => {
@@ -156,25 +198,6 @@ export function ContributeComponent () {
         [newsItemId]: ''
       })
     }
-  }
-
-  const getNewsItemsFromSupabase = async () => {
-    const {
-      data,
-      error
-    } = await supabase
-      .from<ScoredNewsItem>('scorednewsitem')
-      .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
-      .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
-      .order('score', { ascending: false })
-      .range(paginationIndex, paginationIndex + NEWS_ITEMS_PER_PAGE)
-
-    if (error || !data) {
-      console.log(error)
-      return
-    }
-
-    setNewsItems(data)
   }
 
   const addTagToNewsItemInSupabase = async (newsItemId: string, tagId: string) => {
@@ -484,19 +507,7 @@ export function ContributeComponent () {
             </>
           )}
         </Popover>
-        <div className="mx-auto pt-8 px-8">
-          <div className="lg:grid lg:grid-cols-1 lg:items-center lg:gap-24">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Welcome friendly contributor 👋🏼
-              </h2>
-              <p className="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
-                We are excited that you want to help out with Loopie 🎉<br/>
-                Join our Discord or jump in below and support with labeling the latest news
-              </p>
-            </div>
-          </div>
-        </div>
+        {renderWelcomeText()}
         <div className="py-4">
           <div className="mx-auto sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">
             <main className="lg:col-span-9 xl:col-span-9">
@@ -548,9 +559,8 @@ export function ContributeComponent () {
 
               <div className="">
                 <h1 className="sr-only">News</h1>
-
                 {!hasData
-                  ? <LoadingComponent/>
+                  ? <><LoadingComponent/></>
                   : <ul role="list" className="space-y-4">
                     {newsItems.map((newsItem) => renderNewsItemToTagRow(newsItem, get(newsItemIdToState, newsItem.id)))}
                   </ul>

@@ -1,7 +1,8 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { CpuChipIcon, NewspaperIcon, UsersIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import TimelineComponent from './TimelineComponent'
+import FeedbackModalComponent from './FeedbackModalComponent'
 
 const exampleAuthorAccounts = [
   'VitalikButerin',
@@ -10,16 +11,8 @@ const exampleAuthorAccounts = [
   'balajis',
   'StaniKulechov',
   'cburniske',
-  'twobitidiot',
-  'spencernoon',
-  'ljxie',
   'cobie',
-  'rleshner',
-  'danrobinson',
-  'samczsun',
-  'arjunblj',
-  'kaiynne',
-  'lawmaster'
+  'twobitidiot'
 ]
 const HEADER_TITLE = 'Build Loopie with us'
 const HEADER_SUBTITLE = 'We will be the #1 news source for web3 - starting with collaborative link aggregation'
@@ -93,55 +86,8 @@ const faqs = [
   }
 ]
 
-export default function InfoComponent ({ openFeedbackModal }) {
-  function renderNewsletterSection () {
-    return <></>
-    // return (<section
-    //         className="max-w-md mx-auto py-24 px-4 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:py-32 lg:px-8 lg:flex lg:items-center"
-    //         aria-labelledby="newsletter-heading"
-    //     >
-    //         <div className="lg:w-0 lg:flex-1">
-    //             <h2 className="text-3xl font-extrabold text-blue-gray-900 sm:text-4xl" id="newsletter-heading">
-    //                 Sign up for our newsletter
-    //             </h2>
-    //             <p className="mt-3 max-w-3xl text-lg text-blue-gray-500">
-    //                 Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui Lorem cupidatat commodo. Elit sunt
-    //                 amet
-    //                 fugiat veniam occaecat fugiat.
-    //             </p>
-    //         </div>
-    //         <div className="mt-8 lg:mt-0 lg:ml-8">
-    //             <form className="sm:flex">
-    //                 <label htmlFor="email-address" className="sr-only">
-    //                     Email address
-    //                 </label>
-    //                 <input
-    //                     id="email-address"
-    //                     name="email-address"
-    //                     type="email"
-    //                     autoComplete="email"
-    //                     required
-    //                     className="w-full px-5 py-3 border border-blue-gray-300 shadow-sm placeholder-blue-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs rounded-md"
-    //                     placeholder="Enter your email"
-    //                 />
-    //                 <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-    //                     <button
-    //                         type="submit"
-    //                         className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-    //                     >
-    //                         Notify me
-    //                     </button>
-    //                 </div>
-    //             </form>
-    //             <p className="mt-3 text-sm text-blue-gray-500">
-    //                 We care about the protection of your data. Read our{' '}
-    //                 <a href="#" className="font-medium underline">
-    //                     Privacy Policy.
-    //                 </a>
-    //             </p>
-    //         </div>
-    //     </section>)
-  }
+export default function InfoComponent () {
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
 
   function renderFaq () {
     return (<section
@@ -165,6 +111,10 @@ export default function InfoComponent ({ openFeedbackModal }) {
   }
 
   return (
+    <>
+      <script id="reform-script" async src="https://embed.reform.app/v1/embed.js"/>
+      {isFeedbackModalOpen && (
+        <FeedbackModalComponent open={isFeedbackModalOpen} setOpen={setIsFeedbackModalOpen}/>)}
     <div className="bg-white">
       <header className="relative pb-36 bg-blue-gray-800">
         <div className="absolute inset-0">
@@ -304,7 +254,7 @@ export default function InfoComponent ({ openFeedbackModal }) {
                   </div>
                   <div className="p-6 bg-blue-gray-50 rounded-bl-2xl rounded-br-2xl md:px-8">
                     <button
-                      onClick={() => openFeedbackModal()}
+                      onClick={() => setIsFeedbackModalOpen(true)}
                       // href={link.href}
                       className="text-base font-medium text-blue-700 hover:text-blue-600">
                       {link.linkText}
@@ -447,10 +397,8 @@ export default function InfoComponent ({ openFeedbackModal }) {
             </div>
           </div>
         </section>
-
-        {/* Newsletter Section */}
-        {renderNewsletterSection()}
       </main>
     </div>
+    </>
   )
 }

@@ -2,70 +2,69 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import '@rainbow-me/rainbowkit/styles.css'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
-import { GetSiweMessageOptions, RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { SessionProvider } from 'next-auth/react'
+import { WagmiConfig } from 'wagmi'
+import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { chains, getSiweMessageOptions, wagmiClient } from '../src/wagmi_config'
 
-const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon],
-  [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
-    publicProvider()
-  ]
-)
-
-const { connectors } = getDefaultWallets({
-  appName: 'Loopie',
-  chains
-})
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider
-})
-
-const getSiweMessageOptions: GetSiweMessageOptions = () => ({
-  statement: 'Sign in to Loopie'
-})
-
-function App ({ Component, pageProps }: AppProps) {
+const App = ({
+  Component,
+  pageProps
+}: AppProps) => {
   const renderAnalyticsScripts = () => {
     return (
-            <>
-                <script async src={'https://scripts.simpleanalyticscdn.com/latest.js'}/>
-            </>
+      <>
+        <script async src={'https://scripts.simpleanalyticscdn.com/latest.js'}/>
+      </>
     )
   }
   const isProd = process.env.NODE_ENV === 'production'
 
   const renderApp = () => {
     return <html className="h-full bg-white">
-        <Head>
-            {isProd && renderAnalyticsScripts()}
-            <title>Loopie</title>
-            <link rel="shortcut icon" href="/favicon.png"/>
-        </Head>
-        <body className="h-full">
-        <Component {...pageProps} />
-        </body>
-        </html>
+    <Head>
+      {isProd && renderAnalyticsScripts()}
+      <title>Loopie</title>
+      <link rel="shortcut icon" href="/favicon.png"/>
+      <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+      <meta property="og:site_name" content="Loopie"/>
+      <meta property="og:type" content="website"/>
+      <meta property="og:url" content="https://www.loopie.site"/>
+      <meta property="og:title" key="ogtitle" content="Loopie"/>
+       <meta property="og:description" key="ogdesc" content="web3 news for the early enthusiast" />
+      {/*// image properties*/}
+      {/*{imageUrl && (<>*/}
+      {/*  <meta property="og:image" content={imageUrl} />*/}
+      {/*  <meta property="og:image:height" content="630" />*/}
+      {/*  <meta property="og:image:width" content="1200" />*/}
+      {/*</>)}*/}
+      {/*// twitter properties*/}
+      {/*<meta name="twitter:card" content="summary_large_image" />*/}
+      <meta property="twitter:domain" content="https://www.loopie.site" />
+      <meta property="twitter:url" content="https://www.loopie.site" />
+      <meta name="twitter:title" content="Loopie" />
+      <meta name="twitter:description" content="web3 news for the early enthusiast" />
+      {/*{imageUrl && (<meta name="twitter:image" content={imageUrl} />)}*/}
+
+    </Head>
+    <body className="h-full">
+    <Component {...pageProps} />
+    </body>
+    </html>
   }
 
   // @ts-ignore
   const { session } = pageProps
   return <WagmiConfig client={wagmiClient}>
-        <SessionProvider refetchInterval={0} session={session}>
-            <RainbowKitSiweNextAuthProvider getSiweMessageOptions={getSiweMessageOptions}>
-                <RainbowKitProvider chains={chains}>
-                    {renderApp()}
-                </RainbowKitProvider>
-            </RainbowKitSiweNextAuthProvider>
-        </SessionProvider>
-    </WagmiConfig>
+    <SessionProvider refetchInterval={0} session={session}>
+      <RainbowKitSiweNextAuthProvider getSiweMessageOptions={getSiweMessageOptions}>
+        <RainbowKitProvider chains={chains}>
+          {renderApp()}
+        </RainbowKitProvider>
+      </RainbowKitSiweNextAuthProvider>
+    </SessionProvider>
+  </WagmiConfig>
 }
 
 export default App
