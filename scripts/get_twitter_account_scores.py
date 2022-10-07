@@ -2,9 +2,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from api.twitter_api import execute_twitter_api_request_with_retry
-from const import ACCOUNTS
-from settings import ACCOUNT_SCORES_FNAME
 from utils import chunkify
+
 QUANTILE_THRESHOLDS = [0.3, 0.6, 0.9]
 VERIFIED_SCORE = 20
 QUANTILE_SCORE_MULTIPLIER = 20
@@ -22,7 +21,7 @@ def get_twitter_account_stats(account: str) -> dict:
 
 
 def get_twitter_accounts_stats_by_ids(user_ids: list[str]) -> list[dict]:
-    user_id_chunks = chunkify(user_ids, 50) # 100 per chunk is max
+    user_id_chunks = chunkify(user_ids, 50)  # 100 per chunk is max
     search_url = f'https://api.twitter.com/2/users/'
 
     account_stats = []
@@ -62,14 +61,3 @@ def create_accounts_with_scores_df(accounts) -> pd.DataFrame:
     df['score'] = df.apply(get_score_for_row, axis=1)
     df.fillna({"score": 0}, inplace=True)
     return df
-
-
-def create_account_scores_file():
-    print(f'loading twitter account stats for {len(ACCOUNTS)} accounts')
-    df = create_accounts_with_scores_df(ACCOUNTS)
-    print(f'saving account scores to {ACCOUNT_SCORES_FNAME}')
-    df[['id', 'username', 'score']].to_csv(ACCOUNT_SCORES_FNAME, index=False)
-
-
-if __name__ == '__main__':
-    create_account_scores_file()

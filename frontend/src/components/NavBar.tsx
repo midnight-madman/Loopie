@@ -2,7 +2,10 @@ import { Popover } from '@headlessui/react'
 import { ConnectButton } from './ConnectButton'
 import { Bars3Icon } from '@heroicons/react/24/outline'
 
-const NavBar = ({ setSidebarOpen, renderWalletConnect = false } : {setSidebarOpen: (arg0: boolean) => void, renderWalletConnect?: boolean}) => {
+const NavBar = ({
+  setSidebarOpen,
+  showWalletConnect = false
+}: { setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean }) => {
   return (
     <>
       <Popover as="header" className="relative">
@@ -17,10 +20,10 @@ const NavBar = ({ setSidebarOpen, renderWalletConnect = false } : {setSidebarOpe
                 <h1 className="font-serif font-semibold text-gray-800 text-4xl">Loopie</h1>
               </div>
             </div>
-            {renderWalletConnect && (
+            {showWalletConnect && (
               <div className="hidden md:flex md:items-center md:space-x-6">
-              <ConnectButton/>
-            </div>)}
+                <ConnectButton/>
+              </div>)}
           </nav>
         </div>
       </Popover>

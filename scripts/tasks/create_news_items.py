@@ -1,13 +1,12 @@
 import logging
-import time
 from datetime import datetime
-from typing import Optional
 
 import luigi
+import pandas as pd
 
+from const import WEB3_URLS, WEB3_KEYWORDS, WEB3_TAG_TITLE
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
-from supabase_utils import get_supabase_client
 from tasks.base_loopie_task import BaseLoopieTask
 from utils import find_obj_based_on_key_value_in_list, chunkify
 
@@ -17,7 +16,8 @@ logger = logging.getLogger('luigi-interface')
 class CreateNewsItems(BaseLoopieTask):
     start_date = luigi.DateParameter(default=datetime.today())
 
-    def get_query(self) -> Optional[str]:
+    def get_query(self) -> str:
+        # query for tweets without news items
         return f'''
         Select tweet.id          as tweet_id,
                tweet.id          as id,
@@ -31,6 +31,9 @@ class CreateNewsItems(BaseLoopieTask):
         where ni.id IS NULL and tweet.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'; 
         '''
 
+    def get_tags_query(self) -> str:
+        return 'SELECT * FROM "Tag"'
+
     def complete(self):
         return len(self.df) == 0
 
@@ -39,7 +42,7 @@ class CreateNewsItems(BaseLoopieTask):
         existing_news_items_in_db = []
 
         for url_chunk in url_chunks:
-            resp_query_urls = self.supabase.table("NewsItem").select('id, url').in_('url', url_chunk).execute()
+            resp_query_urls = self.supabase.table("NewsItem").select('id, url, title').in_('url', url_chunk).execute()
             existing_news_items_in_db.extend(resp_query_urls.data)
 
         return existing_news_items_in_db
@@ -50,18 +53,19 @@ class CreateNewsItems(BaseLoopieTask):
                     not obj['url'].startswith('https://twitter.com') and not '~' in obj['url']]
         new_urls = list(set([obj['url'] for obj in url_objs]))
 
-        if not new_urls:
-            return
+        # if not new_urls:
+        #     return
 
-        existing_news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
+        news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
+        nr_created_news_items = self.create_news_items(url_objs, news_items_in_db)
 
-        self.create_news_items(url_objs, existing_news_items_in_db)
+        if nr_created_news_items > 0:
+            news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
+        self.create_news_item_to_tweets_connections(url_objs, news_items_in_db)
 
-        time.sleep(30)  # let DB rest a little so we can read and create connections for NewsItems
-        self.supabase = get_supabase_client()
-        self.create_news_item_to_tweets_connections(url_objs, existing_news_items_in_db)
+        self.create_news_item_to_tags_connections(news_items_in_db)
 
-    def create_news_items(self, url_objs, existing_news_items_in_db):
+    def create_news_items(self, url_objs, existing_news_items_in_db) -> int:
         unique_url_objs = {obj['url']: obj for obj in url_objs}.values()  # make list unique
 
         urls_in_db = list(set([obj['url'] for obj in existing_news_items_in_db]))
@@ -69,10 +73,12 @@ class CreateNewsItems(BaseLoopieTask):
         news_items_to_insert = [dict(url=url_obj['url']) for url_obj in news_items_to_insert]
 
         if news_items_to_insert:
-            self.supabase.table("NewsItem").insert(news_items_to_insert).execute()
-            logger.info(f'Created {len(news_items_to_insert)} new news items in DB')
+            resp = self.supabase.table("NewsItem").insert(news_items_to_insert, count='exact').execute()
+            logger.info(f'Created {resp.count} new news items in DB')
+            return resp.count
         else:
             logger.info(f'All news items already exist in DB')
+            return 0
 
     def create_news_item_to_tweets_connections(self, url_objs, existing_news_items_in_db):
         news_item_ids = []
@@ -93,3 +99,25 @@ class CreateNewsItems(BaseLoopieTask):
 
         resp = self.supabase.table("NewsItemToTweet").insert(news_item_to_tweets).execute()
         logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')
+
+    def create_news_item_to_tags_connections(self, news_items):
+        tags_df = pd.read_sql_query(self.get_tags_query(), con=self.db_connection, coerce_float=False)
+        web3_tag_id = tags_df[tags_df.title == WEB3_TAG_TITLE].iloc[0]['id']
+        if not web3_tag_id:
+            return
+
+        new_tag_connections = []
+        for news_item in news_items:
+            has_web3_url = any([web3_url in news_item['url'] for web3_url in WEB3_URLS])
+            has_web3_title = any([keyword in news_item['title'] for keyword in WEB3_KEYWORDS])
+
+            if has_web3_url or has_web3_title:
+                new_tag_connections.append({
+                    news_item_id: news_item['id'],
+                    tag_id: web3_tag_id,
+                    wallet_address: 'AUTOMATION'
+                })
+
+        if new_tag_connections:
+            resp = self.supabase.table("NewsItemToTag").insert(new_tag_connections, count='exact').execute()
+            logger.info(f'New news items to tag connections inserted: {len(resp.count)}')

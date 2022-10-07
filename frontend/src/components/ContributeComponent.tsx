@@ -5,7 +5,7 @@ import { HandThumbUpIcon } from '@heroicons/react/20/solid'
 import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
-import { find, findIndex, get, isEmpty, map, split } from 'lodash'
+import { find, findIndex, get, isEmpty, isUndefined, map, split } from 'lodash'
 import { LoadingComponent } from './LoadingComponent'
 import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
 import { ConnectButton } from './ConnectButton'
@@ -94,7 +94,7 @@ export function ContributeComponent () {
   const hasData = !isEmpty(tags) && !isEmpty(newsItems)
 
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-  const tweetStartDate = dayjs().utc().subtract(2, 'days')
+  const tweetStartDate = dayjs().utc().subtract(1, 'days')
   const isLoading = status === 'loading'
 
   const getTagsFromSupabase = async () => {
@@ -122,7 +122,7 @@ export function ContributeComponent () {
       .from<ScoredNewsItem>('scorednewsitem')
       .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
       .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
-      .order('score', { ascending: false })
+      .order('created_at', { ascending: false })
       .range(paginationIndex, paginationIndex + NEWS_ITEMS_PER_PAGE)
 
     if (error || !data) {
@@ -169,7 +169,7 @@ export function ContributeComponent () {
   }
 
   const removeTagFromNewsItemInSupabase = async (newsItemId: string, tagId: string) => {
-    console.log('removing tag for news item id')
+    console.log('removing tag for news item id', newsItemId)
     setNewsItemIdToState({
       ...newsItemIdToState,
       [newsItemId]: 'pending'
@@ -180,10 +180,10 @@ export function ContributeComponent () {
     } = await supabase
       .from('NewsItemToTag')
       .delete()
+      .in('wallet_address', ['AUTOMATION', account])
       .match({
         news_item_id: newsItemId,
-        tag_id: tagId,
-        wallet_address: account
+        tag_id: tagId
       })
 
     if (error || !data) {
@@ -195,7 +195,7 @@ export function ContributeComponent () {
     } else {
       setNewsItemIdToState({
         ...newsItemIdToState,
-        [newsItemId]: ''
+        [newsItemId]: 'success'
       })
     }
   }
@@ -253,8 +253,8 @@ export function ContributeComponent () {
   function renderNewsItemToTagRow (newsItem: ScoredNewsItem, newsItemState: string) {
     const tagsOnNewsItem = map(newsItem.NewsItemToTag, 'Tag')
     const hasWeb3TagOnNewsItem = findIndex(tagsOnNewsItem, (tag: Tag) => tag.id === web3Tag?.id) !== -1
-
     const buttonTitle = getButtonTitleFromState(newsItemState)
+    const isButtonEnabled = isUndefined(newsItemState) || newsItemState === ''
 
     return <li key={newsItem.id}
                className="bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
@@ -277,7 +277,7 @@ export function ContributeComponent () {
                     className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-300">
                     {map(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet, index) =>
                       <span key={`key-${tweet.id}-${index}`}>
-                                                                                                {index > 0 && '- '}
+                        {index > 0 && '- '}
                         <a target="_blank"
                            rel="noreferrer noopener"
                            className="mr-1 hover:underline"
@@ -290,153 +290,71 @@ export function ContributeComponent () {
                                href={`https://twitter.com/@${tweet.Author.twitter_username}`}>{tweet.Author.twitter_username}
                             </a>
                           </>)}
-                                                                                         </span>
+                       </span>
                     )}
                   </div>
                 </div>
               </p>
-              {/* <p className="text-sm text-gray-500"> */}
-              {/*    <div className=""> */}
-              {/*        <time */}
-              {/*            dateTime={newsItem.created_at}>{newsItem.created_at}</time> */}
-              {/*    </div> */}
-              {/* </p> */}
             </div>
-            {/* <div className="flex flex-shrink-0 self-center"> */}
-            {/*    <Menu as="div" className="relative inline-block text-left"> */}
-            {/*        <div> */}
-            {/*            <Menu.Button */}
-            {/*                className="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600"> */}
-            {/*                <span className="sr-only">Open options</span> */}
-            {/*                <EllipsisVerticalIcon className="h-5 w-5" */}
-            {/*                                      aria-hidden="true"/> */}
-            {/*            </Menu.Button> */}
-            {/*        </div> */}
-
-            {/*        <Transition */}
-            {/*            as={Fragment} */}
-            {/*            enter="transition ease-out duration-100" */}
-            {/*            enterFrom="transform opacity-0 scale-95" */}
-            {/*            enterTo="transform opacity-100 scale-100" */}
-            {/*            leave="transition ease-in duration-75" */}
-            {/*            leaveFrom="transform opacity-100 scale-100" */}
-            {/*            leaveTo="transform opacity-0 scale-95" */}
-            {/*        > */}
-            {/*            <Menu.Items */}
-            {/*                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"> */}
-            {/*                <div className="py-1"> */}
-            {/*                    <Menu.Item> */}
-            {/*                        {({active}) => ( */}
-            {/*                            <a */}
-            {/*                                href="#" */}
-            {/*                                className={classNames( */}
-            {/*                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', */}
-            {/*                                    'flex px-4 py-2 text-sm' */}
-            {/*                                )} */}
-            {/*                            > */}
-            {/*                                <StarIcon */}
-            {/*                                    className="mr-3 h-5 w-5 text-gray-400" */}
-            {/*                                    aria-hidden="true"/> */}
-            {/*                                <span>Add to favorites</span> */}
-            {/*                            </a> */}
-            {/*                        )} */}
-            {/*                    </Menu.Item> */}
-            {/*                    <Menu.Item> */}
-            {/*                        {({active}) => ( */}
-            {/*                            <a */}
-            {/*                                href="#" */}
-            {/*                                className={classNames( */}
-            {/*                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', */}
-            {/*                                    'flex px-4 py-2 text-sm' */}
-            {/*                                )} */}
-            {/*                            > */}
-            {/*                                <CodeBracketIcon */}
-            {/*                                    className="mr-3 h-5 w-5 text-gray-400" */}
-            {/*                                    aria-hidden="true" */}
-            {/*                                /> */}
-            {/*                                <span>Embed</span> */}
-            {/*                            </a> */}
-            {/*                        )} */}
-            {/*                    </Menu.Item> */}
-            {/*                    <Menu.Item> */}
-            {/*                        {({active}) => ( */}
-            {/*                            <a */}
-            {/*                                href="#" */}
-            {/*                                className={classNames( */}
-            {/*                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', */}
-            {/*                                    'flex px-4 py-2 text-sm' */}
-            {/*                                )} */}
-            {/*                            > */}
-            {/*                                <FlagIcon */}
-            {/*                                    className="mr-3 h-5 w-5 text-gray-400" */}
-            {/*                                    aria-hidden="true"/> */}
-            {/*                                <span>Report content</span> */}
-            {/*                            </a> */}
-            {/*                        )} */}
-            {/*                    </Menu.Item> */}
-            {/*                </div> */}
-            {/*            </Menu.Items> */}
-            {/*        </Transition> */}
-            {/*    </Menu> */}
-            {/* </div> */}
           </div>
-
         </div>
         <div className="mt-2 space-y-4 text-sm text-gray-700">
           {newsItem.description}
         </div>
         <div className="mt-6 flex justify-between space-x-8">
           <div className="flex space-x-6">
-                                                        <span className="inline-flex items-center text-sm">
-                                                          <button type="button"
-                                                                  className="inline-flex space-x-2 text-gray-400">
-                                                            <HandThumbUpIcon className="h-5 w-5" aria-hidden="true"/>
-                                                            <span
-                                                              className="font-medium text-gray-900">{newsItem.score}</span>
-                                                            <span className="sr-only">score</span>
-                                                          </button>
-                                                        </span>
             <span className="inline-flex items-center text-sm">
-                                                          <button type="button"
-                                                                  className="inline-flex space-x-2 text-gray-400">
-                                                            <UserIcon className="h-5 w-5" aria-hidden="true"/>
-                                                            <span
-                                                              className="font-medium text-gray-900">{newsItem.count_unique_authors}</span>
-                                                            <span className="sr-only">replies</span>
-                                                          </button>
-                                                        </span>
+              <button type="button"
+                      className="inline-flex space-x-2 text-gray-400">
+                <HandThumbUpIcon className="h-5 w-5" aria-hidden="true"/>
+                <span
+                  className="font-medium text-gray-900">{newsItem.score}</span>
+                <span className="sr-only">score</span>
+              </button>
+            </span>
             <span className="inline-flex items-center text-sm">
-                                                          <button type="button"
-                                                                  className="inline-flex space-x-2 text-gray-400">
-                                                            <CalendarDaysIcon className="h-5 w-5" aria-hidden="true"/>
-                                                            <span
-                                                              className="font-medium text-gray-900">{split(newsItem.updated_at, 'T')[0]}</span>
-                                                            <span className="sr-only">views</span>
-                                                          </button>
-                                                        </span>
+              <button type="button"
+                      className="inline-flex space-x-2 text-gray-400">
+                <UserIcon className="h-5 w-5" aria-hidden="true"/>
+                <span
+                  className="font-medium text-gray-900">{newsItem.count_unique_authors}</span>
+                <span className="sr-only">replies</span>
+              </button>
+            </span>
+            <span className="inline-flex items-center text-sm">
+              <button type="button"
+                      className="inline-flex space-x-2 text-gray-400">
+                <CalendarDaysIcon className="h-5 w-5" aria-hidden="true"/>
+                <span
+                  className="font-medium text-gray-900">{split(newsItem.updated_at, 'T')[0]}</span>
+                <span className="sr-only">views</span>
+              </button>
+            </span>
           </div>
           <div className="flex text-sm">
-                                                        <span className="inline-flex items-center text-sm">
-                                                    {hasWeb3TagOnNewsItem
-                                                      ? (<button
-                                                        // @ts-ignore
-                                                        onClick={() => removeTagFromNewsItemInSupabase(newsItem.id, web3Tag.id)}
-                                                        className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-blue-gray-900 shadow-sm hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                                      >
-                                                        {buttonTitle || 'Nope, it\'s not web3'}
-                                                      </button>)
-                                                      : (<button
-                                                        // @ts-ignore
-                                                        onClick={() => addTagToNewsItemInSupabase(newsItem.id, web3Tag.id)}
-                                                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                                      >
-                                                        {buttonTitle || 'Yes, it\'s web3'}
-                                                      </button>)}
-                                                          {/*  <button type="button" className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"> */}
-                                                          {/*  <ShareIcon className="h-5 w-5" aria-hidden="true"/> */}
-                                                          {/*  <span className="font-medium text-gray-900">Share</span> */}
-                                                          {/* </button> */}
-                                                        </span>
+                <span className="inline-flex items-center text-sm">
+            {hasWeb3TagOnNewsItem
+              ? (<button
+                disabled={!isButtonEnabled}
+                // @ts-ignore
+                onClick={() => removeTagFromNewsItemInSupabase(newsItem.id, web3Tag.id)}
+                className={classNames(isButtonEnabled && 'shadow-sm hover:bg-blue-gray-50', 'rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-blue-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2')}
+              >
+                {buttonTitle || 'Nope, it\'s not web3'}
+              </button>)
+              : (<button
+                disabled={!isButtonEnabled}
+                // @ts-ignore
+                onClick={() => addTagToNewsItemInSupabase(newsItem.id, web3Tag.id)}
+                className={classNames(isButtonEnabled && 'shadow-sm hover:bg-blue-700', 'inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2')}
+              >
+                {buttonTitle || 'Yes, it\'s web3'}
+              </button>)}
+                  {/*  <button type="button" className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"> */}
+                  {/*  <ShareIcon className="h-5 w-5" aria-hidden="true"/> */}
+                  {/*  <span className="font-medium text-gray-900">Share</span> */}
+                  {/* </button> */}
+                </span>
           </div>
         </div>
       </article>

@@ -20,7 +20,18 @@ class CopyTweetsToDB(luigi.Task):
 
     def run(self):
         df_tweets = get_tweets_since_id_with_retry(ACCOUNTS, self.last_tweet_id)
-        if df_tweets is None or len(df_tweets) == 0:
+        no_new_tweets = df_tweets is None or len(df_tweets) == 0
+        if no_new_tweets:
+            return None
+
+        def is_tweet_with_only_twitter_urls(entities):
+            return all([urlObj['expanded_url'].startswith('https://twitter.com') for urlObj in entities.get('urls')])
+
+        df_tweets['is_tweet_with_only_twitter_urls'] = df_tweets.entities.apply(is_tweet_with_only_twitter_urls)
+        df_tweets = df_tweets[~df_tweets.is_tweet_with_only_twitter_urls]
+
+        no_new_tweets = df_tweets is None or len(df_tweets) == 0
+        if no_new_tweets:
             return None
 
         self.create_authors(df_tweets)

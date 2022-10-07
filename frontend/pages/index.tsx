@@ -25,7 +25,7 @@ const Index = (props: IndexProps) => {
   const [isShowingMore, setIsShowingMore] = useState(false)
 
   if (!isShowingMore) {
-    newsItems = take(newsItems, 25)
+    newsItems = take(newsItems, 20)
   }
 
   function renderNewsPageContent () {
@@ -96,7 +96,24 @@ export const getStaticProps: GetStaticProps = async context => {
     error
   } = await supabase
     .from('scorednewsitem')
-    .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username)))')
+    .select(
+      `*, 
+      NewsItemToTweet( 
+        Tweet(
+          created_at, 
+          id::text, 
+          text, 
+          Author(
+            twitter_username
+          )
+        )
+      ), 
+      NewsItemToTag!inner(
+        Tag(
+          title
+        )
+      )`)
+    .filter('NewsItemToTag.Tag.title', 'eq', 'Web3')
     .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(50)
@@ -114,7 +131,7 @@ export const getStaticProps: GetStaticProps = async context => {
     props: {
       newsItems
     },
-    revalidate: 60 * 60 // every hour
+    revalidate: 15 * 60 // every 15mins
   }
 }
 

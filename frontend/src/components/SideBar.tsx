@@ -8,8 +8,8 @@ import { useRouter } from 'next/router'
 const SideBar = ({
   sidebarOpen,
   setSidebarOpen,
-  renderWalletConnect = false
-}: { sidebarOpen: boolean, setSidebarOpen: (arg0: boolean) => void, renderWalletConnect?: boolean}) => {
+  showWalletConnect = false
+}: { sidebarOpen: boolean, setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean }) => {
   const router = useRouter()
   const navigation = [
     {
@@ -33,14 +33,14 @@ const SideBar = ({
   ]
 
   const renderAccountSection = () => {
-    return renderWalletConnect && (
+    return showWalletConnect && (
       <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
         <div className="flex-shrink-0 w-full group block">
           <div className="flex items-center">
             <ConnectButton/>
           </div>
         </div>
-    </div>)
+      </div>)
   }
 
   const renderNavigationItem = (item: any) => {

@@ -30,10 +30,11 @@ const NewsItemRowComponent = ({
 
   const cleanUrl = getCleanUrl(newsItem.url)
   const rowTitle = newsItem.title
-  const rowSubtitle = truncate(cleanUrl, { length: 45 })
+  const rowSubtitle = truncate(cleanUrl, { length: 60 })
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'Today' : latestShareDate.isYesterday() ? 'Yesterday' : latestShareDate.fromNow()
   const tweets = map(newsItem.NewsItemToTweet, 'Tweet')
+  const tags = map(newsItem.NewsItemToTag, 'Tag')
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)
@@ -67,7 +68,18 @@ const NewsItemRowComponent = ({
 
   const renderExpandedRow = () => {
     return <>
-      <span className="text-md md:text-lg text-gray-500 truncate">{rowSubtitle}</span>
+      <span className="text-md md:text-lg text-gray-500 truncate">
+        <a href="">
+          {rowSubtitle}
+        </a>
+      </span>
+      <div className="mx-auto flex space-x-4 mt-2 py-2">
+        {map(tags, (tag, index) =>
+          <span
+            className="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-sm font-medium text-gray-800">
+        {tag.title}
+      </span>)}
+      </div>
       <div className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-600">
         {map(tweets, (tweet, index) =>
           <span key={`key-${tweet.id}-${index}`}>
