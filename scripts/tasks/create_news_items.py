@@ -26,8 +26,8 @@ class CreateNewsItems(BaseLoopieTask):
                tweet.entities,
                tweet.author_id
         from "Tweet" tweet
-                 left join "NewsItemToTweet" ni2t on tweet.id = ni2t.tweet_id
-                 left join "NewsItem" ni on ni2t.news_item_id = ni.id
+                 left join "NewsItemToTweet" ni2tweet on tweet.id = ni2tweet.tweet_id
+                 left join "NewsItem" ni on ni2tweet.news_item_id = ni.id
         where ni.id IS NULL and tweet.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'; 
         '''
 
@@ -109,13 +109,13 @@ class CreateNewsItems(BaseLoopieTask):
         new_tag_connections = []
         for news_item in news_items:
             has_web3_url = any([web3_url in news_item['url'] for web3_url in WEB3_URLS])
-            has_web3_title = any([keyword in news_item['title'] for keyword in WEB3_KEYWORDS])
+            has_web3_title = any([keyword in news_item['title'] for keyword in WEB3_KEYWORDS if news_item.get('title')])
 
             if has_web3_url or has_web3_title:
                 new_tag_connections.append({
-                    news_item_id: news_item['id'],
-                    tag_id: web3_tag_id,
-                    wallet_address: 'AUTOMATION'
+                    'news_item_id': news_item['id'],
+                    'tag_id': web3_tag_id,
+                    'wallet_address': 'AUTOMATION'
                 })
 
         if new_tag_connections:
