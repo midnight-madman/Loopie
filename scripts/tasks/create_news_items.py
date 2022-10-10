@@ -120,4 +120,4 @@ class CreateNewsItems(BaseLoopieTask):
 
         if new_tag_connections:
             resp = self.supabase.table("NewsItemToTag").insert(new_tag_connections, count='exact').execute()
-            logger.info(f'New news items to tag connections inserted: {len(resp.count)}')
+            logger.info(f'New news items to tag connections inserted: {resp.count}')

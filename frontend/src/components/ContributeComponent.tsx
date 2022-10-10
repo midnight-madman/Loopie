@@ -1,7 +1,6 @@
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Popover } from '@headlessui/react'
-import { HandThumbUpIcon } from '@heroicons/react/20/solid'
 import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
@@ -114,7 +113,7 @@ export function ContributeComponent () {
     setTags(data)
   }
 
-  const getNewsItemsFromSupabase = async () => {
+  const getNewsItemsFromSupabase = async (pageStartIndex: number = 0) => {
     const {
       data,
       error
@@ -123,7 +122,7 @@ export function ContributeComponent () {
       .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
       .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
       .order('created_at', { ascending: false })
-      .range(paginationIndex, paginationIndex + NEWS_ITEMS_PER_PAGE)
+      .range(pageStartIndex, pageStartIndex + NEWS_ITEMS_PER_PAGE)
 
     if (error || !data) {
       console.log(error)
@@ -138,7 +137,7 @@ export function ContributeComponent () {
       return
     }
 
-    getTagsFromSupabase().then(() => getNewsItemsFromSupabase()).then(() =>
+    getTagsFromSupabase().then(() => getNewsItemsFromSupabase(paginationIndex)).then(() =>
       setNewsItemIdToState(map(newsItems, 'id').reduce((o, key) => ({
         ...o,
         [key]: ''
@@ -234,9 +233,10 @@ export function ContributeComponent () {
   }
 
   const onSubmitNextPage = () => {
-    setPaginationIndex(paginationIndex + NEWS_ITEMS_PER_PAGE + 1)
+    const newPaginationIndex = paginationIndex + NEWS_ITEMS_PER_PAGE + 1
+    setPaginationIndex(newPaginationIndex)
     setNewsItems([])
-    getNewsItemsFromSupabase()
+    getNewsItemsFromSupabase(newPaginationIndex)
   }
 
   const getButtonTitleFromState = (state: string) => {
@@ -303,15 +303,15 @@ export function ContributeComponent () {
         </div>
         <div className="mt-6 flex justify-between space-x-8">
           <div className="flex space-x-6">
-            <span className="inline-flex items-center text-sm">
-              <button type="button"
-                      className="inline-flex space-x-2 text-gray-400">
-                <HandThumbUpIcon className="h-5 w-5" aria-hidden="true"/>
-                <span
-                  className="font-medium text-gray-900">{newsItem.score}</span>
-                <span className="sr-only">score</span>
-              </button>
-            </span>
+            {/* <span className="inline-flex items-center text-sm"> */}
+            {/*  <button type="button" */}
+            {/*          className="inline-flex space-x-2 text-gray-400"> */}
+            {/*    <HandThumbUpIcon className="h-5 w-5" aria-hidden="true"/> */}
+            {/*    <span */}
+            {/*      className="font-medium text-gray-900">{newsItem.score}</span> */}
+            {/*    <span className="sr-only">score</span> */}
+            {/*  </button> */}
+            {/* </span> */}
             <span className="inline-flex items-center text-sm">
               <button type="button"
                       className="inline-flex space-x-2 text-gray-400">
@@ -486,9 +486,12 @@ export function ContributeComponent () {
               </div>
               {hasData && (<div className="grid grid-cols place-content-center mt-8">
                 <button
-                  className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
+                  className="items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                   onClick={() => onSubmitNextPage()}>Show more
                 </button>
+                <p className="mt-2 text-sm font-medium text-gray-500">
+                  showing items {paginationIndex + 1} to {paginationIndex + NEWS_ITEMS_PER_PAGE + 1}
+                </p>
               </div>)}
             </main>
             {/* <aside className="hidden xl:col-span-4 xl:block"> */}
