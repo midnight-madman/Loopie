@@ -1105,85 +1105,98 @@ ACCOUNTS = [
     'zosegal',
 ]
 
-WEB3_TAG_TITLE = 'Web3'
-
-WEB3_URLS = [
-    'etherscan.io',
-    'uniswap.org',
-    'debank.com',
-    'messari.io',
-    'rekt.news',
-    'reddit.com/r/Bitcoin',
-    'opensea.io'
-]
-WEB3_KEYWORDS = [
-    'Altcoin',
-    'Binance',
-    'Bitcoin',
-    'Blockchain',
-    'ChainLink',
-    'Consensus Mechanism',
-    'Consensys',
-    'Crypto',
-    'Cryptocurrency',
-    'Cryptography',
-    'DAO',
-    'dApps',
-    'Decentralization',
-    'Decentralized Finance',
-    'Decentralized',
-    'DeFi',
-    'Distributed Ledger Technology',
-    'Distributed Ledger',
-    'ERC',
-    'ETH',
-    'Ethereum Request for Comment',
-    'Ethereum'
-    'Ethereum',
-    'EVM',
-    'GameFi',
-    'Gas',
-    'Hard Fork',
-    'Hash Function',
-    'MetaMask',
-    'Metaverse',
-    'MEV',
-    'NFT',
-    'Non-Fungible Token',
-    'Open Platform',
-    'Polygon',
-    'PoS',
-    'PoW',
-    'Private Key',
-    'Proof of Stake',
-    'Proof of Work',
-    'Public Key',
-    'Public-Key Cryptography',
-    'Sidechain',
-    'Smart Asset',
-    'Smart Contract',
-    'Soft Fork',
-    'Solana',
-    'Solidity',
-    'Stablecoin',
-    'Token',
-    'Trustless',
-    'Web 3.0',
-    'Web3',
-    'Zero Knowledge',
-    'Zero-Knowledge',
-    'ZK-Proof',
-    'zkSync',
-]
-
-PODCAST_TAG_TITLE = 'Podcast'
-PODCAST_URLS = [
-    'spotify.com/episode',
-    'spotify.com/show',
-    'https://podcasts.apple.com'
-]
-PODCAST_KEYWORDS = ['Podcast']
-
-VIDEO_TAG_TITLE = 'Video'
-VIDEO_URLS = ['youtube.com', 'youtu.be']
-VIDEO_KEYWORDS = []
+TAG_AUTOMATION = {
+    'Web3': {
+        'urls': [
+            'etherscan.io',
+            'uniswap.org',
+            'debank.com',
+            'messari.io',
+            'rekt.news',
+            'reddit.com/r/Bitcoin',
+            'opensea.io'
+        ],
+        'keywords': [
+            'Altcoin',
+            'Binance',
+            'Bitcoin',
+            'Blockchain',
+            'ChainLink',
+            'Consensus Mechanism',
+            'Consensys',
+            'Crypto',
+            'Cryptocurrency',
+            'Cryptography',
+            'DAO',
+            'dApps',
+            'Decentralization',
+            'Decentralized Finance',
+            'Decentralized',
+            'DeFi',
+            'Distributed Ledger Technology',
+            'Distributed Ledger',
+            'ERC',
+            'ETH',
+            'Ethereum Request for Comment',
+            'Ethereum'
+            'Ethereum',
+            'EVM',
+            'GameFi',
+            'Gas',
+            'Hard Fork',
+            'Hash Function',
+            'MetaMask',
+            'Metaverse',
+            'MEV',
+            'NFT',
+            'Non-Fungible Token',
+            'Open Platform',
+            'Polygon',
+            'PoS',
+            'PoW',
+            'Private Key',
+            'Proof of Stake',
+            'Proof of Work',
+            'Public Key',
+            'Public-Key Cryptography',
+            'Sidechain',
+            'Smart Asset',
+            'Smart Contract',
+            'Soft Fork',
+            'Solana',
+            'Solidity',
+            'Stablecoin',
+            'Token',
+            'Trustless',
+            'Web 3.0',
+            'Web3',
+            'Zero Knowledge',
+            'Zero-Knowledge',
+            'ZK-Proof',
+            'zkSync',
+        ]
+    },
+    'NFT': {
+        'urls': [
+            'opensea.io',
+            'niftygateway.com',
+            'rarible.com',
+            'superrare.com',
+            'mintbase.io',
+            'knownorigin.io'
+        ],
+        'keywords': []
+    },
+    'Podcast': {
+        'urls': [
+            'spotify.com/episode',
+            'spotify.com/show',
+            'https://podcasts.apple.com'
+        ],
+        'keywords': ['Podcast']
+    },
+    'Video': {
+        'urls': ['youtube.com', 'youtu.be'],
+        'keywords': []
+    }
+}

@@ -52,7 +52,8 @@ const Index = (props: IndexProps) => {
                   {/*</thead>*/}
                   <tbody className="">
                   {newsItems.map((newsItem, index) =>
-                    <NewsItemRowComponent key={`url-row-${index}`} newsItem={newsItem}
+                    <NewsItemRowComponent key={`url-row-${index}`}
+                                          newsItem={newsItem}
                                           index={index}/>
                   )}
                   </tbody>

@@ -1,4 +1,4 @@
-import { map, truncate } from 'lodash'
+import { filter, isEmpty, map, truncate } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -25,14 +25,14 @@ const NewsItemRowComponent = ({
   newsItem,
   index
 }) => {
-  const [isExpandedRow, setIsExpandedRow] = useState(false)
+  const [isExpandedRow, setIsExpandedRow] = useState(index === 0)
 
   // const cleanUrl = getCleanUrl(newsItem.url)
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'Today' : latestShareDate.isYesterday() ? 'Yesterday' : latestShareDate.fromNow()
   const tweets = map(newsItem.NewsItemToTweet, 'Tweet')
-  const tags = map(newsItem.NewsItemToTag, 'Tag')
+  const tags = filter(map(newsItem.NewsItemToTag, 'Tag', isEmpty))
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)
@@ -66,13 +66,13 @@ const NewsItemRowComponent = ({
 
   const renderExpandedRow = () => {
     return <>
-      <div className="mx-auto flex space-x-4 mt-2 py-2">
+      {!isEmpty(tags) && (<div className="mx-auto flex space-x-4 mt-2 py-2">
         {map(tags, (tag, index) =>
           <span
             className="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-sm font-medium text-gray-800">
         {tag.title}
       </span>)}
-      </div>
+      </div>)}
       <div className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-600">
         {map(tweets, (tweet, index) =>
           <span key={`key-${tweet.id}-${index}`}>

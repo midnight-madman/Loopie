@@ -4,7 +4,7 @@ from datetime import datetime
 import luigi
 import pandas as pd
 from typing import Optional
-from const import WEB3_URLS, WEB3_KEYWORDS, WEB3_TAG_TITLE, PODCAST_TAG_TITLE, PODCAST_URLS, PODCAST_KEYWORDS, VIDEO_TAG_TITLE, VIDEO_URLS, VIDEO_KEYWORDS
+from const import TAG_AUTOMATION
 
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
@@ -104,21 +104,19 @@ class CreateNewsItems(BaseLoopieTask):
     def create_news_item_to_tags_connections(self, news_items):
         tags_df = pd.read_sql_query(self.get_tags_query(), con=self.db_connection, coerce_float=False)
 
-        tag_titles = [WEB3_TAG_TITLE, VIDEO_TAG_TITLE, PODCAST_TAG_TITLE]
-        tag_ids = [get_tag_id_for_title(tag_title, tags_df) for tag_title in tag_titles]
-        tag_urls = [WEB3_URLS, VIDEO_URLS, PODCAST_URLS]
-        tag_keywords = [WEB3_KEYWORDS, VIDEO_KEYWORDS, PODCAST_KEYWORDS]
+        tag_titles = list(TAG_AUTOMATION.keys())
+        tag_title_to_id = {tag_title: get_tag_id_for_title(tag_title, tags_df) for tag_title in tag_titles}
 
         new_tag_connections = []
         for news_item in news_items:
-            for tag_title, tag_id, urls, keywords in zip(tag_titles, tag_ids, tag_urls, tag_keywords):
-                has_url = contains_key_in_list(news_item, 'url', urls)
-                has_keyword = contains_key_in_list(news_item, 'title', keywords)
+            for tag_title, tag_info in TAG_AUTOMATION.objects():
+                has_url = contains_key_in_list(tag_info['urls'], 'url', urls)
+                has_keyword = contains_key_in_list(tag_info['keywords'], 'title', keywords)
 
                 if has_url or has_keyword:
                     new_tag_connections.append({
                         'news_item_id': news_item['id'],
-                        'tag_id': tag_id,
+                        'tag_id': tag_title_to_id[tag_title],
                         'wallet_address': 'AUTOMATION'
                     })
 
