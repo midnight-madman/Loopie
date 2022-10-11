@@ -17,7 +17,7 @@ const NavBar = ({
             <div className="flex items-center flex-1">
               <div className="space-x-2 flex flex-shrink-0 items-center md:ml-4">
                 <img src="/favicon.png" alt="Logo" className="h-12 -ml-2"/>
-                <h1 className="font-serif font-semibold text-gray-800 text-4xl">Loopie</h1>
+                <h1 className="font-serif font-semibold text-gray-800 text-4xl">Loopie1</h1>
               </div>
             </div>
             {showWalletConnect && (

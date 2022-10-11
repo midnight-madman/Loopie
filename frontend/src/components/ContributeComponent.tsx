@@ -4,7 +4,7 @@ import { Popover } from '@headlessui/react'
 import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
-import { find, findIndex, get, isEmpty, isUndefined, map, split } from 'lodash'
+import { find, findIndex, get, includes, isEmpty, map, split } from 'lodash'
 import { LoadingComponent } from './LoadingComponent'
 import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
 import { ConnectButton } from './ConnectButton'
@@ -109,7 +109,6 @@ export function ContributeComponent () {
       return
     }
 
-    console.log('got tags from DB', data)
     setTags(data)
   }
 
@@ -163,7 +162,9 @@ export function ContributeComponent () {
   if (isLoading) {
     return <div className="h-screen grid grid-cols place-content-center">
       {renderWelcomeText()}
-      <ConnectButton/>
+      <div className="pt-8 px-8">
+        <ConnectButton/>
+      </div>
     </div>
   }
 
@@ -239,8 +240,11 @@ export function ContributeComponent () {
     getNewsItemsFromSupabase(newPaginationIndex)
   }
 
-  const getButtonTitleFromState = (state: string) => {
+  const getButtonTitleFromState = (state: string, hasWeb3TagOnNewsItem: boolean) => {
     switch (state) {
+      case '':
+      case undefined:
+        return hasWeb3TagOnNewsItem ? 'Nope, it\'s not web3' : 'Yes, it\'s web3'
       case 'pending':
         return '...'
       case 'success':
@@ -253,11 +257,11 @@ export function ContributeComponent () {
   function renderNewsItemToTagRow (newsItem: ScoredNewsItem, newsItemState: string) {
     const tagsOnNewsItem = map(newsItem.NewsItemToTag, 'Tag')
     const hasWeb3TagOnNewsItem = findIndex(tagsOnNewsItem, (tag: Tag) => tag.id === web3Tag?.id) !== -1
-    const buttonTitle = getButtonTitleFromState(newsItemState)
-    const isButtonEnabled = isUndefined(newsItemState) || newsItemState === ''
+    const buttonTitle = getButtonTitleFromState(newsItemState, hasWeb3TagOnNewsItem)
+    const isButtonEnabled = includes([undefined, '', 'pending'], newsItemState)
 
     return <li key={newsItem.id}
-               className="bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
+               className="max-w-xl bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
       <article aria-labelledby={'newsItem-title-' + newsItem.id}>
         <div>
           <div className="flex space-x-3">
@@ -333,27 +337,18 @@ export function ContributeComponent () {
           </div>
           <div className="flex text-sm">
                 <span className="inline-flex items-center text-sm">
-            {hasWeb3TagOnNewsItem
-              ? (<button
-                disabled={!isButtonEnabled}
-                // @ts-ignore
-                onClick={() => removeTagFromNewsItemInSupabase(newsItem.id, web3Tag.id)}
-                className={classNames(isButtonEnabled && 'shadow-sm hover:bg-blue-gray-50', 'rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-blue-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2')}
-              >
-                {buttonTitle || 'Nope, it\'s not web3'}
-              </button>)
-              : (<button
-                disabled={!isButtonEnabled}
-                // @ts-ignore
-                onClick={() => addTagToNewsItemInSupabase(newsItem.id, web3Tag.id)}
-                className={classNames(isButtonEnabled && 'shadow-sm hover:bg-blue-700', 'inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2')}
-              >
-                {buttonTitle || 'Yes, it\'s web3'}
-              </button>)}
-                  {/*  <button type="button" className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"> */}
-                  {/*  <ShareIcon className="h-5 w-5" aria-hidden="true"/> */}
-                  {/*  <span className="font-medium text-gray-900">Share</span> */}
-                  {/* </button> */}
+                  <button
+                    disabled={!isButtonEnabled}
+                    // @ts-ignore
+                    onClick={() => hasWeb3TagOnNewsItem ? removeTagFromNewsItemInSupabase(newsItem.id, web3Tag.id) : addTagToNewsItemInSupabase(newsItem.id, web3Tag.id)}
+                    className={classNames(
+                      isButtonEnabled && (hasWeb3TagOnNewsItem ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'),
+                      newsItemState === 'success' && 'bg-green-600',
+                      isButtonEnabled && 'shadow-sm',
+                      'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none')}
+                  >
+                      {buttonTitle}
+                    </button>
                 </span>
           </div>
         </div>

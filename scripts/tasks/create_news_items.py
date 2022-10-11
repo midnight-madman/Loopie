@@ -3,12 +3,13 @@ from datetime import datetime
 
 import luigi
 import pandas as pd
+from typing import Optional
+from const import WEB3_URLS, WEB3_KEYWORDS, WEB3_TAG_TITLE, PODCAST_TAG_TITLE, PODCAST_URLS, PODCAST_KEYWORDS, VIDEO_TAG_TITLE, VIDEO_URLS, VIDEO_KEYWORDS
 
-from const import WEB3_URLS, WEB3_KEYWORDS, WEB3_TAG_TITLE
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
-from utils import find_obj_based_on_key_value_in_list, chunkify
+from utils import find_obj_based_on_key_value_in_list, chunkify, contains_key_in_list
 
 logger = logging.getLogger('luigi-interface')
 
@@ -53,8 +54,8 @@ class CreateNewsItems(BaseLoopieTask):
                     not obj['url'].startswith('https://twitter.com') and not '~' in obj['url']]
         new_urls = list(set([obj['url'] for obj in url_objs]))
 
-        # if not new_urls:
-        #     return
+        if not new_urls:
+            return
 
         news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
         nr_created_news_items = self.create_news_items(url_objs, news_items_in_db)
@@ -102,22 +103,33 @@ class CreateNewsItems(BaseLoopieTask):
 
     def create_news_item_to_tags_connections(self, news_items):
         tags_df = pd.read_sql_query(self.get_tags_query(), con=self.db_connection, coerce_float=False)
-        web3_tag_id = tags_df[tags_df.title == WEB3_TAG_TITLE].iloc[0]['id']
-        if not web3_tag_id:
-            return
+
+        tag_titles = [WEB3_TAG_TITLE, VIDEO_TAG_TITLE, PODCAST_TAG_TITLE]
+        tag_ids = [get_tag_id_for_title(tag_title, tags_df) for tag_title in tag_titles]
+        tag_urls = [WEB3_URLS, VIDEO_URLS, PODCAST_URLS]
+        tag_keywords = [WEB3_KEYWORDS, VIDEO_KEYWORDS, PODCAST_KEYWORDS]
 
         new_tag_connections = []
         for news_item in news_items:
-            has_web3_url = any([web3_url in news_item['url'] for web3_url in WEB3_URLS])
-            has_web3_title = any([keyword in news_item['title'] for keyword in WEB3_KEYWORDS if news_item.get('title')])
+            for tag_title, tag_id, urls, keywords in zip(tag_titles, tag_ids, tag_urls, tag_keywords):
+                has_url = contains_key_in_list(news_item, 'url', urls)
+                has_keyword = contains_key_in_list(news_item, 'title', keywords)
 
-            if has_web3_url or has_web3_title:
-                new_tag_connections.append({
-                    'news_item_id': news_item['id'],
-                    'tag_id': web3_tag_id,
-                    'wallet_address': 'AUTOMATION'
-                })
+                if has_url or has_keyword:
+                    new_tag_connections.append({
+                        'news_item_id': news_item['id'],
+                        'tag_id': tag_id,
+                        'wallet_address': 'AUTOMATION'
+                    })
 
         if new_tag_connections:
-            resp = self.supabase.table("NewsItemToTag").insert(new_tag_connections, count='exact').execute()
-            logger.info(f'New news items to tag connections inserted: {resp.count}')
+            insert_count = 0
+            for new_connections_chunk in chunkify(new_tag_connections, 30):
+                resp = self.supabase.table("NewsItemToTag").insert(new_connections_chunk, count='exact').execute()
+                insert_count += resp.count
+            logger.info(f'New news items to tag connections inserted: {insert_count}')
+
+
+def get_tag_id_for_title(tag_title: str, tags_df: pd.DataFrame) -> Optional[str]:
+    df_filtered = tags_df[tags_df.title == tag_title]
+    return df_filtered.iloc[0]['id'] if len(df_filtered) == 1 else None

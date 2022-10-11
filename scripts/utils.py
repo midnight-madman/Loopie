@@ -25,3 +25,7 @@ def find_obj_based_on_key_value_in_list(l, key, value):
 def chunkify(arr: list, n: int) -> list[list]:
     # split list into chunks of n items per chunk ... chunk
     return [arr[i:i + n] for i in range(0, len(arr), n)]
+
+
+def contains_key_in_list(obj, key, arr):
+    return any([value.lower() in obj[key].lower() for value in arr if obj.get(key)])

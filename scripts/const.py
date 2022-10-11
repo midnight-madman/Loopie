@@ -1106,6 +1106,7 @@ ACCOUNTS = [
 ]
 
 WEB3_TAG_TITLE = 'Web3'
+
 WEB3_URLS = [
     'etherscan.io',
     'uniswap.org',
@@ -1117,54 +1118,72 @@ WEB3_URLS = [
 ]
 WEB3_KEYWORDS = [
     'Altcoin',
-    'Augmented Reality',
-    'Block',
-    'Blockchain',
     'Binance',
     'Bitcoin',
+    'Blockchain',
     'ChainLink',
     'Consensus Mechanism',
+    'Consensys',
+    'Crypto',
     'Cryptocurrency',
     'Cryptography',
-    'Decentralized',
-    'Decentralization',
-    'dApps',
     'DAO',
+    'dApps',
+    'Decentralization',
     'Decentralized Finance',
+    'Decentralized',
     'DeFi',
-    'Distributed Ledger',
     'Distributed Ledger Technology',
-    'Ethereum',
-    'Ethereum Request for Comment',
+    'Distributed Ledger',
     'ERC',
-    'Ethereum'
     'ETH',
+    'Ethereum Request for Comment',
+    'Ethereum'
+    'Ethereum',
+    'EVM',
     'GameFi',
     'Gas',
     'Hard Fork',
     'Hash Function',
     'MetaMask',
     'Metaverse',
-    'Non-Fungible Token',
+    'MEV',
     'NFT',
+    'Non-Fungible Token',
     'Open Platform',
-    'Proof of Stake',
+    'Polygon',
     'PoS',
-    'Proof of Work',
     'PoW',
     'Private Key',
-    'Public-Key Cryptography',
+    'Proof of Stake',
+    'Proof of Work',
     'Public Key',
+    'Public-Key Cryptography',
+    'Sidechain',
     'Smart Asset',
     'Smart Contract',
     'Soft Fork',
     'Solana',
     'Solidity',
     'Stablecoin',
-    'State',
     'Token',
     'Trustless',
     'Web 3.0',
     'Web3',
-    'Crypto',
+    'Zero Knowledge',
+    'Zero-Knowledge',
+    'ZK-Proof',
+    'zkSync',
 ]
+
+PODCAST_TAG_TITLE = 'Podcast'
+PODCAST_URLS = [
+    'spotify.com/episode',
+    'spotify.com/show',
+    'https://podcasts.apple.com'
+]
+PODCAST_KEYWORDS = ['Podcast']
+
+VIDEO_TAG_TITLE = 'Video'
+VIDEO_URLS = ['youtube.com', 'youtu.be']
+VIDEO_KEYWORDS = []
