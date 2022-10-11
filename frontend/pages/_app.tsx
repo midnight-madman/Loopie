@@ -23,6 +23,7 @@ const App = ({
 
   const renderApp = () => {
     const imageUrl = 'https://loopie.site/api/og'
+    const description = 'calm web3 news for the early enthusiast'
 
     return <html className="h-full bg-white">
     <Head>
@@ -34,7 +35,7 @@ const App = ({
       <meta property="og:type" content="website"/>
       <meta property="og:url" content="https://www.loopie.site"/>
       <meta property="og:title" key="ogtitle" content="Loopie"/>
-      <meta property="og:description" key="ogdesc" content="web3 news for the early enthusiast"/>
+      <meta property="og:description" key="ogdesc" content={description}/>
       <meta
         property="og:image"
         content={imageUrl}
@@ -44,7 +45,7 @@ const App = ({
       <meta property="twitter:domain" content="https://www.loopie.site"/>
       <meta property="twitter:url" content="https://www.loopie.site"/>
       <meta name="twitter:title" content="Loopie"/>
-      <meta name="twitter:description" content="web3 news for the early enthusiast"/>
+      <meta name="twitter:description" content={description}/>
       <meta name="twitter:image" content={imageUrl}/>
     </Head>
     <body className="h-full">

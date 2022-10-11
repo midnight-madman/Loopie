@@ -50,7 +50,7 @@ export default async function () {
             </h1>
             <p style={{ fontFamily: 'ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif' }}
               tw="font-sans text-3xl text-gray-600 text-center">
-              calm web3 news for the exhausted enthusiast
+              calm web3 news for the early enthusiast
             </p>
         </div>
       </div>
