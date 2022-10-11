@@ -1,5 +1,4 @@
-import { replace, split } from 'lodash/string'
-import { map, trimEnd, truncate } from 'lodash'
+import { map, truncate } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -15,12 +14,12 @@ dayjs.extend(relativeTime)
 dayjs.extend(isToday)
 dayjs.extend(isYesterday)
 
-const getCleanUrl = (url) => {
-  url = replace(url, /^(https?:\/\/?)|(www\.)/ig, '')
-  url = split(url, '?utm_source')[0]
-  url = trimEnd(url, '/')
-  return url
-}
+// const getCleanUrl = (url) => {
+//   url = replace(url, /^(https?:\/\/?)|(www\.)/ig, '')
+//   url = split(url, '?utm_source')[0]
+//   url = trimEnd(url, '/')
+//   return url
+// }
 
 const NewsItemRowComponent = ({
   newsItem,
@@ -28,9 +27,8 @@ const NewsItemRowComponent = ({
 }) => {
   const [isExpandedRow, setIsExpandedRow] = useState(false)
 
-  const cleanUrl = getCleanUrl(newsItem.url)
+  // const cleanUrl = getCleanUrl(newsItem.url)
   const rowTitle = newsItem.title
-  const rowSubtitle = truncate(cleanUrl, { length: 60 })
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'Today' : latestShareDate.isYesterday() ? 'Yesterday' : latestShareDate.fromNow()
   const tweets = map(newsItem.NewsItemToTweet, 'Tweet')
@@ -140,9 +138,6 @@ const NewsItemRowComponent = ({
         </div>
       </div>
     </td>
-    {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.title}</td> */}
-    {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.email}</td> */}
-    {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td> */}
   </tr>)
 }
 
