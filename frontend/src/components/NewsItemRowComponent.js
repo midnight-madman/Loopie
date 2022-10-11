@@ -68,11 +68,6 @@ const NewsItemRowComponent = ({
 
   const renderExpandedRow = () => {
     return <>
-      <span className="text-md md:text-lg text-gray-500 truncate">
-        <a href="">
-          {rowSubtitle}
-        </a>
-      </span>
       <div className="mx-auto flex space-x-4 mt-2 py-2">
         {map(tags, (tag, index) =>
           <span
