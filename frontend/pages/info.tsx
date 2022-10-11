@@ -11,7 +11,7 @@ const Info = () => {
     <>
       <div>
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-        <div className="md:pl-64 flex flex-col flex-1" style={{ backgroundColor: ' #FFFDF6' }}>
+        <div className="md:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
           <InfoComponent/>
           <Footer/>
