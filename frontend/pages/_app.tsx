@@ -22,6 +22,9 @@ const App = ({
   const isProd = process.env.NODE_ENV === 'production'
 
   const renderApp = () => {
+    const imageUrl = 'https://loopie.site/api/og'
+    const description = 'calm web3 news for the early enthusiast'
+
     return <html className="h-full bg-white">
     <Head>
       {isProd && renderAnalyticsScripts()}
@@ -32,21 +35,18 @@ const App = ({
       <meta property="og:type" content="website"/>
       <meta property="og:url" content="https://www.loopie.site"/>
       <meta property="og:title" key="ogtitle" content="Loopie"/>
-       <meta property="og:description" key="ogdesc" content="web3 news for the early enthusiast" />
-      {/*// image properties*/}
-      {/*{imageUrl && (<>*/}
-      {/*  <meta property="og:image" content={imageUrl} />*/}
-      {/*  <meta property="og:image:height" content="630" />*/}
-      {/*  <meta property="og:image:width" content="1200" />*/}
-      {/*</>)}*/}
-      {/*// twitter properties*/}
-      {/*<meta name="twitter:card" content="summary_large_image" />*/}
-      <meta property="twitter:domain" content="https://www.loopie.site" />
-      <meta property="twitter:url" content="https://www.loopie.site" />
-      <meta name="twitter:title" content="Loopie" />
-      <meta name="twitter:description" content="web3 news for the early enthusiast" />
-      {/*{imageUrl && (<meta name="twitter:image" content={imageUrl} />)}*/}
+      <meta property="og:description" key="ogdesc" content={description}/>
+      <meta
+        property="og:image"
+        content={imageUrl}
+      />
 
+      <meta name="twitter:card" content="summary_large_image"/>
+      <meta property="twitter:domain" content="https://www.loopie.site"/>
+      <meta property="twitter:url" content="https://www.loopie.site"/>
+      <meta name="twitter:title" content="Loopie"/>
+      <meta name="twitter:description" content={description}/>
+      <meta name="twitter:image" content={imageUrl}/>
     </Head>
     <body className="h-full">
     <Component {...pageProps} />
