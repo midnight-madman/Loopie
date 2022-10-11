@@ -24,7 +24,7 @@ export default async function () {
           background: '#FFFDF6',
           width: '100%',
           height: '100%',
-          paddingTop: 50,
+          padding: 10,
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center'
@@ -34,9 +34,6 @@ export default async function () {
           width="256"
           height="256"
           src={'https://loopie.site/loopie_logo.png'}
-          style={{
-            borderRadius: 128
-          }}
         />
         <div style={{
           display: 'flex',
@@ -45,11 +42,11 @@ export default async function () {
           alignItems: 'center'
         }}>
             <h1 style={{ fontFamily: 'ui-serif,Georgia,Cambria,Times New Roman,Times,serif' }}
-                tw="text-7xl text-gray-900">
+                tw="text-9xl text-gray-900">
               Loopie
             </h1>
             <p style={{ fontFamily: 'ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif' }}
-              tw="font-sans text-3xl text-gray-600 text-center">
+              tw="max-w-xl font-sans text-6xl text-gray-500 text-center">
               calm web3 news for the early enthusiast
             </p>
         </div>
