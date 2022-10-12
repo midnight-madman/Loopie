@@ -2,14 +2,12 @@ import logging
 from datetime import datetime
 
 import luigi
-import pandas as pd
-from typing import Optional
-from const import TAG_AUTOMATION
 
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
-from utils import find_obj_based_on_key_value_in_list, chunkify, contains_key_in_list
+from tasks.utils import create_news_item_to_tags_connections
+from utils import find_obj_based_on_key_value_in_list, chunkify
 
 logger = logging.getLogger('luigi-interface')
 
@@ -62,14 +60,14 @@ class CreateNewsItems(BaseLoopieTask):
 
         if nr_created_news_items > 0:
             news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
-        self.create_news_item_to_tweets_connections(url_objs, news_items_in_db)
 
+        self.create_news_item_to_tweets_connections(url_objs, news_items_in_db)
         self.create_news_item_to_tags_connections(news_items_in_db)
 
-    def create_news_items(self, url_objs, existing_news_items_in_db) -> int:
+    def create_news_items(self, url_objs, news_items_in_db) -> int:
         unique_url_objs = {obj['url']: obj for obj in url_objs}.values()  # make list unique
 
-        urls_in_db = list(set([obj['url'] for obj in existing_news_items_in_db]))
+        urls_in_db = list(set([obj['url'] for obj in news_items_in_db]))
         news_items_to_insert = [url_obj for url_obj in unique_url_objs if url_obj['url'] not in urls_in_db]
         news_items_to_insert = [dict(url=url_obj['url']) for url_obj in news_items_to_insert]
 
@@ -81,12 +79,12 @@ class CreateNewsItems(BaseLoopieTask):
             logger.info(f'All news items already exist in DB')
             return 0
 
-    def create_news_item_to_tweets_connections(self, url_objs, existing_news_items_in_db):
+    def create_news_item_to_tweets_connections(self, url_objs, news_items_in_db):
         news_item_ids = []
         tweet_ids = []
 
         for url_obj in url_objs:
-            obj = find_obj_based_on_key_value_in_list(existing_news_items_in_db, 'url', url_obj['url'])
+            obj = find_obj_based_on_key_value_in_list(news_items_in_db, 'url', url_obj['url'])
             if not obj:
                 logger.warning(
                     'could not determine news item id for tweet to insert into DB - this can be a timing issue')
@@ -101,33 +99,14 @@ class CreateNewsItems(BaseLoopieTask):
         resp = self.supabase.table("NewsItemToTweet").insert(news_item_to_tweets).execute()
         logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')
 
-    def create_news_item_to_tags_connections(self, news_items):
-        tags_df = pd.read_sql_query(self.get_tags_query(), con=self.db_connection, coerce_float=False)
-
-        tag_titles = list(TAG_AUTOMATION.keys())
-        tag_title_to_id = {tag_title: get_tag_id_for_title(tag_title, tags_df) for tag_title in tag_titles}
-
-        new_tag_connections = []
-        for news_item in news_items:
-            for tag_title, tag_info in TAG_AUTOMATION.objects():
-                has_url = contains_key_in_list(tag_info['urls'], 'url', urls)
-                has_keyword = contains_key_in_list(tag_info['keywords'], 'title', keywords)
-
-                if has_url or has_keyword:
-                    new_tag_connections.append({
-                        'news_item_id': news_item['id'],
-                        'tag_id': tag_title_to_id[tag_title],
-                        'wallet_address': 'AUTOMATION'
-                    })
+    def create_news_item_to_tags_connections(self, news_items_in_db):
+        new_tag_connections = create_news_item_to_tags_connections(news_items_in_db)
 
         if new_tag_connections:
             insert_count = 0
             for new_connections_chunk in chunkify(new_tag_connections, 30):
                 resp = self.supabase.table("NewsItemToTag").insert(new_connections_chunk, count='exact').execute()
                 insert_count += resp.count
-            logger.info(f'New news items to tag connections inserted: {insert_count}')
-
-
-def get_tag_id_for_title(tag_title: str, tags_df: pd.DataFrame) -> Optional[str]:
-    df_filtered = tags_df[tags_df.title == tag_title]
-    return df_filtered.iloc[0]['id'] if len(df_filtered) == 1 else None
+            logger.info(f'News tag connections for news items created: {insert_count}')
+        else:
+            logger.info(f'No new tag connections for news items created')

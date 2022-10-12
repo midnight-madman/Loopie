@@ -50,7 +50,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main_luigi_flow.py --task-name copy-tweets-to-db
+          pipenv run python scripts/main.py --task-name copy-tweets-to-db
       - name: Create news items and get update metadata
         if: github.event.schedule == '0 */4 * * *' || contains(github.event.head_commit.message, 'force ci')
         env:
@@ -62,8 +62,8 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main_luigi_flow.py --task-name create-news-items
-          pipenv run python scripts/main_luigi_flow.py --task-name get-metadata-for-urls
+          pipenv run python scripts/main.py --task-name create-news-items
+          pipenv run python scripts/main.py --task-name get-metadata-for-urls
       - name: Update author scores
         if: github.event.schedule == '0 0 * * *'
         env:
@@ -75,7 +75,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main_luigi_flow.py --task-name update-author-scores
+          pipenv run python scripts/main.py --task-name update-author-scores
 
   deploy-frontend:
     needs: update-data

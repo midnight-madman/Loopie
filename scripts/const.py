@@ -1121,6 +1121,7 @@ TAG_AUTOMATION = {
             'Binance',
             'Bitcoin',
             'Blockchain',
+            'BAYC',
             'ChainLink',
             'Consensus Mechanism',
             'Consensys',
@@ -1151,6 +1152,7 @@ TAG_AUTOMATION = {
             'NFT',
             'Non-Fungible Token',
             'Open Platform',
+            'Polkadot',
             'Polygon',
             'PoS',
             'PoW',
@@ -1170,6 +1172,7 @@ TAG_AUTOMATION = {
             'Trustless',
             'Web 3.0',
             'Web3',
+            'Yuga Labs'
             'Zero Knowledge',
             'Zero-Knowledge',
             'ZK-Proof',
@@ -1185,7 +1188,31 @@ TAG_AUTOMATION = {
             'mintbase.io',
             'knownorigin.io'
         ],
-        'keywords': []
+        'keywords': [
+            'BAYC',
+            'Bored Ape Yacht Club',
+            'MAYC',
+            'Mutant Ape Yacht Club',
+            'CryptoPunks',
+            'Otherdeed',
+            'CLONE X',
+            'Bored Ape Kennel Club',
+            'Genuine Undead',
+            'Cool Cats',
+            'Moonbirds',
+            '8liens',
+            'Kitaro World',
+            'Azuki',
+            'Doodles',
+            'goblintown',
+            'Meebits',
+            'Kanpai Pandas Infinity',
+            'Neko Nation',
+            'Cryptoadz',
+            'Invisible Friends',
+            'Pudgy Penguins',
+            'VeeFriends',
+        ]
     },
     'Podcast': {
         'urls': [

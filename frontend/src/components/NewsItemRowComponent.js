@@ -21,6 +21,9 @@ dayjs.extend(isYesterday)
 //   return url
 // }
 
+const TWEET_LENGTH_ONLY_LINK = 23
+const WEB3_TAG_TITLE = 'Web3'
+
 const NewsItemRowComponent = ({
   newsItem,
   index
@@ -31,8 +34,8 @@ const NewsItemRowComponent = ({
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'Today' : latestShareDate.isYesterday() ? 'Yesterday' : latestShareDate.fromNow()
-  const tweets = map(newsItem.NewsItemToTweet, 'Tweet')
-  const tags = filter(map(newsItem.NewsItemToTag, 'Tag', isEmpty))
+  const tweets = filter(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet) => tweet.text && tweet.text.length > TWEET_LENGTH_ONLY_LINK)
+  const tags = filter(map(newsItem.NewsItemToTag, 'Tag'), (tag) => !isEmpty(tag) && tag.title !== WEB3_TAG_TITLE)
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)

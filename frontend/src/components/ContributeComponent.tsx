@@ -4,9 +4,9 @@ import { Popover } from '@headlessui/react'
 import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
-import { find, findIndex, get, includes, isEmpty, map, split } from 'lodash'
+import { filter, find, findIndex, get, includes, isEmpty, map, split } from 'lodash'
 import { LoadingComponent } from './LoadingComponent'
-import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, UserIcon } from '@heroicons/react/24/solid'
+import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, StarIcon, UserIcon } from '@heroicons/react/24/solid'
 import { ConnectButton } from './ConnectButton'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -118,16 +118,15 @@ export function ContributeComponent () {
       error
     } = await supabase
       .from<ScoredNewsItem>('scorednewsitem')
-      .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))')
+      .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))', { count: 'exact' })
       .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
-      .order('created_at', { ascending: false })
+      .order('score', { ascending: false })
       .range(pageStartIndex, pageStartIndex + NEWS_ITEMS_PER_PAGE)
 
     if (error || !data) {
       console.log(error)
       return
     }
-
     setNewsItems(data)
   }
 
@@ -255,7 +254,7 @@ export function ContributeComponent () {
   }
 
   function renderNewsItemToTagRow (newsItem: ScoredNewsItem, newsItemState: string) {
-    const tagsOnNewsItem = map(newsItem.NewsItemToTag, 'Tag')
+    const tagsOnNewsItem = filter(map(newsItem.NewsItemToTag, 'Tag'), (tag) => !isEmpty(tag))
     const hasWeb3TagOnNewsItem = findIndex(tagsOnNewsItem, (tag: Tag) => tag.id === web3Tag?.id) !== -1
     const buttonTitle = getButtonTitleFromState(newsItemState, hasWeb3TagOnNewsItem)
     const isButtonEnabled = includes([undefined, '', 'pending'], newsItemState)
@@ -276,6 +275,13 @@ export function ContributeComponent () {
                 </a>
               </h2>
               <p className="text-sm font-medium text-gray-500">
+                <div className="mx-auto flex space-x-4 mt-2 py-2">
+                  {map(tagsOnNewsItem, (tag, index) =>
+                    <span
+                      className="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-sm font-medium text-gray-800">
+                      {tag.title}
+                    </span>)}
+                </div>
                 <div className="flex">
                   <div
                     className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-300">
@@ -321,8 +327,8 @@ export function ContributeComponent () {
                       className="inline-flex space-x-2 text-gray-400">
                 <UserIcon className="h-5 w-5" aria-hidden="true"/>
                 <span
-                  className="font-medium text-gray-900">{newsItem.count_unique_authors}</span>
-                <span className="sr-only">replies</span>
+                  className="font-medium text-gray-700">{newsItem.count_unique_authors}</span>
+                <span className="sr-only">number of posters</span>
               </button>
             </span>
             <span className="inline-flex items-center text-sm">
@@ -330,8 +336,17 @@ export function ContributeComponent () {
                       className="inline-flex space-x-2 text-gray-400">
                 <CalendarDaysIcon className="h-5 w-5" aria-hidden="true"/>
                 <span
-                  className="font-medium text-gray-900">{split(newsItem.updated_at, 'T')[0]}</span>
-                <span className="sr-only">views</span>
+                  className="font-medium text-gray-700">{split(newsItem.updated_at, 'T')[0]}</span>
+                <span className="sr-only">created at date</span>
+              </button>
+            </span
+            ><span className="inline-flex items-center text-sm">
+              <button type="button"
+                      className="inline-flex space-x-2 text-gray-400">
+                <StarIcon className="h-5 w-5" aria-hidden="true"/>
+                <span
+                  className="font-medium text-gray-700">{newsItem.score}</span>
+                <span className="sr-only">score</span>
               </button>
             </span>
           </div>
