@@ -119,13 +119,13 @@ export const getStaticProps: GetStaticProps = async context => {
     .order('score', { ascending: false })
     .limit(50)
 
-  if (error || !data) {
+  if (error) {
     console.log(error)
-    return {
-      props: {
-        newsItems: []
-      }
-    }
+    throw error
+  }
+
+  if (!data) {
+    throw new Error('No news items returned from DB')
   }
   const newsItems = data.map((newsItem) => omitBy(newsItem, isNil))
   return {
