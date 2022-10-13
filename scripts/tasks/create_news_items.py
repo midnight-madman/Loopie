@@ -36,15 +36,24 @@ class CreateNewsItems(BaseLoopieTask):
     def complete(self):
         return len(self.df) == 0
 
-    def get_existing_news_items_with_urls(self, urls: list[str]) -> list[dict]:
+    def get_existing_news_items_with_urls(self, urls: list[str], exclude_if_has_tags: bool = False) -> list[dict]:
         url_chunks = chunkify(urls, 50)  # db query has max size of query length
-        existing_news_items_in_db = []
+        news_items_in_db = []
 
         for url_chunk in url_chunks:
-            resp_query_urls = self.supabase.table("NewsItem").select('id, url, title').in_('url', url_chunk).execute()
-            existing_news_items_in_db.extend(resp_query_urls.data)
+            supabase_query = self.supabase \
+                .table("NewsItem") \
+                .select('id, url, title, NewsItemToTag!left(id, Tag(id, title))') \
+                .in_('url', url_chunk)
+            resp_query_urls = supabase_query.execute()
 
-        return existing_news_items_in_db
+            if exclude_if_has_tags:
+                data = [news_item for news_item in resp_query_urls.data if len(news_item.get('NewsItemToTag')) == 0]
+            else:
+                data = resp_query_urls.data
+            news_items_in_db.extend(data)
+
+        return news_items_in_db
 
     def run(self):
         url_objs = get_urls_from_tweets_dataframe(self.df)
@@ -62,9 +71,11 @@ class CreateNewsItems(BaseLoopieTask):
             news_items_in_db = self.get_existing_news_items_with_urls(new_urls)
 
         self.create_news_item_to_tweets_connections(url_objs, news_items_in_db)
+
+        news_items_in_db = self.get_existing_news_items_with_urls(new_urls, exclude_if_has_tags=True)
         self.create_news_item_to_tags_connections(news_items_in_db)
 
-    def create_news_items(self, url_objs, news_items_in_db) -> int:
+    def create_news_items(self, url_objs: list[dict], news_items_in_db: list[dict]) -> int:
         unique_url_objs = {obj['url']: obj for obj in url_objs}.values()  # make list unique
 
         urls_in_db = list(set([obj['url'] for obj in news_items_in_db]))
@@ -79,7 +90,7 @@ class CreateNewsItems(BaseLoopieTask):
             logger.info(f'All news items already exist in DB')
             return 0
 
-    def create_news_item_to_tweets_connections(self, url_objs, news_items_in_db):
+    def create_news_item_to_tweets_connections(self, url_objs: list[dict], news_items_in_db: list[dict]):
         news_item_ids = []
         tweet_ids = []
 
@@ -99,7 +110,7 @@ class CreateNewsItems(BaseLoopieTask):
         resp = self.supabase.table("NewsItemToTweet").insert(news_item_to_tweets).execute()
         logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')
 
-    def create_news_item_to_tags_connections(self, news_items_in_db):
+    def create_news_item_to_tags_connections(self, news_items_in_db: list[dict]):
         new_tag_connections = create_news_item_to_tags_connections(news_items_in_db)
 
         if new_tag_connections:
