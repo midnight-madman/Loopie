@@ -3,7 +3,7 @@ import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
 import Footer from '../src/components/Footer'
 import { GetStaticProps } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { isNil, omitBy, take } from 'lodash'
+import { map, isNil, omitBy, take } from 'lodash'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -51,7 +51,7 @@ const Index = (props: IndexProps) => {
                   {/*</tr>*/}
                   {/*</thead>*/}
                   <tbody className="">
-                  {newsItems.map((newsItem, index) =>
+                  {map(newsItems, (newsItem, index) =>
                     <NewsItemRowComponent key={`url-row-${index}`}
                                           newsItem={newsItem}
                                           index={index}/>

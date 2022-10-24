@@ -10,46 +10,11 @@ import { ArrowTopRightOnSquareIcon, CalendarDaysIcon, StarIcon, UserIcon } from 
 import { ConnectButton } from './ConnectButton'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { ScoredNewsItem, Tag } from '../const'
 
 dayjs().format()
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
-
-type Author = {
-  twitter_id: string
-  twitter_username: string
-  score: number
-  updated_at: string
-}
-
-type Tweet = {
-  id: string
-  text: string
-  Author: Author
-}
-
-type Tag = {
-  id: string
-  created_at: string
-  title: string
-}
-
-type ScoredNewsItem = {
-  id: string
-  updated_at: string
-  created_at: string
-  url: string
-  title: string
-  description: number
-  score: number
-  count_unique_authors: number
-  NewsItemToTweet: {
-    Tweet: Tweet
-  }[]
-  NewsItemToTag: {
-    Tag: Tag
-  }[]
-}
 
 const tabs = [
   {
