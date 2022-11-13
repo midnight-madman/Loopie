@@ -6,7 +6,7 @@ import luigi
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
-from tasks.utils import create_news_item_to_tags_connections
+from tasks.utils import create_tags_for_news_items
 from utils import find_obj_based_on_key_value_in_list, chunkify
 
 logger = logging.getLogger('luigi-interface')
@@ -111,7 +111,7 @@ class CreateNewsItems(BaseLoopieTask):
         logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')
 
     def create_news_item_to_tags_connections(self, news_items_in_db: list[dict]):
-        new_tag_connections = create_news_item_to_tags_connections(news_items_in_db)
+        new_tag_connections = create_tags_for_news_items(news_items_in_db)
 
         if new_tag_connections:
             insert_count = 0

@@ -86,7 +86,7 @@ const Videos = (props: IndexProps) => {
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <div className="md:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
-          <div className="max-w-6xl px-4 sm:px-6 md:px-8">
+          <div className="min-h-screen max-w-6xl px-4 sm:px-6 md:px-8">
             {renderVideosPageContent()}
           </div>
           <Footer/>
@@ -125,7 +125,7 @@ export const getStaticProps: GetStaticProps = async context => {
     .eq('NewsItemToTag.Tag.title', 'Web3')
     .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
-    .limit(30)
+    .limit(50)
 
   if (error) {
     console.log(error)

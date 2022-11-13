@@ -109,10 +109,7 @@ export const getStaticProps: GetStaticProps = async context => {
           )
         )
       ), 
-      NewsItemToTag!inner(
-        Tag(
-          title
-        )
+      NewsItemToTag!inner(Tag(title)
       )`)
     .filter('NewsItemToTag.Tag.title', 'eq', 'Web3')
     .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
