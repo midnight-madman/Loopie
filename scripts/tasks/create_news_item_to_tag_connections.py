@@ -4,7 +4,7 @@ from datetime import datetime
 import luigi
 
 from tasks.base_loopie_task import BaseLoopieTask
-from tasks.utils import create_news_item_to_tags_connections
+from tasks.utils import create_tags_for_news_items
 from utils import chunkify
 
 logger = logging.getLogger('luigi-interface')
@@ -29,7 +29,7 @@ class CreateNewsItemToTagConnections(BaseLoopieTask):
 
     def run(self):
         news_items = self.df.to_dict(orient='records')
-        new_tag_connections = create_news_item_to_tags_connections(news_items)
+        new_tag_connections = create_tags_for_news_items(news_items)
 
         if new_tag_connections:
             insert_count = 0

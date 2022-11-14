@@ -1139,9 +1139,10 @@ TAG_AUTOMATION = {
             'ERC',
             'ETH',
             'Ethereum Request for Comment',
-            'Ethereum'
+            'Ether',
             'Ethereum',
             'EVM',
+            'FTX',
             'GameFi',
             'Gas',
             'Hard Fork',
