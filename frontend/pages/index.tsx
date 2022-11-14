@@ -3,7 +3,7 @@ import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
 import Footer from '../src/components/Footer'
 import { GetStaticProps } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { map, isNil, omitBy, take } from 'lodash'
+import { map, take } from 'lodash'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -54,7 +54,7 @@ const Index = (props: IndexProps) => {
                   {map(newsItems, (newsItem, index) =>
                     <NewsItemRowComponent key={`url-row-${index}`}
                                           newsItem={newsItem}
-                                          index={index}/>
+                                          isDefaultExpanded={index === 0}/>
                   )}
                   </tbody>
                 </table>
@@ -91,7 +91,7 @@ const Index = (props: IndexProps) => {
 
 export const getStaticProps: GetStaticProps = async context => {
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-  const tweetStartDate = dayjs().utc().subtract(2, 'days')
+  const tweetStartDate = dayjs().utc().subtract(3, 'days')
   const {
     data,
     error
@@ -105,17 +105,15 @@ export const getStaticProps: GetStaticProps = async context => {
           id::text, 
           text, 
           Author(
-            twitter_username
+            twitter_username,
+            score
           )
         )
-      ), 
-      NewsItemToTag!inner(Tag(title)
-      )`)
-    .filter('NewsItemToTag.Tag.title', 'eq', 'Web3')
-    .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
+      )
+      `)
+    .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(50)
-
   if (error) {
     console.log(error)
     throw error
@@ -124,10 +122,10 @@ export const getStaticProps: GetStaticProps = async context => {
   if (!data) {
     throw new Error('No news items returned from DB')
   }
-  const newsItems = data.map((newsItem) => omitBy(newsItem, isNil))
+
   return {
     props: {
-      newsItems
+      newsItems: data
     },
     revalidate: 15 * 60 // every 15mins
   }

@@ -1,4 +1,4 @@
-import { filter, isEmpty, map, truncate } from 'lodash'
+import { filter, isEmpty, map, orderBy, take, truncate, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -7,6 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import isToday from 'dayjs/plugin/isToday'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { classNames } from '../utils'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -23,19 +24,20 @@ dayjs.extend(isYesterday)
 
 const TWEET_LENGTH_ONLY_LINK = 23
 const WEB3_TAG_TITLE = 'Web3'
+const TWEETS_IN_EXPANDED_ROW = 8
 
 const NewsItemRowComponent = ({
   newsItem,
-  index
+  isDefaultExpanded = false
 }) => {
-  const [isExpandedRow, setIsExpandedRow] = useState(index === 0)
+  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded)
 
   // const cleanUrl = getCleanUrl(newsItem.url)
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
-  const newsItemDate = latestShareDate.isToday() ? 'Today' : latestShareDate.isYesterday() ? 'Yesterday' : latestShareDate.fromNow()
-  const tweets = filter(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet) => tweet.text && tweet.text.length > TWEET_LENGTH_ONLY_LINK)
-  const tags = filter(map(newsItem.NewsItemToTag, 'Tag'), (tag) => !isEmpty(tag) && tag.title !== WEB3_TAG_TITLE)
+  const newsItemDate = latestShareDate.isToday() ? 'today' : latestShareDate.isYesterday() ? 'yesterday' : latestShareDate.fromNow()
+  const tweets = uniqBy(filter(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet) => tweet.text && tweet.text.length > TWEET_LENGTH_ONLY_LINK), 'id')
+  const tags = filter(newsItem.tags, (tag) => !isEmpty(tag) && tag !== WEB3_TAG_TITLE)
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)
@@ -68,18 +70,23 @@ const NewsItemRowComponent = ({
   }
 
   const renderExpandedRow = () => {
+    console.log(tweets)
     return <>
       {!isEmpty(tags) && (<div className="mx-auto flex space-x-4 mt-2 py-2">
         {map(tags, (tag, index) =>
           <span
             className="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-sm font-medium text-gray-800">
-        {tag.title}
+        {tag}
       </span>)}
       </div>)}
-      <div className="mx-auto flex space-x-4 mt-2 py-2 border-y border-gray-600">
-        {map(tweets, (tweet, index) =>
-          <span key={`key-${tweet.id}-${index}`}>
-                    {index > 0 && '- '}
+      <div
+        className={classNames(tweets.length >= 4
+          ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
+          : 'grid grid-cols-3 grid-rows-1 gap-8',
+        'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
+        {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
+          <div key={`key-${tweet.id}-${index}`}>
+            {index > 0 && '- '}
             <a target="_blank" rel="noreferrer noopener"
                className="mr-1 hover:underline"
                href={`https://twitter.com/${tweet.Author.twitter_username}/status/${tweet.id}`}>{tweet.text || 'Open tweet'}</a>
@@ -90,7 +97,7 @@ const NewsItemRowComponent = ({
                    href={`https://twitter.com/@${tweet.Author.twitter_username}`}>{tweet.Author.twitter_username}
                 </a>
               </>)}
-                </span>
+          </div>
         )}
       </div>
     </>
@@ -117,12 +124,12 @@ const NewsItemRowComponent = ({
           <div className="text-md md:text-lg text-gray-500">
             <div className="flex flex-row flex-wrap">
                             <span className="mr-1">
-                            {newsItemDate} |
+                            Last shared {newsItemDate} |
                             </span>
               {renderShare()}
               <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
                     onClick={() => setIsExpandedRow(!isExpandedRow)}>
-                                <p className="">{isExpandedRow ? 'Less' : 'More'}</p>
+                                <p className="">Show {isExpandedRow ? 'less' : 'more'}</p>
                 {isExpandedRow
                   ? <ArrowUpIcon
                     className="mt-1 flex-shrink-0 h-5 w-5"
