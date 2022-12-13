@@ -1,4 +1,4 @@
-import { filter, isEmpty, map, orderBy, take, truncate, uniqBy } from 'lodash'
+import { filter, isEmpty, isUndefined, map, orderBy, take, truncate, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -15,13 +15,6 @@ dayjs.extend(relativeTime)
 dayjs.extend(isToday)
 dayjs.extend(isYesterday)
 
-// const getCleanUrl = (url) => {
-//   url = replace(url, /^(https?:\/\/?)|(www\.)/ig, '')
-//   url = split(url, '?utm_source')[0]
-//   url = trimEnd(url, '/')
-//   return url
-// }
-
 const TWEET_LENGTH_ONLY_LINK = 23
 const WEB3_TAG_TITLE = 'Web3'
 const TWEETS_IN_EXPANDED_ROW = 8
@@ -30,9 +23,9 @@ const NewsItemRowComponent = ({
   newsItem,
   isDefaultExpanded = false
 }) => {
-  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded)
+  const summary = newsItem.NewsItemSummary[0] && newsItem.NewsItemSummary[0].summary
+  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded || !isUndefined(summary))
 
-  // const cleanUrl = getCleanUrl(newsItem.url)
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'today' : latestShareDate.isYesterday() ? 'yesterday' : latestShareDate.fromNow()
@@ -69,6 +62,29 @@ const NewsItemRowComponent = ({
         </span>
   }
 
+  const renderTweets = () => {
+    return <div
+      className={classNames(tweets.length >= 4
+        ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
+        : 'grid grid-cols-3 grid-rows-1 gap-8',
+      'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
+      {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
+        <div key={`key-${tweet.id}-${index}`}>
+          {index > 0 && '- '}
+          <a target="_blank" rel="noreferrer noopener"
+             className="mr-1 hover:underline"
+             href={`https://twitter.com/${tweet.Author.twitter_username}/status/${tweet.id}`}>{tweet.text || 'Open tweet'}</a>
+          {tweet.Author.twitter_username && (
+            <>by{' '}
+              <a target="_blank" rel="noreferrer noopener"
+                 className="hover:underline"
+                 href={`https://twitter.com/@${tweet.Author.twitter_username}`}>{tweet.Author.twitter_username}
+              </a>
+            </>)}
+        </div>
+      )}
+    </div>
+  }
   const renderExpandedRow = () => {
     console.log(tweets)
     return <>
@@ -79,27 +95,7 @@ const NewsItemRowComponent = ({
         {tag}
       </span>)}
       </div>)}
-      <div
-        className={classNames(tweets.length >= 4
-          ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
-          : 'grid grid-cols-3 grid-rows-1 gap-8',
-        'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
-        {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
-          <div key={`key-${tweet.id}-${index}`}>
-            {index > 0 && '- '}
-            <a target="_blank" rel="noreferrer noopener"
-               className="mr-1 hover:underline"
-               href={`https://twitter.com/${tweet.Author.twitter_username}/status/${tweet.id}`}>{tweet.text || 'Open tweet'}</a>
-            {tweet.Author.twitter_username && (
-              <>by{' '}
-                <a target="_blank" rel="noreferrer noopener"
-                   className="hover:underline"
-                   href={`https://twitter.com/@${tweet.Author.twitter_username}`}>{tweet.Author.twitter_username}
-                </a>
-              </>)}
-          </div>
-        )}
-      </div>
+      {summary ? <div><p className="mt-2 text-gray-700">{summary}</p></div> : renderTweets()}
     </>
   }
 
