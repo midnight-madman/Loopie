@@ -53,8 +53,7 @@ const Index = (props: IndexProps) => {
                   <tbody className="">
                   {map(newsItems, (newsItem, index) =>
                     <NewsItemRowComponent key={`url-row-${index}`}
-                                          newsItem={newsItem}
-                                          isDefaultExpanded={index === 0}/>
+                                          newsItem={newsItem}/>
                   )}
                   </tbody>
                 </table>
@@ -99,6 +98,9 @@ export const getStaticProps: GetStaticProps = async context => {
     .from('scorednewsitem')
     .select(
       `*, 
+      NewsItemSummary(
+        summary
+      ),
       NewsItemToTweet( 
         Tweet(
           created_at, 

@@ -273,9 +273,6 @@ export function ContributeComponent () {
             </div>
           </div>
         </div>
-        <div className="mt-2 space-y-4 text-sm text-gray-700">
-          {newsItem.description}
-        </div>
         <div className="mt-6 flex justify-between space-x-8">
           <div className="flex space-x-6">
             {/* <span className="inline-flex items-center text-sm"> */}
