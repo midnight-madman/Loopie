@@ -86,6 +86,7 @@ const NewsItemRowComponent = ({
     </div>
   }
   const renderExpandedRow = () => {
+    console.log(tweets)
     return <>
       {!isEmpty(tags) && (<div className="mx-auto flex space-x-4 mt-2 py-2">
         {map(tags, (tag, index) =>
