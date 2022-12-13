@@ -65,9 +65,9 @@ const NewsItemRowComponent = ({
   const renderTweets = () => {
     return <div
       className={classNames(tweets.length >= 4
-          ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
-          : 'grid grid-cols-3 grid-rows-1 gap-8',
-        'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
+        ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
+        : 'grid grid-cols-3 grid-rows-1 gap-8',
+      'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
       {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
         <div key={`key-${tweet.id}-${index}`}>
           {index > 0 && '- '}
