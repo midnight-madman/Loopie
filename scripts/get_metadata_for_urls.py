@@ -3,13 +3,13 @@ import requests
 from lxml.html import fromstring
 from tqdm import tqdm
 
-from scraping.webpage_title_scraper import WebpageTitleScraper
+from scraping.webpage_scraper import WebpageScraper
 from utils import get_local_url_filenames
 
 tqdm.pandas()
 
 
-def can_get_title_from_url(url):
+def can_scrape_url(url):
     # heuristics based on previous failed scraping runs
     if 'twitter.com' in url:
         return False
@@ -62,8 +62,8 @@ def get_title_from_python_request(url: str) -> str:
     return title or ''
 
 
-def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
-    if not can_get_title_from_url(url):
+def get_title_for_url(url: str, scraper: WebpageScraper) -> str:
+    if not can_scrape_url(url):
         return ''
 
     title = scraper.get_page_title(url)
@@ -71,11 +71,18 @@ def get_title_for_url(url: str, scraper: WebpageTitleScraper) -> str:
     return title if is_valid_title(title) else ''
 
 
+def get_content_for_url(url: str, scraper: WebpageScraper) -> str:
+    if not can_scrape_url(url):
+        return ''
+
+    return scraper.get_page_content(url)
+
+
 def get_metadata_for_url_file(fname):
     df = pd.read_csv(fname)
     print(f'scraping {len(df)} titles in file: {fname}')
 
-    scraper = WebpageTitleScraper()
+    scraper = WebpageScraper()
     df['url_title'] = df.progress_apply(lambda row:
                                         row['url_title']
                                         if row.get('url_title')

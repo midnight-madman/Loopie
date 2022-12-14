@@ -8,6 +8,7 @@ import luigi
 from settings import DATE_FORMAT
 from supabase_utils import get_supabase_client
 from tasks.copy_tweets_to_db import CopyTweetsToDB
+from tasks.create_news_item_summary import CreateNewsItemSummary
 from tasks.create_news_item_to_tag_connections import CreateNewsItemToTagConnections
 from tasks.create_news_items import CreateNewsItems
 from tasks.get_metadata_for_urls import GetMetadataForUrls
@@ -36,6 +37,9 @@ task_name_to_config = {
     'create-news-item-to-tag-connections': {
         'class': CreateNewsItemToTagConnections,
         'args': ['start_date', ]
+    },
+    'create-news-item-summary': {
+        'class': CreateNewsItemSummary
     }
 }
 
@@ -47,7 +51,7 @@ def run_from_cli_args(args):
     task_name = args_dict.get('task_name')
     if task_name:
         task_config = task_name_to_config[task_name]
-        kwargs = {arg: args_dict.get(arg, None) for arg in task_config['args']}
+        kwargs = {arg: args_dict.get(arg, None) for arg in task_config.get('args', [])}
         for key, value in kwargs.items():
             if 'date' in key:
                 if value:
