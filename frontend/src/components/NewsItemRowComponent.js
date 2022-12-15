@@ -1,4 +1,4 @@
-import { filter, isEmpty, isUndefined, map, orderBy, take, truncate, uniqBy } from 'lodash'
+import { filter, isEmpty, map, orderBy, take, truncate, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -24,7 +24,7 @@ const NewsItemRowComponent = ({
   isDefaultExpanded = false
 }) => {
   const summary = newsItem.NewsItemSummary[0] && newsItem.NewsItemSummary[0].summary
-  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded || !isUndefined(summary))
+  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded)
 
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
@@ -42,7 +42,6 @@ const NewsItemRowComponent = ({
             url: newsItem.url,
             text: 'Found this on https://loopie.site:\n\n'
           })
-          console.log('? Shared via API.')
         } catch (error) {
           console.log(`? ${error}`)
         }
@@ -58,16 +57,16 @@ const NewsItemRowComponent = ({
     return <span id={`share-newsItem-${newsItem.id}`}
                  className="mr-1 flex hover:underline hover:text-gray-700 cursor-pointer">
             Share{' '}
-      <ArrowTopRightOnSquareIcon className="mx-1 mt-1 h-4 w-4"/>|
+      <ArrowTopRightOnSquareIcon className="mx-1 mt-1.5 h-4 w-4"/>|
         </span>
   }
 
   const renderTweets = () => {
     return <div
       className={classNames(tweets.length >= 4
-        ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
-        : 'grid grid-cols-3 grid-rows-1 gap-8',
-      'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
+          ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
+          : 'grid grid-cols-3 grid-rows-1 gap-8',
+        'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
       {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
         <div key={`key-${tweet.id}-${index}`}>
           {index > 0 && '- '}
@@ -86,7 +85,6 @@ const NewsItemRowComponent = ({
     </div>
   }
   const renderExpandedRow = () => {
-    console.log(tweets)
     return <>
       {!isEmpty(tags) && (<div className="mx-auto flex space-x-4 mt-2 py-2">
         {map(tags, (tag, index) =>
@@ -95,8 +93,30 @@ const NewsItemRowComponent = ({
         {tag}
       </span>)}
       </div>)}
-      {summary ? <div><p className="mt-2 text-gray-700">{summary}</p></div> : renderTweets()}
+      {renderTweets()}
     </>
+  }
+
+  const renderRowDetails = () => {
+    return <div className="flex flex-row flex-wrap">
+      <span className="mr-1">
+      Last shared {newsItemDate} |
+      </span>
+      {renderShare()}
+      <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
+            onClick={() => setIsExpandedRow(!isExpandedRow)}>
+          <p className="">Show {isExpandedRow ? 'less' : 'more'}</p>
+        {isExpandedRow
+          ? <ArrowUpIcon
+            className="flex-shrink-0 mt-1.5 h-4 w-4"
+            aria-hidden="true"
+          />
+          : <ArrowDownIcon
+            className="flex-shrink-0 mt-1.5 h-4 w-4"
+            aria-hidden="true"
+          />}
+      </span>
+    </div>
   }
 
   return (<tr>
@@ -112,34 +132,15 @@ const NewsItemRowComponent = ({
         <div className="">
           <a
             href={newsItem.url} target="_blank" rel="noreferrer noopener"
-            className="text-gray-900 hover:underline hover:text-gray-700">
-                        <span className="text-lg lg:text-xl font-medium">
+            className="text-gray-900 hover:underline hover:text-gray-800">
+                        <span className="text-lg sm:text-2xl lg:text-xl font-semibold tracking-tight">
                         {truncate(rowTitle, { length: 150 })}{' '}
                         </span>
           </a>
-          <div className="text-md md:text-lg text-gray-500">
-            <div className="flex flex-row flex-wrap">
-                            <span className="mr-1">
-                            Last shared {newsItemDate} |
-                            </span>
-              {renderShare()}
-              <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
-                    onClick={() => setIsExpandedRow(!isExpandedRow)}>
-                                <p className="">Show {isExpandedRow ? 'less' : 'more'}</p>
-                {isExpandedRow
-                  ? <ArrowUpIcon
-                    className="mt-1 flex-shrink-0 h-5 w-5"
-                    aria-hidden="true"
-                  />
-                  : <ArrowDownIcon
-                    className="mt-1  flex-shrink-0 h-5 w-5"
-                    aria-hidden="true"
-                  />}
-                            </span>
-            </div>
-            <div className="">
-              {isExpandedRow && renderExpandedRow()}
-            </div>
+          <div className="text-lg text-gray-500">
+            {summary && <div><p className="mt-1 max-w-96 text-gray-500">{summary}</p></div>}
+            {renderRowDetails()}
+            {isExpandedRow && renderExpandedRow()}
           </div>
         </div>
       </div>

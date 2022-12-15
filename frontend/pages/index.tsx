@@ -21,7 +21,6 @@ interface IndexProps {
 
 const Index = (props: IndexProps) => {
   let { newsItems } = props
-
   const [isShowingMore, setIsShowingMore] = useState(false)
 
   if (!isShowingMore) {

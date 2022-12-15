@@ -24,12 +24,12 @@ const SideBar = ({
       icon: HomeIcon,
       className: 'hover:cursor-pointer'
     },
-    {
-      name: 'Videos',
-      path: 'videos',
-      icon: VideoCameraIcon,
-      className: 'hover:cursor-pointer'
-    },
+    // {
+    //   name: 'Videos',
+    //   path: 'videos',
+    //   icon: VideoCameraIcon,
+    //   className: 'hover:cursor-pointer'
+    // },
     {
       name: 'Contribute',
       path: 'contribute',

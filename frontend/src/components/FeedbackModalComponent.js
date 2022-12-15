@@ -15,7 +15,6 @@ export default function FeedbackModalComponent ({ open, setOpen }) {
       target: '#feedback-reform',
       background: 'transparent'
     })
-    console.log('useffect')
   }, [])
 
   return (
