@@ -21,7 +21,7 @@ class GetMetadataForUrls(BaseLoopieTask):
 
     def get_query(self) -> Optional[str]:
         return f'''
-        SELECT id::text,created_at::text, url, content, title
+        SELECT id::text,created_at::text, url, description, title
         from "NewsItem" ni
         where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'
         order by ni.created_at desc; 
@@ -40,7 +40,7 @@ class GetMetadataForUrls(BaseLoopieTask):
         scraper.driver.close()
 
         metadata_for_upsert = self.df[self.df.title.str.len() > 0][
-            ['id', 'created_at', 'url', 'content', 'title']].to_dict(orient='records')
+            ['id', 'created_at', 'url', 'description', 'title']].to_dict(orient='records')
         if not metadata_for_upsert:
             return
 
