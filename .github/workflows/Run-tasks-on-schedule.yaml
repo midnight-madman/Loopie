@@ -4,7 +4,7 @@ on:
     - cron: '0 */2 * * *' # every two hours
     - cron: '0 */4 * * *' # every four hours
     - cron: '0 7 * * *' # at 7 daily
-    - cron: '0 0 * * *' # at 0 daily
+    - cron: '0 0 * * 2,4,6' # at 00:00 on Tuesday, Thursday, and Saturday
   push:
     branches:
       - main
@@ -78,7 +78,7 @@ jobs:
         run: |
           pipenv run python scripts/main.py --task-name create-news-item-summary
       - name: Update author scores
-        if: github.event.schedule == '0 0 * * *'
+        if: github.event.schedule == '0 0 * * 2,4,6'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

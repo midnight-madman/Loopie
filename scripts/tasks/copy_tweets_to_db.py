@@ -3,7 +3,7 @@ import logging
 import luigi
 import pandas as pd
 
-from const import ACCOUNTS
+from const import TWITTER_ACCOUNTS
 from get_twitter_data import get_tweets_since_id_with_retry
 from supabase_utils import get_supabase_client
 from utils import chunkify
@@ -19,7 +19,7 @@ class CopyTweetsToDB(luigi.Task):
         self.supabase = get_supabase_client()
 
     def run(self):
-        df_tweets = get_tweets_since_id_with_retry(ACCOUNTS, self.last_tweet_id)
+        df_tweets = get_tweets_since_id_with_retry(TWITTER_ACCOUNTS, self.last_tweet_id)
         no_new_tweets = df_tweets is None or len(df_tweets) == 0
         if no_new_tweets:
             return None

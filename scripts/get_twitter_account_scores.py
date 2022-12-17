@@ -8,10 +8,12 @@ QUANTILE_THRESHOLDS = [0.3, 0.6, 0.9]
 VERIFIED_SCORE = 20
 QUANTILE_SCORE_MULTIPLIER = 20
 
+TWITTER_API_REQUESTED_FIELDS = {'user.fields': 'public_metrics,location,name,username,verified,entities'}
+
 
 def get_twitter_account_stats(account: str) -> dict:
     search_url = f"https://api.twitter.com/2/users/by/username/{account}"
-    default_params = {'user.fields': 'public_metrics,location,name,verified,entities'}
+    default_params = TWITTER_API_REQUESTED_FIELDS
     json_response = execute_twitter_api_request_with_retry(search_url, default_params)
     try:
         return json_response['data']
@@ -27,7 +29,7 @@ def get_twitter_accounts_stats_by_ids(user_ids: list[str]) -> list[dict]:
     account_stats = []
     for user_id_chunk in tqdm(user_id_chunks):
         ids = ','.join([str(user_id) for user_id in user_id_chunk])
-        params = {'ids': ids, 'user.fields': 'public_metrics,location,name,verified,entities'}
+        params = {**{'ids': ids}, **TWITTER_API_REQUESTED_FIELDS}
         json_response = execute_twitter_api_request_with_retry(search_url, params)
 
         account_stats.extend(json_response['data'])
@@ -49,7 +51,7 @@ def get_score_for_row(row):
     return sum([row[col] for col in scores])
 
 
-def create_accounts_with_scores_df(accounts) -> pd.DataFrame:
+def create_accounts_with_scores_df(accounts: list[str]) -> pd.DataFrame:
     res = get_twitter_accounts_stats_by_ids(accounts)
     # res = [get_twitter_account_stats(account) for account in tqdm(accounts)]
     res = [r for r in res if r]
