@@ -46,7 +46,6 @@ const NewsItemRowComponent = ({
           console.log(`? ${error}`)
         }
       } else {
-        // you could do a fallback solution here ...
         console.log('? Your browser does not support the web share api.')
         window.open(newsItem.url, '_blank')
       }
