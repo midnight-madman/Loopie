@@ -3,8 +3,16 @@ NON_NEWS_URLS = [
     'blockscan.com',
     'bscscan.com',
     'polygonscan.com',
+    'blockscan.com',
+    'gnosisscan.io',
+    'ftmscan.com',
+    'arbiscan.io',
     'debank.com',
+    'zapper.fi',
     'opensea.io',
+    't.me',
+    'discord.gg',
+    'linktr.ee'
 ]
 
 TWITTER_ACCOUNTS = [
