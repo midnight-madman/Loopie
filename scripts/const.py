@@ -1,3 +1,12 @@
+NON_NEWS_URLS = [
+    'etherscan.io',
+    'blockscan.com',
+    'bscscan.com',
+    'polygonscan.com',
+    'debank.com',
+    'opensea.io',
+]
+
 TWITTER_ACCOUNTS = [
     '0mllwntrmt3',
     '0x650d',
@@ -1903,12 +1912,11 @@ TAG_AUTOMATION = {
             'blockscan.com',
             'bscscan.com',
             'polygonscan.com',
-            'uniswap.org',
             'debank.com',
+            'opensea.io',
+            'uniswap.org',
             'messari.io',
             'rekt.news',
-            'reddit.com/r/Bitcoin',
-            'opensea.io'
         ],
         'keywords': [
             'Altcoin',

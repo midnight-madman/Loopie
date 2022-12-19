@@ -16,9 +16,17 @@ class BaseLoopieTask(luigi.Task):
         self.supabase = get_supabase_client()
         self.db_connection = get_db_connection()
 
-        query = self.get_query()
-        if query:
-            self.df = pd.read_sql_query(query, con=self.db_connection, coerce_float=False)
+        self.df = self.get_df()
 
     def get_query(self) -> Optional[str]:
         return None
+
+    def get_df(self) -> Optional[pd.DataFrame]:
+        query = self.get_query()
+
+        if not query:
+            return None
+
+        return pd.read_sql_query(query,
+                                 con=self.db_connection,
+                                 coerce_float=False)

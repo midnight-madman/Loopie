@@ -3,6 +3,7 @@ from datetime import datetime
 
 import luigi
 
+from const import NON_NEWS_URLS
 from get_twitter_data import get_urls_from_tweets_dataframe
 from settings import DATE_FORMAT
 from tasks.base_loopie_task import BaseLoopieTask
@@ -57,8 +58,7 @@ class CreateNewsItems(BaseLoopieTask):
 
     def run(self):
         url_objs = get_urls_from_tweets_dataframe(self.df)
-        url_objs = [obj for obj in url_objs if
-                    not obj['url'].startswith('https://twitter.com') and not '~' in obj['url']]
+        url_objs = [obj for obj in url_objs if self.is_news_item_url(obj['url'])]
         new_urls = list(set([obj['url'] for obj in url_objs]))
 
         if not new_urls:
@@ -89,6 +89,16 @@ class CreateNewsItems(BaseLoopieTask):
         else:
             logger.info(f'All news items already exist in DB')
             return 0
+
+    @staticmethod
+    def is_news_item_url(url: str) -> bool:
+        if '~' in obj['url']:
+            return False
+        if url.startswith('https://twitter.com'):
+            return False
+        if any([non_news_url in url for non_news_url in NON_NEWS_URLS]):
+            return False
+        return True
 
     def create_news_item_to_tweets_connections(self, url_objs: list[dict], news_items_in_db: list[dict]):
         news_item_ids = []

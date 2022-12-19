@@ -22,8 +22,9 @@ class WebpageScraper:
     def load_page(self, url):
         try:
             self.driver.get(url)
-            w = WebDriverWait(self.driver, 10)
-            w.until(EC.presence_of_element_located(title_xpath_locator))
+            w = WebDriverWait(self.driver, 20)
+            # w.until(EC.presence_of_element_located(title_xpath_locator))
+            w.until(lambda wd: self.driver.execute_script("return document.readyState") == 'complete',)
         except TimeoutException:
             logger.info(f'Timeout when scraping url: {url}')
             return False

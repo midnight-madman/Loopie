@@ -1,11 +1,15 @@
+import logging
+import re
+
 import openai
 
 from settings import OPENAI_API_KEY
 
 openai.api_key = OPENAI_API_KEY
 
+MIN_WORD_COUNT = 500
 MIN_TEXT_LENGTH = 5000
-OPENAI_MODEL_MAX_CHARACTERS = 12400
+OPENAI_MODEL_MAX_CHARACTERS = 11500
 
 OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
                                temperature=0.7,
@@ -14,16 +18,21 @@ OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
                                frequency_penalty=0.0,
                                presence_penalty=1)
 
+logger = logging.getLogger(__name__)
+
 
 def get_open_api_summary(row):
     text = row['content']
-    # 1 token ~= 4 chars in English
-    # model text-davinci-002 has max of 4097
-    # max: 4097 - 100 (output) = 4097 tokens ~= 16400 chars
-    summary, response = None, None
-    can_get_summary = text and len(text) > MIN_TEXT_LENGTH
+    assert text, "NewsItem must have text to create summary"
 
-    if can_get_summary:
+    # 1 token ~= 4 chars in English
+    # model text-davinci-002 has max token input of 4097
+    summary, response = None, None
+    word_count = len(re.findall(r'\w+', text))
+    can_get_summary = word_count > MIN_WORD_COUNT  # and len(text) > MIN_TEXT_LENGTH
+    if not can_get_summary:
+        logger.info(f'Text has less than minimum {MIN_WORD_COUNT} words (words: {word_count}, text length: {len(text)})')
+    else:
         text = text[:OPENAI_MODEL_MAX_CHARACTERS]
         try:
             response = openai.Completion.create(
