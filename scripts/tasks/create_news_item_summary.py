@@ -4,20 +4,18 @@ from datetime import datetime
 from itertools import chain
 from typing import Optional
 
-import openai
 from tqdm import tqdm
 
+from api.openai import get_open_api_summary
 from const import TAG_AUTOMATION
 from get_metadata_for_urls import get_content_for_url
 from scraping.webpage_scraper import WebpageScraper
-from settings import OPENAI_API_KEY
 from tasks.base_loopie_task import BaseLoopieTask
 from utils import chunkify
 
 tqdm.pandas()
 logger = logging.getLogger('luigi-interface')
 
-openai.api_key = OPENAI_API_KEY
 
 MIN_TEXT_LENGTH = 5000
 OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
@@ -28,12 +26,6 @@ OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
                                presence_penalty=1)
 
 
-def get_open_api_summary(row):
-    text = row['content']
-    # 1 token ~= 4 chars in English
-    # model text-davinci-002 has max of 4097
-    # max: 4097 - 100 (output) = 4097 tokens ~= 16400 chars
-    OPENAI_MODEL_MAX_CHARACTERS = 12400
 
     if not text or len(text) < MIN_TEXT_LENGTH:
         return ''
@@ -48,9 +40,6 @@ def get_open_api_summary(row):
         logger.exception(f'Failed to get summary for text with OpenAI exception {ex}')
         return ''
 
-    summary = response.choices[0].text
-    if summary.startswith('\n\nA'):
-        summary = summary[4:].lstrip()
 
     row['summary'] = summary
     row['metadata'] = response
