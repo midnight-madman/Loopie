@@ -17,35 +17,6 @@ tqdm.pandas()
 logger = logging.getLogger('luigi-interface')
 
 
-MIN_TEXT_LENGTH = 5000
-OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
-                               temperature=0.7,
-                               max_tokens=256,
-                               top_p=1.0,
-                               frequency_penalty=0.0,
-                               presence_penalty=1)
-
-
-
-    if not text or len(text) < MIN_TEXT_LENGTH:
-        return ''
-
-    text = text[:OPENAI_MODEL_MAX_CHARACTERS]
-    try:
-        response = openai.Completion.create(
-            prompt=f"{text}\n\nQ: Could you please summarize the article above in three sentences?",
-            **OPENAI_REQUEST_METADATA
-        )
-    except openai.error.InvalidRequestError as ex:
-        logger.exception(f'Failed to get summary for text with OpenAI exception {ex}')
-        return ''
-
-
-    row['summary'] = summary
-    row['metadata'] = response
-    return row
-
-
 class CreateNewsItemSummary(BaseLoopieTask):
     def get_query(self) -> Optional[str]:
         three_days_ago = datetime.now().strftime('%Y-%m-%d')
