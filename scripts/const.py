@@ -13,7 +13,8 @@ NON_NEWS_URLS = [
     'opensea.io',
     't.me',
     'discord.gg',
-    'linktr.ee'
+    'linktr.ee',
+    'bio.link'
 ]
 
 TWITTER_ACCOUNTS = [
