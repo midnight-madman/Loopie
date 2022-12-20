@@ -18,20 +18,24 @@ logger = logging.getLogger('luigi-interface')
 
 class GetMetadataForUrls(BaseLoopieTask):
     start_date = luigi.DateParameter(default=datetime.today())
+    # interval to next github action to get tweets is two hours
+    MAX_ITEMS_TO_SCRAPE_IN_TWO_HOUR_INTERVAL = 1500
 
     def get_query(self) -> Optional[str]:
         return f'''
         SELECT id::text,created_at::text, url, description, title
         from "NewsItem" ni
         where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'
-        order by ni.created_at desc; 
+        order by ni.created_at desc
+        limit {self.MAX_ITEMS_TO_SCRAPE_IN_TWO_HOUR_INTERVAL}
+        ;
         '''
 
     def complete(self):
         return len(self.df) == 0
 
     def run(self):
-        logger.info(f'scraping {len(self.df)} titles for news items')
+        logger.info(f'scraping {len(self.df)} urls to get titles for news items with start date {self.start_date}')
 
         scraper = WebpageScraper()
         self.df['title'] = self.df.progress_apply(lambda row:
