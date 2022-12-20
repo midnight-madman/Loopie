@@ -21,13 +21,13 @@ logger = logging.getLogger('luigi-interface')
 
 class CreateNewsItemSummary(BaseLoopieTask):
     def get_query(self) -> Optional[str]:
-        three_days_ago = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
+        two_days_ago = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
         return f'''
         select ni.id, ni.url from "scorednewsitem" ni
         left join "NewsItemSummary" nis on ni.id=nis.news_item_id
-        where nis.id is NULL and last_tweet_date >= '{three_days_ago}'
+        where nis.id is NULL and last_tweet_date >= '{two_days_ago}'
         order by ni.score DESC
-        limit 20;
+        limit 5;
         '''
 
     def get_df(self) -> Optional[pd.DataFrame]:

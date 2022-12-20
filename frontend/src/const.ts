@@ -18,6 +18,7 @@ export type ScoredNewsItem = {
   id: string
   updated_at: string
   created_at: string
+  last_tweet_date: string
   url: string
   title: string
   description: number

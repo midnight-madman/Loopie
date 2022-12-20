@@ -4,9 +4,9 @@ from tqdm import tqdm
 from api.twitter_api import execute_twitter_api_request_with_retry
 from utils import chunkify
 
-QUANTILE_THRESHOLDS = [0.3, 0.6, 0.9]
-VERIFIED_SCORE = 20
-QUANTILE_SCORE_MULTIPLIER = 20
+QUANTILE_THRESHOLDS = [0.1, 0.3, 0.6, 0.8]
+VERIFIED_SCORE = 5
+QUANTILE_SCORE_MULTIPLIER = 10
 
 TWITTER_API_REQUESTED_FIELDS = {'user.fields': 'public_metrics,location,name,username,verified,entities'}
 

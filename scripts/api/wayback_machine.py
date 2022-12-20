@@ -9,6 +9,7 @@ PREFER_ARCHIVE_URLS = [
     'nytimes',
     'washingtonpost.com',
     'ft.com',
+    'wsj.com'
 ]
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,11 @@ def get_archived_snapshots(url: str):
 
 def get_closest_archive_url(url: str) -> Optional[str]:
     try:
-        return get_archived_snapshots(url)['closest']['url']
+        snapshots = get_archived_snapshots(url)
+        if snapshots and 'closest' in snapshots:
+            return snapshots['closest']['url']
+        else:
+            return None
     except Exception as ex:
         logger.info(f'Failed to get archive url {url}. Error: {ex}')
         return None

@@ -10,6 +10,7 @@ import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import NavBar from '../src/components/NavBar'
 import SideBar from '../src/components/SideBar'
+import { ScoredNewsItem } from '../src/const'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -89,12 +90,12 @@ const Index = (props: IndexProps) => {
 
 export const getStaticProps: GetStaticProps = async context => {
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-  const tweetStartDate = dayjs().utc().subtract(3, 'days')
+  const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const {
     data,
     error
   } = await supabase
-    .from('scorednewsitem')
+    .from<ScoredNewsItem>('scorednewsitem')
     .select(
       `*, 
       NewsItemSummary(

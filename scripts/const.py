@@ -7,6 +7,7 @@ NON_NEWS_URLS = [
     'gnosisscan.io',
     'ftmscan.com',
     'arbiscan.io',
+    'blockstream.info',
     'debank.com',
     'zapper.fi',
     'opensea.io',

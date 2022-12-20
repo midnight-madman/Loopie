@@ -13,6 +13,10 @@ from utils import find_obj_based_on_key_value_in_list, chunkify
 logger = logging.getLogger('luigi-interface')
 
 
+def prepare_url(url: str) -> str:
+    return url.lower().rstrip('/')
+
+
 class CreateNewsItems(BaseLoopieTask):
     start_date = luigi.DateParameter(default=datetime.today())
 
@@ -30,9 +34,6 @@ class CreateNewsItems(BaseLoopieTask):
                  left join "NewsItem" ni on ni2tweet.news_item_id = ni.id
         where ni.id IS NULL and tweet.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'; 
         '''
-
-    def get_tags_query(self) -> str:
-        return 'SELECT * FROM "Tag"'
 
     def complete(self):
         return len(self.df) == 0
@@ -58,7 +59,7 @@ class CreateNewsItems(BaseLoopieTask):
 
     def run(self):
         url_objs = get_urls_from_tweets_dataframe(self.df)
-        url_objs = [obj for obj in url_objs if self.is_news_item_url(obj['url'])]
+        url_objs = [obj for obj in url_objs if self.should_create_news_item_for_url(obj['url'])]
         new_urls = list(set([obj['url'] for obj in url_objs]))
 
         if not new_urls:
@@ -76,7 +77,8 @@ class CreateNewsItems(BaseLoopieTask):
         self.create_news_item_to_tags_connections(news_items_in_db)
 
     def create_news_items(self, url_objs: list[dict], news_items_in_db: list[dict]) -> int:
-        unique_url_objs = {obj['url']: obj for obj in url_objs}.values()  # make list unique
+        # create unique list of urls
+        unique_url_objs = {prepare_url(obj['url']): obj for obj in url_objs}.values()
 
         urls_in_db = list(set([obj['url'] for obj in news_items_in_db]))
         news_items_to_insert = [url_obj for url_obj in unique_url_objs if url_obj['url'] not in urls_in_db]
@@ -91,8 +93,8 @@ class CreateNewsItems(BaseLoopieTask):
             return 0
 
     @staticmethod
-    def is_news_item_url(url: str) -> bool:
-        if '~' in obj['url']:
+    def should_create_news_item_for_url(url: str) -> bool:
+        if '~' in url:
             return False
         if url.startswith('https://twitter.com'):
             return False
@@ -114,8 +116,10 @@ class CreateNewsItems(BaseLoopieTask):
             news_item_ids.append(obj['id'])
             tweet_ids.append(url_obj['tweet_id'])
 
-        news_item_to_tweets = [dict(news_item_id=news_item_id, tweet_id=tweet_id)
-                               for news_item_id, tweet_id in zip(news_item_ids, tweet_ids)]
+        news_item_to_tweets = [
+            dict(news_item_id=news_item_id, tweet_id=tweet_id)
+            for news_item_id, tweet_id in zip(news_item_ids, tweet_ids)
+        ]
 
         resp = self.supabase.table("NewsItemToTweet").insert(news_item_to_tweets).execute()
         logger.info(f'New news items to tweets connections inserted: {len(resp.data)}')

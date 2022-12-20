@@ -58,7 +58,7 @@ export function ContributeComponent () {
   const hasData = !isEmpty(tags) && !isEmpty(newsItems)
 
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
-  const tweetStartDate = dayjs().utc().subtract(1, 'days')
+  const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const isLoading = status === 'loading'
 
   const getTagsFromSupabase = async () => {
@@ -84,7 +84,7 @@ export function ContributeComponent () {
     } = await supabase
       .from<ScoredNewsItem>('scorednewsitem')
       .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))', { count: 'exact' })
-      .gte('updated_at', tweetStartDate.format('YYYY-MM-DD'))
+      .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
       .order('score', { ascending: false })
       .range(pageStartIndex, pageStartIndex + NEWS_ITEMS_PER_PAGE)
 
