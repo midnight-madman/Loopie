@@ -25,7 +25,7 @@ const Index = (props: IndexProps) => {
   const [isShowingMore, setIsShowingMore] = useState(false)
 
   if (!isShowingMore) {
-    newsItems = take(newsItems, 20)
+    newsItems = take(newsItems, 15)
   }
 
   function renderNewsPageContent () {
@@ -95,7 +95,7 @@ export const getStaticProps: GetStaticProps = async context => {
     data,
     error
   } = await supabase
-    .from<ScoredNewsItem>('scorednewsitem')
+    .from('scorednewsitem')
     .select(
       `*, 
       NewsItemSummary(
@@ -115,7 +115,7 @@ export const getStaticProps: GetStaticProps = async context => {
       `)
     .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
-    .limit(50)
+    .limit(25)
   if (error) {
     console.log(error)
     throw error

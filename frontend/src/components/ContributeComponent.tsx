@@ -74,6 +74,7 @@ export function ContributeComponent () {
       return
     }
 
+    // @ts-ignore
     setTags(data)
   }
 
@@ -82,7 +83,7 @@ export function ContributeComponent () {
       data,
       error
     } = await supabase
-      .from<ScoredNewsItem>('scorednewsitem')
+      .from('scorednewsitem')
       .select('*, NewsItemToTweet( Tweet(created_at, id::text, text, Author (twitter_username))), NewsItemToTag( Tag(*))', { count: 'exact' })
       .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
       .order('score', { ascending: false })
@@ -92,6 +93,7 @@ export function ContributeComponent () {
       console.log(error)
       return
     }
+    // @ts-ignore
     setNewsItems(data)
   }
 

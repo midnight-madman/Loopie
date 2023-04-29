@@ -1,13 +1,14 @@
-import { chain, configureChains, createClient } from 'wagmi'
+import { configureChains, createClient } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { GetSiweMessageOptions } from '@rainbow-me/rainbowkit-siwe-next-auth'
+import { polygon, mainnet } from 'wagmi/chains'
 
 export const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon],
+  [mainnet, polygon],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    alchemyProvider({ apiKey: process.env.ALCHEMY_ID as string }),
     publicProvider()
   ]
 )

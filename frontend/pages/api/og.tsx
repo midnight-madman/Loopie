@@ -1,7 +1,7 @@
 import { ImageResponse } from '@vercel/og'
 
 export const config = {
-  runtime: 'experimental-edge'
+  runtime: 'edge'
 }
 
 const georgiaFont = fetch(new URL('../../assets/georgiab.ttf', import.meta.url)).then(

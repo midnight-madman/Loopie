@@ -9,16 +9,21 @@ import NavBar from '../src/components/NavBar'
 import SideBar from '../src/components/SideBar'
 import ReactPlayer from 'react-player/lazy'
 import { ScoredNewsItem } from '../src/const'
-import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
+import utc from 'dayjs/plugin/utc'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 const VIDEO_TAG_TITLE = 'Video'
 const SHOW_MORE_THRESHOLD = 5
 
-interface IndexProps {
+dayjs().format()
+dayjs.extend(utc)
+dayjs.extend(relativeTime)
+
+interface VideosProps {
   newsItems: Array<ScoredNewsItem>;
 }
 
-const Videos = (props: IndexProps) => {
+const Videos = (props: VideosProps) => {
   let { newsItems } = props
 
   const [isShowingMore, setIsShowingMore] = useState(false)
@@ -28,7 +33,9 @@ const Videos = (props: IndexProps) => {
   }
 
   const renderVideoTile = (newsItem: ScoredNewsItem, index: number) => {
-    if (!ReactPlayer.canPlay(newsItem.url)) {
+    console.log(`renderVideoTile: ${newsItem.url} ${index}`)
+    const canPlayVideo = ReactPlayer.canPlay(newsItem.url)
+    if (!canPlayVideo) {
       return null
     }
 
@@ -40,7 +47,7 @@ const Videos = (props: IndexProps) => {
               <ReactPlayer url={newsItem.url} light={true} width="100%" height="100%"/>
             </div>
           </div>
-          <NewsItemRowComponent newsItem={newsItem} isDefaultExpanded/>
+          {/*<NewsItemRowComponent newsItem={newsItem} isDefaultExpanded/>*/}
           {/*<div className="font-medium leading-6">*/}
           {/*  <a href={newsItem.url} className="text-xl text-gray-700 hover:text-gray-500 hover:underline">*/}
           {/*    <h3>*/}
@@ -142,7 +149,7 @@ export const getStaticProps: GetStaticProps = async context => {
   if (!data) {
     throw new Error('No news items returned from DB')
   }
-  console.log('data', data)
+  // @ts-ignore
   const newsItems = filter(data, (newsItem) => includes(newsItem.tags, VIDEO_TAG_TITLE))
   console.log('newsItems', newsItems)
   return {
