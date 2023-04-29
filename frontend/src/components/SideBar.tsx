@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { HandRaisedIcon, HomeIcon, InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { HandRaisedIcon, HomeIcon, VideoCameraIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from '../utils'
 import { ConnectButton } from './ConnectButton'
 import { useRouter } from 'next/router'
@@ -18,22 +18,16 @@ const SideBar = ({
       icon: HomeIcon,
       className: 'hover:cursor-pointer'
     },
-    // {
-    //   name: 'Videos',
-    //   path: 'videos',
-    //   icon: VideoCameraIcon,
-    //   className: 'hover:cursor-pointer'
-    // },
+    {
+      name: 'Videos',
+      path: 'videos',
+      icon: VideoCameraIcon,
+      className: 'hover:cursor-pointer'
+    },
     {
       name: 'Contribute',
       path: 'contribute',
       icon: HandRaisedIcon,
-      className: 'hover:cursor-pointer'
-    },
-    {
-      name: 'About Loopie',
-      path: 'info',
-      icon: InformationCircleIcon,
       className: 'hover:cursor-pointer'
     }
   ]
