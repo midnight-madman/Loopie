@@ -7,6 +7,7 @@ NON_NEWS_URLS = [
     'gnosisscan.io',
     'ftmscan.com',
     'arbiscan.io',
+    'solana.fm',
     'blockstream.info',
     'debank.com',
     'zapper.fi',
@@ -14,7 +15,9 @@ NON_NEWS_URLS = [
     't.me',
     'discord.gg',
     'linktr.ee',
-    'bio.link'
+    'bio.link',
+    'a.co',
+    'amazon.com',
 ]
 
 TWITTER_ACCOUNTS = [
@@ -1927,6 +1930,8 @@ TAG_AUTOMATION = {
             'uniswap.org',
             'messari.io',
             'rekt.news',
+            'defillama.com'
+            'defipulse.com',
         ],
         'keywords': [
             'Altcoin',
@@ -1999,7 +2004,9 @@ TAG_AUTOMATION = {
             'rarible.com',
             'superrare.com',
             'mintbase.io',
-            'knownorigin.io'
+            'knownorigin.io',
+            'zora.co',
+            'foundation.app',
         ],
         'keywords': [
             'BAYC',
