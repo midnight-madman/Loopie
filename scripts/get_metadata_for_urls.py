@@ -75,6 +75,7 @@ def get_content_for_url(url: str, scraper: WebpageScraper) -> str:
     if not can_scrape_url(url):
         return ''
 
+    print(f'trying to get content for url {url}')
     return scraper.get_page_content(url)
 
 

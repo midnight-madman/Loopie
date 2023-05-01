@@ -11,7 +11,7 @@ const NavBar = ({
       <Popover as="header" className="relative">
         <div className="py-2 hidden md:block border-b border-gray-200">
           <nav
-            className="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
+            className="relative max-w-7xl flex items-center justify-between px-4 sm:px-6"
             aria-label="Global"
           >
             <div className="flex items-center flex-1">
