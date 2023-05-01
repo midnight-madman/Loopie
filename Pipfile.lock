@@ -1274,6 +1274,13 @@
             ],
             "version": "==0.4.10"
         },
+        "strenum": {
+            "hashes": [
+                "sha256:1b15ccff9eb0e22e77b8f874366ea752754280adc9144e6e388705d14cc350e7",
+                "sha256:c3df653030837b8077b2eb929738283481f01b07c7ef73ab4db368449830cc46"
+            ],
+            "version": "==0.4.9"
+        },
         "supabase": {
             "hashes": [
                 "sha256:2418113b7f503522d33fafd442e587356636bad6cb803f7e406e614acf2611d7",
