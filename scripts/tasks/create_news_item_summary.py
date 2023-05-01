@@ -34,7 +34,7 @@ class CreateNewsItemSummary(BaseLoopieTask):
         left join "NewsItemSummary" nis on ni.id=nis.news_item_id
         where nis.id is NULL and last_tweet_date >= '{two_days_ago}' 
         order by ni.score DESC
-        limit 10;
+        limit 5;
         '''
 
     def get_df(self) -> Optional[pd.DataFrame]:
@@ -63,12 +63,13 @@ class CreateNewsItemSummary(BaseLoopieTask):
                                                     axis=1)
         scraper.driver.close()
 
-        self.df[self.df.content.str.len() > 0].progress_apply(lambda row:
-                                                              upload_content_to_supabase(supabase=self.supabase,
-                                                                                         content=row['content'],
-                                                                                         bucket=BUCKET_NAME,
-                                                                                         destination=row['id']),
-                                                              axis=1)
+        should_upload_to_supabase_filter = (self.df.content.str.len() > 0) & ~(self.df.id.isin(self.scraped_file_ids))
+        self.df[should_upload_to_supabase_filter].progress_apply(lambda row:
+                                                                 upload_content_to_supabase(supabase=self.supabase,
+                                                                                            content=row['content'],
+                                                                                            bucket=BUCKET_NAME,
+                                                                                            destination=row['id']),
+                                                                 axis=1)
 
         self.df['news_item_id'] = self.df['id']
         self.df['summary'] = ''
