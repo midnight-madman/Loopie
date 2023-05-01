@@ -9,13 +9,13 @@ openai.api_key = OPENAI_API_KEY
 
 MIN_WORD_COUNT = 500
 MIN_TEXT_LENGTH = 5000
-OPENAI_MODEL_MAX_CHARACTERS = 11500
-
-OPENAI_REQUEST_METADATA = dict(model="text-davinci-002",
-                               temperature=0.7,
+OPENAI_MODEL_MAX_CHARACTERS = 11500  # rule of thumb, 1 token is approximately 4 characters or 0.75 words
+OPENAI_MODEL_NAME = 'gpt-3.5-turbo'
+OPENAI_REQUEST_METADATA = dict(model=OPENAI_MODEL_NAME,
+                               temperature=0.5,
                                max_tokens=256,
                                top_p=1.0,
-                               frequency_penalty=0.0,
+                               frequency_penalty=0.1,
                                presence_penalty=1)
 
 logger = logging.getLogger(__name__)
