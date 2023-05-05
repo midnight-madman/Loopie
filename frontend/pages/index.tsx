@@ -43,21 +43,6 @@ const Index = (props: IndexProps) => {
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
                 <table className="min-w-full">
-                  {/*<thead className="bg-gray-50">*/}
-                  {/*<tr>*/}
-                  {/*    <th*/}
-                  {/*        scope="col"*/}
-                  {/*        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"*/}
-                  {/*    >*/}
-                  {/*        Name*/}
-                  {/*    </th>*/}
-                  {/*    <th scope="col"*/}
-                  {/*        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">*/}
-                  {/*        Edit*/}
-                  {/*        <span className="sr-only">Edit</span>*/}
-                  {/*    </th>*/}
-                  {/*</tr>*/}
-                  {/*</thead>*/}
                   <tbody className="">
                   {map(newsItems, (newsItem, index) =>
                     <NewsItemRowComponent key={`url-row-${index}`}
@@ -87,7 +72,7 @@ const Index = (props: IndexProps) => {
     <>
       <div>
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-        <div className="md:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
+        <div className="xl:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
           <div className="max-w-5xl px-4 sm:px-6 md:px-8">
             {renderNewsPageContent()}

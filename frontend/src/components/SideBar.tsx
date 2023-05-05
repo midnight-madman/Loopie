@@ -79,7 +79,7 @@ const SideBar = ({
 
   return <>
     <Transition.Root show={sidebarOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={setSidebarOpen}>
+      <Dialog as="div" className="fixed inset-0 flex z-40 xl:hidden" onClose={setSidebarOpen}>
         <Transition.Child
           as={Fragment}
           enter="transition-opacity ease-linear duration-300"
@@ -139,41 +139,13 @@ const SideBar = ({
     </Transition.Root>
 
     {/* Static sidebar for desktop */}
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+    <div className="hidden xl:flex xl:w-64 xl:flex-col xl:fixed xl:inset-y-0">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200"
            style={{ backgroundColor: ' #FFFDF6' }}>
         <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
-          {/* <div className="flex items-center flex-shrink-0 px-4"> */}
-          {/*    <img src="/favicon.png" className="h-10 w-auto" alt="Logo"/> */}
-          {/*    <p className="font-medium text-2xl"> */}
-          {/*        Loopie */}
-          {/*    </p> */}
-          {/* </div> */}
           <nav className="mt-5 flex-1 px-2 space-y-1">
             {navigation.map(renderNavigationItem)}
-            {/* // <a */}
-            {/* //   key={item.name} */}
-            {/* //   // @ts-ignore */}
-            {/* //   href={item.onClick ? undefined : item.href} */}
-            {/* //   onClick={() => item.onClick && item.onClick()} */}
-            {/* //   className={classNames( */}
-            {/* //     item.current */}
-            {/* //       ? 'text-gray-900' */}
-            {/* //       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', */}
-            {/* //     item.className, */}
-            {/* //     'group flex items-center px-2 py-2 text-sm font-medium rounded-md' */}
-            {/* //   )} */}
-            {/* // > */}
-            {/* //   <item.icon */}
-            {/* //     className={classNames( */}
-            {/* //       item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', */}
-            {/* //       'mr-3 flex-shrink-0 h-6 w-6' */}
-            {/* //     )} */}
-            {/* //     aria-hidden="true" */}
-            {/* //   /> */}
-            {/* //   {item.name} */}
-            {/* // </a> */}
           </nav>
         </div>
         {renderAccountSection()}

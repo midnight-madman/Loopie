@@ -101,7 +101,7 @@ const Videos = (props: VideosProps) => {
     <>
       <div>
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-        <div className="md:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
+        <div className="xl:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
           <div className="min-h-screen max-w-6xl px-4 sm:px-6 md:px-8">
             {renderVideosPageContent()}

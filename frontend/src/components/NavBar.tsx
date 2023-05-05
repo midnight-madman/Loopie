@@ -18,14 +18,14 @@ const NavBar = ({
   return (
     <>
       <Popover as="header" className="relative">
-        <div className="py-2 hidden md:block border-b border-gray-200">
+        <div className="py-2 hidden xl:block border-b border-gray-200">
           <nav
             className="relative max-w-7xl flex items-center justify-between px-4 sm:px-6"
             aria-label="Global"
           >
             <div className="flex items-center flex-1">
               <div className="space-x-2 flex flex-shrink-0 items-center md:ml-4">
-                <img src="/favicon.png" alt="Logo" className="h-12 -ml-2"/>
+                <img src="/favicon.png" alt="Logo" className="h-10 -ml-2"/>
                 <h1 className="font-serif font-semibold text-gray-800 text-4xl">Loopie</h1>
               </div>
             </div>
@@ -39,7 +39,7 @@ const NavBar = ({
       </Popover>
       <div
         style={{ backgroundColor: ' #FFFDF6' }}
-        className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 border-b border-gray-100 flex">
+        className="sticky top-0 z-10 xl:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 border-b border-gray-100 flex">
         <button
           type="button"
           className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500"
@@ -48,9 +48,9 @@ const NavBar = ({
           <span className="sr-only">Open sidebar</span>
           <Bars3Icon className="h-6 w-6" aria-hidden="true"/>
         </button>
-        <h3 className="flex text-md pl-2 sm:hidden font-semibold text-gray-800">
-          <img src="/favicon.png" className="-mt-0 h-10 w-10" alt="Logo"/>
-          <p className="ml-1 mt-0.5 font-serif text-3xl">
+        <h3 className="flex text-md pl-2 font-semibold text-gray-800">
+          <img src="/favicon.png" className="h-9 w-9" alt="Logo"/>
+          <p className="ml-1 mt-0.5 font-serif font-semibold text-gray-800 text-3xl">
             Loopie
           </p>
         </h3>
