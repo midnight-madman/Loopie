@@ -1964,6 +1964,12 @@ TAG_AUTOMATION = {
             'Gas',
             'Hard Fork',
             'Hash Function',
+            'IPFS',
+            'Layer 2',
+            'Layer-2',
+            'Layer2',
+            'Ledger',
+            'Lightning Network',
             'MetaMask',
             'Metaverse',
             'MEV',
@@ -1990,6 +1996,7 @@ TAG_AUTOMATION = {
             'Trustless',
             'Web 3.0',
             'Web3',
+            'Web.3',
             'Yuga Labs'
             'Zero Knowledge',
             'Zero-Knowledge',
@@ -2009,6 +2016,10 @@ TAG_AUTOMATION = {
             'foundation.app',
         ],
         'keywords': [
+            'NFT',
+            'Non-Fungible Token',
+            'ERC721',
+            'ERC-721',
             'BAYC',
             'Bored Ape Yacht Club',
             'MAYC',
@@ -2048,5 +2059,21 @@ TAG_AUTOMATION = {
     'Video': {
         'urls': ['youtube.com', 'youtu.be', 'lenstube.xyz'],
         'keywords': []
+    },
+    'Bitcoin': {
+        'urls': ['bitcoin.org', 'bitcoin.com', 'blockstream.com'],
+        'keywords': ['Bitcoin', 'BTC', 'Satoshi Nakamoto']
+    },
+    'Ethereum': {
+        'urls': ['ethereum.org', 'ethhub.io', 'ethereum.foundation', ],
+        'keywords': ['Ethereum', 'ETH', ]
+    },
+    'ZK': {
+        'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network'],
+        'keywords': ['Zero Knowledge', 'Zero-Knowledge', 'ZK-Proof', 'zkSync', 'ZKP', 'snarks']
+    },
+    'dev': {
+        'urls': ['github.com', ],
+        'keywords': ['typescript', 'solidity', 'rust', ]
     }
 }
