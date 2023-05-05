@@ -10,7 +10,6 @@ import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import NavBar from '../src/components/NavBar'
 import SideBar from '../src/components/SideBar'
-import { ScoredNewsItem } from '../src/const'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -27,6 +26,15 @@ const Index = (props: IndexProps) => {
   if (!isShowingMore) {
     newsItems = take(newsItems, 15)
   }
+
+  const renderNewsletterSignup = () =>
+    <iframe src="https://embeds.beehiiv.com/89ec0452-f9ac-41d5-ba96-31735973d0d4?slim=true" data-test-id="beehiiv-embed"
+            height="52" frameBorder="0" scrolling="no"
+            style={{
+              margin: 0,
+              borderRadius: '0px !important',
+              backgroundColor: 'transparent'
+            }}></iframe>
 
   function renderNewsPageContent () {
     return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
@@ -57,6 +65,9 @@ const Index = (props: IndexProps) => {
                   )}
                   </tbody>
                 </table>
+                <div className="grid grid-cols place-content-center mt-4 mb-6">
+                  {renderNewsletterSignup()}
+                </div>
                 <div className="grid grid-cols place-content-center">
                   <button
                     className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"

@@ -6,6 +6,15 @@ const NavBar = ({
   setSidebarOpen,
   showWalletConnect = false
 }: { setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean }) => {
+  const renderNewsletterSignup = () =>
+    <iframe src="https://embeds.beehiiv.com/89ec0452-f9ac-41d5-ba96-31735973d0d4?slim=true" data-test-id="beehiiv-embed"
+            height="52" frameBorder="0" scrolling="no"
+            style={{
+              margin: 0,
+              borderRadius: '0px !important',
+              backgroundColor: 'transparent'
+            }}></iframe>
+
   return (
     <>
       <Popover as="header" className="relative">
@@ -24,6 +33,7 @@ const NavBar = ({
               <div className="hidden md:flex md:items-center md:space-x-6">
                 <ConnectButton/>
               </div>)}
+            {!showWalletConnect && renderNewsletterSignup()}
           </nav>
         </div>
       </Popover>
