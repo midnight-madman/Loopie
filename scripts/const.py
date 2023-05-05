@@ -2069,11 +2069,29 @@ TAG_AUTOMATION = {
         'keywords': ['Ethereum', 'ETH', ]
     },
     'ZK': {
-        'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network'],
-        'keywords': ['Zero Knowledge', 'Zero-Knowledge', 'ZK-Proof', 'zkSync', 'ZKP', 'snarks']
+        'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network', 'zksync.io'],
+        'keywords': [
+            'Zero Knowledge',
+            'Zero-Knowledge',
+            'ZK-Proof',
+            'ZK proof',
+            'zk sync',
+            'zkSync',
+            'zkEVM',
+            'ZKP',
+            'snarks',
+            'zkRollup',
+            'StarkNet',
+            'Zcash',
+            'Mina']
     },
     'dev': {
-        'urls': ['github.com', ],
+        'urls': [
+            'github.com',
+            'ethglobal.com',
+            'soliditylang.org',
+            'remix.ethereum.org',
+        ],
         'keywords': ['typescript', 'solidity', 'rust', ]
     }
 }

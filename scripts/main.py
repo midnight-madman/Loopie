@@ -36,7 +36,6 @@ task_name_to_config = {
     },
     'create-news-item-to-tag-connections': {
         'class': CreateNewsItemToTagConnections,
-        'args': ['start_date', ]
     },
     'create-news-item-summary': {
         'class': CreateNewsItemSummary

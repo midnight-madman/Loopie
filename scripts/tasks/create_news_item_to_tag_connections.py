@@ -1,7 +1,6 @@
 import logging
-from datetime import datetime
 
-import luigi
+import postgrest
 
 from tasks.base_loopie_task import BaseLoopieTask
 from tasks.utils import create_tags_for_news_items
@@ -11,8 +10,6 @@ logger = logging.getLogger('luigi-interface')
 
 
 class CreateNewsItemToTagConnections(BaseLoopieTask):
-    start_date = luigi.DateParameter(default=datetime.today())
-
     def get_query(self) -> str:
         # query for news items without tags
         return f'''
@@ -38,9 +35,12 @@ class CreateNewsItemToTagConnections(BaseLoopieTask):
 
         if new_tag_connections:
             insert_count = 0
-            for new_connections_chunk in chunkify(new_tag_connections, 30):
-                resp = self.supabase.table("NewsItemToTag").insert(new_connections_chunk, count='exact').execute()
-                insert_count += resp.count
+            for new_connections_chunk in chunkify(new_tag_connections, 5):
+                try:
+                    resp = self.supabase.table("NewsItemToTag").insert(new_connections_chunk, count='exact').execute()
+                    insert_count += resp.count
+                except postgrest.exceptions.APIError as e:
+                    logger.exception(f'Error while inserting new tags: {e}')
             logger.info(f'new tags created: {insert_count}')
         else:
             logger.info(f'No new tags for news items created')
