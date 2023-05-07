@@ -2062,11 +2062,11 @@ TAG_AUTOMATION = {
     },
     'Bitcoin': {
         'urls': ['bitcoin.org', 'bitcoin.com', 'blockstream.com'],
-        'keywords': ['Bitcoin', 'BTC', 'Satoshi Nakamoto']
+        'keywords': ['Bitcoin', 'BTC', 'Satoshi Nakamoto', 'Lightning Network', ]
     },
     'Ethereum': {
         'urls': ['ethereum.org', 'ethhub.io', 'ethereum.foundation', ],
-        'keywords': ['Ethereum', 'ETH', ]
+        'keywords': ['Ethereum', 'ETH', 'EIP', 'Shapella', 'Dencun', ]
     },
     'ZK': {
         'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network', 'zksync.io'],
@@ -2083,7 +2083,8 @@ TAG_AUTOMATION = {
             'zkRollup',
             'StarkNet',
             'Zcash',
-            'Mina']
+            'Mina',
+        ]
     },
     'dev': {
         'urls': [
@@ -2092,6 +2093,22 @@ TAG_AUTOMATION = {
             'soliditylang.org',
             'remix.ethereum.org',
         ],
-        'keywords': ['typescript', 'solidity', 'rust', ]
+        'keywords': [
+            'typescript',
+            'solidity',
+            'rust',
+            'hackathon',
+            'developer',
+            'devcon',
+            'ethglobal',
+            'hardhat',
+            'truffle',
+            'ethers.js',
+            'web3.js',
+        ]
+    },
+    'DAO': {
+        'urls': ['daohaus.club', 'daostack.io', 'molochdao.com', 'snapshot.org', ],
+        'keywords': ['DAO', 'DAOstack', 'Moloch', 'Friends With Benefits', 'FWB', 'MetaCartel', ]
     }
 }
