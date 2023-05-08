@@ -1934,6 +1934,7 @@ TAG_AUTOMATION = {
             'defipulse.com',
         ],
         'keywords': [
+            'Aave',
             'Altcoin',
             'Binance',
             'Bitcoin',
@@ -1997,6 +1998,7 @@ TAG_AUTOMATION = {
             'Web 3.0',
             'Web3',
             'Web.3',
+            'Worldcoin',
             'Yuga Labs'
             'Zero Knowledge',
             'Zero-Knowledge',
@@ -2110,5 +2112,23 @@ TAG_AUTOMATION = {
     'DAO': {
         'urls': ['daohaus.club', 'daostack.io', 'molochdao.com', 'snapshot.org', ],
         'keywords': ['DAO', 'DAOstack', 'Moloch', 'Friends With Benefits', 'FWB', 'MetaCartel', ]
+    },
+    'AI': {
+        'urls': [
+            'openai.com',
+            'huggingface.co',
+        ],
+        'keywords': [
+            'AI',
+            'Artificial Intelligence',
+            'AGI',
+            'embeddings',
+            'GPT',
+            'DALL-E',
+            'Stable Diffusion',
+            'LangChain',
+            'Machine learning',
+            'Machine intelligence',
+        ]
     }
 }
