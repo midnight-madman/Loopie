@@ -22,18 +22,18 @@ const getEmojiForCategory = (category: NewsCategoriesEnum) => {
   }
 }
 
-function MobileNavItem ({
-  href,
-  children
-}: { href: string, children: any }) {
-  return (
-    <li>
-      <Popover.Button as={Link} href={href} className="block py-2">
-        {children}
-      </Popover.Button>
-    </li>
-  )
-}
+// function MobileNavItem ({
+//   href,
+//   children
+// }: { href: string, children: any }) {
+//   return (
+//     <li>
+//       <Popover.Button as={Link} href={href} className="block py-2">
+//         {children}
+//       </Popover.Button>
+//     </li>
+//   )
+// }
 
 function NavItem ({
   href,

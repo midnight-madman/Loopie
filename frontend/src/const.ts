@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 type Author = {
   twitter_id: string
   twitter_username: string
