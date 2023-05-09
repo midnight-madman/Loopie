@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  experimental: {
+    appDir: true
+  },
   reactStrictMode: true,
   env: {
     SUPABASE_URL: process.env.SUPABASE_URL,

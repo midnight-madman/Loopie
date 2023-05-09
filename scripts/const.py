@@ -2110,8 +2110,20 @@ TAG_AUTOMATION = {
         ]
     },
     'DAO': {
-        'urls': ['daohaus.club', 'daostack.io', 'molochdao.com', 'snapshot.org', ],
-        'keywords': ['DAO', 'DAOstack', 'Moloch', 'Friends With Benefits', 'FWB', 'MetaCartel', ]
+        'urls': [
+            'daohaus.club',
+            'daostack.io',
+            'molochdao.com',
+            'snapshot.org',
+        ],
+        'keywords': [
+            'DAO',
+            'DAOstack',
+            'Moloch',
+            'Friends With Benefits',
+            'FWB',
+            'MetaCartel',
+        ]
     },
     'AI': {
         'urls': [

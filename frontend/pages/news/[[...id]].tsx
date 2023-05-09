@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
-import Footer from '../src/components/Footer'
-import { GetStaticProps } from 'next'
+import NewsItemRowComponent from '../../src/components/NewsItemRowComponent'
+import Footer from '../../src/components/Footer'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { map, take } from 'lodash'
+import { map, take, values } from 'lodash'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import NavBar from '../src/components/NavBar'
-import SideBar from '../src/components/SideBar'
+import NavBar from '../../src/components/NavBar'
+import SideBar from '../../src/components/SideBar'
+import { NewsCategoriesEnum } from '../../src/const'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -19,7 +20,7 @@ interface IndexProps {
   newsItems: Array<object>;
 }
 
-const Index = (props: IndexProps) => {
+const NewsPage = (props: IndexProps) => {
   let { newsItems } = props
   const [isShowingMore, setIsShowingMore] = useState(false)
 
@@ -84,7 +85,18 @@ const Index = (props: IndexProps) => {
   )
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: values(NewsCategoriesEnum).map(tab => ({ params: { id: [tab] } })),
+    fallback: false
+  }
+}
+
 export const getStaticProps: GetStaticProps = async context => {
+  // @ts-ignore
+  const { params: { id } } = context
+  const tag = id || NewsCategoriesEnum.WEB3
+
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
   const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const {
@@ -96,6 +108,11 @@ export const getStaticProps: GetStaticProps = async context => {
       `*, 
       NewsItemSummary(
         summary
+      ),
+      NewsItemToTag(
+        Tag(
+          title
+        )
       ),
       NewsItemToTweet( 
         Tweet(
@@ -109,6 +126,7 @@ export const getStaticProps: GetStaticProps = async context => {
         )
       )
       `)
+    .contains('tags', tag)
     .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(25)
@@ -129,4 +147,4 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 }
 
-export default Index
+export default NewsPage
