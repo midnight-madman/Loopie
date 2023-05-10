@@ -6,7 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 import { WagmiConfig } from 'wagmi'
 import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { chains, getSiweMessageOptions, wagmiClient } from '../src/wagmi_config'
+import { chains, getSiweMessageOptions, wagmiConfig } from '../src/wagmi_config'
 
 const App = ({
   Component,
@@ -56,7 +56,7 @@ const App = ({
 
   // @ts-ignore
   const { session } = pageProps
-  return <WagmiConfig client={wagmiClient}>
+  return <WagmiConfig config={wagmiConfig}>
     <SessionProvider refetchInterval={0} session={session}>
       <RainbowKitSiweNextAuthProvider getSiweMessageOptions={getSiweMessageOptions}>
         <RainbowKitProvider chains={chains}>
