@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
 import { Popover } from '@headlessui/react'
 import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import NewsItemRowComponent from '../../src/components/NewsItemRowComponent'
 import Footer from '../../src/components/Footer'
 import { GetStaticPaths, GetStaticProps } from 'next'
