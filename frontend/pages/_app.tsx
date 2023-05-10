@@ -36,6 +36,7 @@ const App = ({
       <meta property="og:url" content="https://www.loopie.site"/>
       <meta property="og:title" key="ogtitle" content="Loopie"/>
       <meta property="og:description" key="ogdesc" content={description}/>
+      <meta property="description" content={description} />
       <meta
         property="og:image"
         content={imageUrl}

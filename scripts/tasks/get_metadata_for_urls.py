@@ -25,7 +25,7 @@ class GetMetadataForUrls(BaseLoopieTask):
         return f'''
         SELECT id::text,created_at::text, url, description, title
         from "NewsItem" ni
-        where ni.title IS NULL and ni.created_at::date >= '{self.start_date.strftime(DATE_FORMAT)}'
+        where ni.title IS NULL and ni.created_at::date >= CURRENT_DATE - interval '3 day'
         order by ni.created_at desc
         limit {self.MAX_ITEMS_TO_SCRAPE_IN_TWO_HOUR_INTERVAL}
         ;
