@@ -2119,7 +2119,7 @@ TAG_AUTOMATION = {
             'huggingface.co',
         ],
         'keywords': [
-            'AI',
+            ' AI ',
             'Artificial Intelligence',
             'AGI',
             'embeddings',
