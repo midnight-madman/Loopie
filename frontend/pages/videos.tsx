@@ -151,7 +151,6 @@ export const getStaticProps: GetStaticProps = async context => {
   }
   // @ts-ignore
   const newsItems = filter(data, (newsItem) => includes(newsItem.tags, VIDEO_TAG_TITLE))
-  console.log('newsItems', newsItems)
   return {
     props: {
       newsItems

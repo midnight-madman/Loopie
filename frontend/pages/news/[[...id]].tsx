@@ -86,13 +86,16 @@ const NewsPage = (props: IndexProps) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = values(NewsCategoriesEnum).map(tab => ({ params: { id: [tab] } }))
+  console.log('[[..id]] getStaticPaths', paths)
   return {
-    paths: values(NewsCategoriesEnum).map(tab => ({ params: { id: [tab] } })),
+    paths,
     fallback: false
   }
 }
 
 export const getStaticProps: GetStaticProps = async context => {
+  console.log('[[..id]] getStaticProps', context)
   // @ts-ignore
   const { params: { id } } = context
   const tag = id || NewsCategoriesEnum.WEB3
@@ -100,7 +103,7 @@ export const getStaticProps: GetStaticProps = async context => {
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
   const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const {
-    data,
+    data: newsItems,
     error
   } = await supabase
     .from('scorednewsitem')
@@ -135,13 +138,14 @@ export const getStaticProps: GetStaticProps = async context => {
     throw error
   }
 
-  if (!data) {
+  if (!newsItems) {
     throw new Error('No news items returned from DB')
   }
+  console.log('[[..id]] getStaticProps, got news items: ', newsItems.length)
 
   return {
     props: {
-      newsItems: data
+      newsItems
     },
     revalidate: 15 * 60 // every 15mins
   }

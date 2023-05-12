@@ -12,22 +12,12 @@ const App = ({
   Component,
   pageProps
 }: AppProps) => {
-  const renderAnalyticsScripts = () => {
-    return (
-      <>
-        <script async src={'https://scripts.simpleanalyticscdn.com/latest.js'}/>
-      </>
-    )
-  }
-  const isProd = process.env.NODE_ENV === 'production'
-
   const renderApp = () => {
     const imageUrl = 'https://loopie.site/api/og'
     const description = 'calm web3 news for the early enthusiast'
 
     return <html className="h-full bg-white">
     <Head>
-      {isProd && renderAnalyticsScripts()}
       <title>Loopie</title>
       <link rel="shortcut icon" href="/favicon.png"/>
       <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
