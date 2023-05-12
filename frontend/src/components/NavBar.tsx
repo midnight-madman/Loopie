@@ -1,19 +1,83 @@
 import { Popover } from '@headlessui/react'
 import { ConnectButton } from './ConnectButton'
 import { Bars3Icon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import clsx from 'clsx'
+import { NewsCategoriesEnum } from '../const'
+import { map, take, values } from 'lodash'
+
+const getEmojiForCategory = (category: NewsCategoriesEnum) => {
+  switch (category) {
+    case NewsCategoriesEnum.AI:
+      return '🤖'
+    case NewsCategoriesEnum.DAO:
+      return '🏛️'
+    case NewsCategoriesEnum.NFT:
+      return '🖼️'
+    case NewsCategoriesEnum.BITCOIN:
+      return '₿'
+    default:
+      return '📰'
+  }
+}
+
+// function MobileNavItem ({
+//   href,
+//   children
+// }: { href: string, children: any }) {
+//   return (
+//     <li>
+//       <Popover.Button as={Link} href={href} className="block py-2">
+//         {children}
+//       </Popover.Button>
+//     </li>
+//   )
+// }
+
+function NavItem ({
+  href,
+  children
+}: { href: string, children: any }) {
+  const isActive = useRouter().asPath === href
+
+  return (
+    <li>
+      <Link
+        href={href}
+        className={clsx(
+          'relative block px-3 py-2 transition',
+          isActive
+            ? 'text-slate-800 dark:text-slate-800 font-bold'
+            : 'hover:text-slate-500 dark:hover:text-slate-400'
+        )}
+      >
+        {children}
+        {isActive && (
+          <span
+            className="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-slate-500/0 via-slate-500/40 to-slate-500/0 dark:from-slate-400/0 dark:via-slate-400/40 dark:to-slate-400/0"/>
+        )}
+      </Link>
+    </li>
+  )
+}
 
 const NavBar = ({
   setSidebarOpen,
   showWalletConnect = false
 }: { setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean }) => {
-  const renderNewsletterSignup = () =>
-    <iframe src="https://embeds.beehiiv.com/89ec0452-f9ac-41d5-ba96-31735973d0d4?slim=true" data-test-id="beehiiv-embed"
-            height="52" frameBorder="0" scrolling="no"
-            style={{
-              margin: 0,
-              borderRadius: '0px !important',
-              backgroundColor: 'transparent'
-            }}></iframe>
+  const renderDesktopNav = () => (
+    <nav>
+      <ul
+        className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-slate-800 shadow-lg shadow-slate-800/5 ring-1 ring-slate-900/5 backdrop-blur dark:bg-slate-800/90 dark:text-slate-200 dark:ring-white/10">
+        {map(take(values(NewsCategoriesEnum), 3), (tab) =>
+          <NavItem href={`/news/${tab}`} key={tab}>
+            {tab} {getEmojiForCategory(tab)}
+          </NavItem>
+        )}
+      </ul>
+    </nav>
+  )
 
   return (
     <>
@@ -29,11 +93,11 @@ const NavBar = ({
                 <h1 className="font-serif font-semibold text-gray-800 text-4xl">Loopie</h1>
               </div>
             </div>
+            {renderDesktopNav()}
             {showWalletConnect && (
               <div className="hidden md:flex md:items-center md:space-x-6">
                 <ConnectButton/>
               </div>)}
-            {!showWalletConnect && renderNewsletterSignup()}
           </nav>
         </div>
       </Popover>
@@ -54,6 +118,9 @@ const NavBar = ({
             Loopie
           </p>
         </h3>
+        <div className="hidden sm:block mx-8 lg:mt-2">
+          {renderDesktopNav()}
+        </div>
       </div>
     </>
   )

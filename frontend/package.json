@@ -9,27 +9,28 @@
   "dependencies": {
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.11",
-    "@rainbow-me/rainbowkit": "^0.12.12",
-    "@rainbow-me/rainbowkit-siwe-next-auth": "^0.1.9",
+    "@rainbow-me/rainbowkit": "^1",
+    "@rainbow-me/rainbowkit-siwe-next-auth": "^0.2.0",
     "@supabase/supabase-js": "^2.21.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.0",
     "@vercel/og": "^0.5.4",
     "dayjs": "^1.11.1",
-    "ethers": "^5.7.2",
+    "ethers": "^6.0.8",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "net": "^1.0.2",
-    "next": "^13.3.1",
-    "next-auth": "^4.20.1",
+    "next": "^13.4.1",
+    "next-auth": "<=4.20.1",
     "node-fetch": "^3.2.4",
     "papaparse": "^5.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.11.0",
-    "siwe": "^1.1.6",
+    "siwe": "^2.1.4",
     "tls": "^0.0.1",
-    "wagmi": "^0.12.12"
+    "viem": "^0.3.19",
+    "wagmi": "^1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.3.1",
@@ -49,6 +50,6 @@
     "prettier-plugin-tailwindcss": "^0.1.13",
     "standard": "^17.0.0",
     "tailwindcss": "^3.0.7",
-    "typescript": "^4.8.4"
+    "typescript": ">=5.0.4"
   }
 }

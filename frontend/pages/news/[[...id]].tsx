@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
-import Footer from '../src/components/Footer'
-import { GetStaticProps } from 'next'
+import React, { useState } from 'react'
+import NewsItemRowComponent from '../../src/components/NewsItemRowComponent'
+import Footer from '../../src/components/Footer'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { map, take } from 'lodash'
+import { map, take, values } from 'lodash'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import NavBar from '../src/components/NavBar'
-import SideBar from '../src/components/SideBar'
+import NavBar from '../../src/components/NavBar'
+import SideBar from '../../src/components/SideBar'
+import { NewsCategoriesEnum } from '../../src/const'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -19,12 +20,15 @@ interface IndexProps {
   newsItems: Array<object>;
 }
 
-const Index = (props: IndexProps) => {
+const NEWS_ITEM_LEADERBOARD_LENGTH = 15
+
+const NewsPage = (props: IndexProps) => {
   let { newsItems } = props
+  const canShowMore = newsItems.length > NEWS_ITEM_LEADERBOARD_LENGTH
   const [isShowingMore, setIsShowingMore] = useState(false)
 
   if (!isShowingMore) {
-    newsItems = take(newsItems, 15)
+    newsItems = take(newsItems, NEWS_ITEM_LEADERBOARD_LENGTH)
   }
 
   const renderNewsletterSignup = () =>
@@ -53,11 +57,11 @@ const Index = (props: IndexProps) => {
                 <div className="grid grid-cols place-content-center mt-4 mb-6">
                   {renderNewsletterSignup()}
                 </div>
-                <div className="grid grid-cols place-content-center">
+                {canShowMore && (<div className="grid grid-cols place-content-center">
                   <button
                     className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                     onClick={() => setIsShowingMore(!isShowingMore)}>{isShowingMore ? 'Show less' : 'Show more'}</button>
-                </div>
+                </div>)}
               </div>
             </div>
           </div>
@@ -74,7 +78,7 @@ const Index = (props: IndexProps) => {
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <div className="xl:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
-          <div className="max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="min-h-screen max-w-5xl px-4 sm:px-6 md:px-8">
             {renderNewsPageContent()}
           </div>
           <Footer/>
@@ -84,11 +88,26 @@ const Index = (props: IndexProps) => {
   )
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = values(NewsCategoriesEnum).map(tab => ({ params: { id: [tab] } }))
+  console.log('[[..id]] getStaticPaths', JSON.stringify(paths))
+
+  return {
+    paths,
+    fallback: false
+  }
+}
+
 export const getStaticProps: GetStaticProps = async context => {
+  console.log('[[..id]] getStaticProps', context)
+  // @ts-ignore
+  const { params: { id } } = context
+  const tag = id || NewsCategoriesEnum.WEB3
+
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
   const tweetStartDate = dayjs().utc().subtract(2, 'days')
   const {
-    data,
+    data: newsItems,
     error
   } = await supabase
     .from('scorednewsitem')
@@ -96,6 +115,11 @@ export const getStaticProps: GetStaticProps = async context => {
       `*, 
       NewsItemSummary(
         summary
+      ),
+      NewsItemToTag(
+        Tag(
+          title
+        )
       ),
       NewsItemToTweet( 
         Tweet(
@@ -109,6 +133,7 @@ export const getStaticProps: GetStaticProps = async context => {
         )
       )
       `)
+    .contains('tags', tag)
     .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(25)
@@ -117,16 +142,17 @@ export const getStaticProps: GetStaticProps = async context => {
     throw error
   }
 
-  if (!data) {
+  if (!newsItems) {
     throw new Error('No news items returned from DB')
   }
+  console.log('[[..id]] getStaticProps, got news items: ', newsItems.length)
 
   return {
     props: {
-      newsItems: data
+      newsItems
     },
     revalidate: 15 * 60 // every 15mins
   }
 }
 
-export default Index
+export default NewsPage

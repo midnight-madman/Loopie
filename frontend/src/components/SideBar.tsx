@@ -138,8 +138,8 @@ const SideBar = ({
       </Dialog>
     </Transition.Root>
 
-    {/* Static sidebar for desktop */}
-    <div className="hidden xl:flex xl:w-64 xl:flex-col xl:fixed xl:inset-y-0">
+     {/* Static sidebar for desktop */}
+     <div className="hidden xl:flex xl:w-64 xl:flex-col xl:fixed xl:inset-y-0">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200"
            style={{ backgroundColor: ' #FFFDF6' }}>
@@ -148,9 +148,9 @@ const SideBar = ({
             {navigation.map(renderNavigationItem)}
           </nav>
         </div>
-        {renderAccountSection()}
+         {renderAccountSection()}
       </div>
-    </div>
+     </div>
   </>
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 type Author = {
   twitter_id: string
   twitter_username: string
@@ -30,4 +31,12 @@ export type ScoredNewsItem = {
   NewsItemToTag: {
     Tag: Tag
   }[]
+}
+
+export enum NewsCategoriesEnum {
+  WEB3 = 'Web3',
+  NFT = 'NFT',
+  AI = 'AI',
+  DAO = 'DAO',
+  BITCOIN = 'Bitcoin',
 }

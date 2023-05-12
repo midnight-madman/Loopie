@@ -6,28 +6,18 @@ import { SessionProvider } from 'next-auth/react'
 import { WagmiConfig } from 'wagmi'
 import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { chains, getSiweMessageOptions, wagmiClient } from '../src/wagmi_config'
+import { chains, getSiweMessageOptions, wagmiConfig } from '../src/wagmi_config'
 
 const App = ({
   Component,
   pageProps
 }: AppProps) => {
-  const renderAnalyticsScripts = () => {
-    return (
-      <>
-        <script async src={'https://scripts.simpleanalyticscdn.com/latest.js'}/>
-      </>
-    )
-  }
-  const isProd = process.env.NODE_ENV === 'production'
-
   const renderApp = () => {
     const imageUrl = 'https://loopie.site/api/og'
     const description = 'calm web3 news for the early enthusiast'
 
     return <html className="h-full bg-white">
     <Head>
-      {isProd && renderAnalyticsScripts()}
       <title>Loopie</title>
       <link rel="shortcut icon" href="/favicon.png"/>
       <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
@@ -57,7 +47,7 @@ const App = ({
 
   // @ts-ignore
   const { session } = pageProps
-  return <WagmiConfig client={wagmiClient}>
+  return <WagmiConfig config={wagmiConfig}>
     <SessionProvider refetchInterval={0} session={session}>
       <RainbowKitSiweNextAuthProvider getSiweMessageOptions={getSiweMessageOptions}>
         <RainbowKitProvider chains={chains}>
