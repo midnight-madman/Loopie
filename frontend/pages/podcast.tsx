@@ -24,7 +24,7 @@ interface PodcastsPageProps {
   newsItems: Array<ScoredNewsItem>;
 }
 
-const Podcasts = (props: PodcastsPageProps) => {
+const Podcast = (props: PodcastsPageProps) => {
   let { newsItems } = props
 
   const [isShowingMore, setIsShowingMore] = useState(false)
@@ -148,4 +148,4 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 }
 
-export default Podcasts
+export default Podcast

@@ -24,7 +24,7 @@ interface VideosProps {
   newsItems: Array<ScoredNewsItem>;
 }
 
-const Videos = (props: VideosProps) => {
+const Video = (props: VideosProps) => {
   let { newsItems } = props
 
   const [isShowingMore, setIsShowingMore] = useState(false)
@@ -149,4 +149,4 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 }
 
-export default Videos
+export default Video

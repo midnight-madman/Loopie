@@ -36,9 +36,9 @@ export type ScoredNewsItem = {
 export enum NewsCategoriesEnum {
   WEB3 = 'Web3',
   AI = 'AI',
-  DAO = 'DAO',
   BITCOIN = 'Bitcoin',
   NFT = 'NFT',
   VIDEO = 'Video',
+  DAO = 'DAO',
   PODCAST = 'Podcast',
 }

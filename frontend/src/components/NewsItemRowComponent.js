@@ -65,11 +65,12 @@ const NewsItemRowComponent = ({
   const renderTweets = () => {
     const tweetsToRender = take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW)
     const gridClassName = clsx(
-      tweets.length === 4 && 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5',
-      tweets.length === 3 && 'grid grid-cols-3 grid-rows-1 gap-8',
-      tweets.length === 2 && 'grid grid-cols-2 grid-rows-1 gap-8',
-      tweets.length === 1 && 'flex'
+      tweetsToRender.length === 4 && 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 overflow-auto gap-8 md:gap-5',
+      tweetsToRender.length === 3 && 'grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-8',
+      tweetsToRender.length === 2 && 'grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-8',
+      tweetsToRender.length === 1 && 'flex'
     )
+
     return <div
       className={clsx(gridClassName, 'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
       {map(tweetsToRender, (tweet, index) =>

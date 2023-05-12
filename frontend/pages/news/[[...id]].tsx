@@ -42,7 +42,7 @@ const NewsPage = (props: IndexProps) => {
 
   function renderNewsPageContent () {
     return (<div className="px-2 sm:px-4 md:px-6 lg:px-8">
-        <div className="mt-2 lg:mt-5 flex flex-col">
+        <div className="mt-2 flex flex-col">
           <div className="-mx-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
@@ -54,10 +54,10 @@ const NewsPage = (props: IndexProps) => {
                   )}
                   </tbody>
                 </table>
-                <div className="grid grid-cols place-content-center mt-4 mb-6">
+                <div className="grid grid-cols lg:place-content-center mt-4 mb-6">
                   {renderNewsletterSignup()}
                 </div>
-                {canShowMore && (<div className="grid grid-cols place-content-center">
+                {canShowMore && (<div className="mx-auto lg:place-content-center">
                   <button
                     className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                     onClick={() => setIsShowingMore(!isShowingMore)}>{isShowingMore ? 'Show less' : 'Show more'}</button>
