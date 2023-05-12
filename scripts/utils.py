@@ -27,5 +27,9 @@ def chunkify(arr: list, n: int) -> list[list]:
     return [arr[i:i + n] for i in range(0, len(arr), n)]
 
 
-def contains_key_in_list(obj, key, arr):
-    return any([value.lower() in obj[key].lower() for value in arr if obj.get(key)])
+def contains_key_in_list(obj: dict, key: str, arr: list):
+    value = obj.get(key, '').lower()
+
+    if not value:
+        return False
+    return any([sub_str.lower() in value for sub_str in arr])

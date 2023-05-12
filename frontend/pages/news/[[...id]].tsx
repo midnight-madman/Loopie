@@ -20,12 +20,15 @@ interface IndexProps {
   newsItems: Array<object>;
 }
 
+const NEWS_ITEM_LEADERBOARD_LENGTH = 15
+
 const NewsPage = (props: IndexProps) => {
   let { newsItems } = props
+  const canShowMore = newsItems.length > NEWS_ITEM_LEADERBOARD_LENGTH
   const [isShowingMore, setIsShowingMore] = useState(false)
 
   if (!isShowingMore) {
-    newsItems = take(newsItems, 15)
+    newsItems = take(newsItems, NEWS_ITEM_LEADERBOARD_LENGTH)
   }
 
   const renderNewsletterSignup = () =>
@@ -54,11 +57,11 @@ const NewsPage = (props: IndexProps) => {
                 <div className="grid grid-cols place-content-center mt-4 mb-6">
                   {renderNewsletterSignup()}
                 </div>
-                <div className="grid grid-cols place-content-center">
+                {canShowMore && (<div className="grid grid-cols place-content-center">
                   <button
                     className="inline-flex items-center px-2 py-1 border border-transparent text-light font-small rounded-md text-white bg-gray-700"
                     onClick={() => setIsShowingMore(!isShowingMore)}>{isShowingMore ? 'Show less' : 'Show more'}</button>
-                </div>
+                </div>)}
               </div>
             </div>
           </div>
@@ -75,7 +78,7 @@ const NewsPage = (props: IndexProps) => {
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <div className="xl:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
           <NavBar setSidebarOpen={setSidebarOpen}/>
-          <div className="max-w-5xl px-4 sm:px-6 md:px-8">
+          <div className="min-h-screen max-w-5xl px-4 sm:px-6 md:px-8">
             {renderNewsPageContent()}
           </div>
           <Footer/>

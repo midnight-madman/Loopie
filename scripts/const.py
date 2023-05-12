@@ -1932,6 +1932,9 @@ TAG_AUTOMATION = {
             'rekt.news',
             'defillama.com'
             'defipulse.com',
+            'nansen.ai',
+            'duneanalytics.com',
+            'dune.com',
         ],
         'keywords': [
             'Aave',
@@ -2068,7 +2071,13 @@ TAG_AUTOMATION = {
     },
     'Ethereum': {
         'urls': ['ethereum.org', 'ethhub.io', 'ethereum.foundation', ],
-        'keywords': ['Ethereum', 'ETH', 'EIP', 'Shapella', 'Dencun', ]
+        'keywords': [
+            'Ethereum',
+            ' ETH ',
+            'EIP',
+            'Shapella',
+            'Dencun',
+        ]
     },
     'ZK': {
         'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network', 'zksync.io'],
@@ -2107,6 +2116,8 @@ TAG_AUTOMATION = {
             'truffle',
             'ethers.js',
             'web3.js',
+            'smart contract',
+            'hardhat',
         ]
     },
     'DAO': {
@@ -2141,6 +2152,10 @@ TAG_AUTOMATION = {
             'LangChain',
             'Machine learning',
             'Machine intelligence',
+            'LLM',
+            'Large Language Model',
+            'OpenAI',
+            'Hugging Face',
         ]
     }
 }
