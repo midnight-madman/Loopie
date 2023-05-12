@@ -7,7 +7,8 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import isToday from 'dayjs/plugin/isToday'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
-import { classNames } from '../utils'
+import { getEmojiForCategory } from '../utils'
+import clsx from 'clsx'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -17,20 +18,21 @@ dayjs.extend(isYesterday)
 
 const TWEET_LENGTH_ONLY_LINK = 23
 const WEB3_TAG_TITLE = 'Web3'
-const TWEETS_IN_EXPANDED_ROW = 8
+const TWEETS_IN_EXPANDED_ROW = 4
 
 const NewsItemRowComponent = ({
   newsItem,
-  isDefaultExpanded = false
+  isAlwaysExpanded = false,
+  showTags = true
 }) => {
-  const summary = newsItem.NewsItemSummary[0] && newsItem.NewsItemSummary[0].summary
-  const [isExpandedRow, setIsExpandedRow] = useState(isDefaultExpanded)
+  const summary = newsItem.NewsItemSummary && newsItem.NewsItemSummary[0] ? newsItem.NewsItemSummary[0].summary : null
+  const [isExpandedRow, setIsExpandedRow] = useState(isAlwaysExpanded)
 
   const rowTitle = newsItem.title
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'today' : latestShareDate.isYesterday() ? 'yesterday' : latestShareDate.fromNow()
   const tweets = uniqBy(filter(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet) => tweet.text && tweet.text.length > TWEET_LENGTH_ONLY_LINK), 'id')
-  const tags = filter(newsItem.tags, (tag) => !isEmpty(tag) && tag !== WEB3_TAG_TITLE)
+  const tags = showTags ? filter(newsItem.tags, (tag) => !isEmpty(tag) && tag !== WEB3_TAG_TITLE) : []
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)
@@ -61,12 +63,16 @@ const NewsItemRowComponent = ({
   }
 
   const renderTweets = () => {
+    const tweetsToRender = take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW)
+    const gridClassName = clsx(
+      tweets.length === 4 && 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5',
+      tweets.length === 3 && 'grid grid-cols-3 grid-rows-1 gap-8',
+      tweets.length === 2 && 'grid grid-cols-2 grid-rows-1 gap-8',
+      tweets.length === 1 && 'flex'
+    )
     return <div
-      className={classNames(tweets.length >= 4
-        ? 'grid grid-cols-2 md:grid-cols-4 overflow-auto gap-8 md:gap-5'
-        : 'grid grid-cols-3 grid-rows-1 gap-8',
-      'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
-      {map(take(orderBy(tweets, (tweet) => tweet.Author.score, 'desc'), TWEETS_IN_EXPANDED_ROW), (tweet, index) =>
+      className={clsx(gridClassName, 'py-4 mx-auto flex mt-2 border-y border-gray-600')}>
+      {map(tweetsToRender, (tweet, index) =>
         <div key={`key-${tweet.id}-${index}`}>
           {index > 0 && '- '}
           <a target="_blank" rel="noreferrer noopener"
@@ -89,7 +95,7 @@ const NewsItemRowComponent = ({
         {map(tags, (tag, index) =>
           <span
             className="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-sm font-medium text-gray-800">
-        {tag}
+        {tag} {getEmojiForCategory(tag)}
       </span>)}
       </div>)}
       {renderTweets()}
@@ -102,31 +108,26 @@ const NewsItemRowComponent = ({
       Last shared {newsItemDate} |
       </span>
       {renderShare()}
-      <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
-            onClick={() => setIsExpandedRow(!isExpandedRow)}>
+      {!isAlwaysExpanded && (
+        <span className="flex hover:underline hover:text-gray-700 hover:cursor-pointer"
+              onClick={() => setIsExpandedRow(!isExpandedRow)}>
           <p className="">Show {isExpandedRow ? 'less' : 'more'}</p>
-        {isExpandedRow
-          ? <ArrowUpIcon
-            className="flex-shrink-0 mt-1.5 h-4 w-4"
-            aria-hidden="true"
-          />
-          : <ArrowDownIcon
-            className="flex-shrink-0 mt-1.5 h-4 w-4"
-            aria-hidden="true"
-          />}
+          {isExpandedRow
+            ? <ArrowUpIcon
+              className="flex-shrink-0 mt-1.5 h-4 w-4"
+              aria-hidden="true"
+            />
+            : <ArrowDownIcon
+              className="flex-shrink-0 mt-1.5 h-4 w-4"
+              aria-hidden="true"
+            />}
       </span>
+      )}
     </div>
   }
 
   return (<tr>
-    {/* <td className="whitespace-nowrap text-sm font-medium text-gray-900 relative"> */}
-    {/*    <div className="absolute top-2.5 left-2"> */}
-    {/*        <div className="font-normal text-gray-500"> */}
-    {/*            {index + 1}. */}
-    {/*        </div> */}
-    {/*    </div> */}
-    {/* </td> */}
-    <td className="whitespace-normal max-w-xs pl-2 py-2 md:py-3">
+    <td className="whitespace-normal pl-2 py-2 md:py-3">
       <div className="flex items-center">
         <div className="">
           <a

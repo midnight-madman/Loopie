@@ -1,9 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { HandRaisedIcon, HomeIcon, VideoCameraIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { classNames } from '../utils'
+import { SpeakerWaveIcon, HomeIcon, VideoCameraIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ConnectButton } from './ConnectButton'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 
 const SideBar = ({
   sidebarOpen,
@@ -20,16 +20,22 @@ const SideBar = ({
     },
     {
       name: 'Videos',
-      path: 'videos',
+      path: '/videos',
       icon: VideoCameraIcon,
       className: 'hover:cursor-pointer'
     },
     {
-      name: 'Contribute',
-      path: 'contribute',
-      icon: HandRaisedIcon,
+      name: 'Podcasts',
+      path: '/podcasts',
+      icon: SpeakerWaveIcon,
       className: 'hover:cursor-pointer'
     }
+    // {
+    //   name: 'Contribute',
+    //   path: 'contribute',
+    //   icon: HandRaisedIcon,
+    //   className: 'hover:cursor-pointer'
+    // }
   ]
 
   const renderAccountSection = () => {
@@ -58,7 +64,7 @@ const SideBar = ({
     return <button
       key={item.name}
       onClick={() => onClick()}
-      className={classNames(
+      className={clsx(
         router.asPath === item.path
           ? 'text-gray-900'
           : 'text-gray-600 hover:text-gray-900',
@@ -67,7 +73,7 @@ const SideBar = ({
       )}
     >
       <item.icon
-        className={classNames(
+        className={clsx(
           router.asPath === item.path ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
           'mr-4 flex-shrink-0 h-6 w-6'
         )}

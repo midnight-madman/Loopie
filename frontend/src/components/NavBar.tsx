@@ -5,8 +5,9 @@ import { TagBubbleNavigator } from './TagBubbleNavigator'
 
 const NavBar = ({
   setSidebarOpen,
-  showWalletConnect = false
-}: { setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean }) => {
+  showWalletConnect = false,
+  showTagNav = false
+}: { setSidebarOpen: (arg0: boolean) => void, showWalletConnect?: boolean, showTagNav?: boolean }) => {
   return (
     <>
       <Popover as="header" className="relative">
@@ -46,9 +47,11 @@ const NavBar = ({
           </p>
         </h3>
       </div>
-      <div className="mt-2 md:mt-4 flex px-4 sm:px-6 md:px-8">
-        <TagBubbleNavigator/>
-      </div>
+      {showTagNav && (
+        <div className="mt-2 md:mt-4 flex px-4 sm:px-6 md:px-8">
+          <TagBubbleNavigator/>
+        </div>
+      )}
     </>
   )
 }

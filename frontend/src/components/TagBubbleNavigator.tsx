@@ -3,36 +3,20 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { map, take, values } from 'lodash'
+import { getEmojiForCategory } from '../utils'
 
 // Number of items to show in the nav bar, between 1 and length of NewsCategoriesEnum
 const NAV_ITEM_COUNT = 5
 
-const getEmojiForCategory = (category: NewsCategoriesEnum) => {
-  switch (category) {
-    case NewsCategoriesEnum.AI:
-      return '🤖'
-    case NewsCategoriesEnum.DAO:
-      return '🏛️'
-    case NewsCategoriesEnum.NFT:
-      return '🖼️'
-    case NewsCategoriesEnum.BITCOIN:
-      return '₿'
-    default:
-      return '📰'
-  }
-}
-
 function NavItem ({
   href,
-  children,
-  prefetch = false
-}: { href: string, children: any, prefetch?: boolean }) {
+  children
+}: { href: string, children: any }) {
   const isActive = useRouter().asPath === href
 
   return (
     <li>
       <Link
-        prefetch={prefetch}
         href={href}
         className={clsx(
           'relative block px-3 py-2 transition',
@@ -55,9 +39,9 @@ export const TagBubbleNavigator = () => {
   return <nav>
     <ul
       className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-slate-800 shadow-lg shadow-slate-800/5 ring-1 ring-slate-900/5 backdrop-blur dark:bg-slate-800/90 dark:text-slate-200 dark:ring-white/10">
-      {map(take(values(NewsCategoriesEnum), NAV_ITEM_COUNT), (tab: NewsCategoriesEnum, idx: number) =>
-        <NavItem href={`/news/${tab}`} key={tab} prefetch={idx < 3}>
-          {tab} {getEmojiForCategory(tab)}
+      {map(take(values(NewsCategoriesEnum), NAV_ITEM_COUNT), (tag: NewsCategoriesEnum, idx: number) =>
+        <NavItem href={`/news/${tag}`} key={tag}>
+          {tag} {getEmojiForCategory(tag)}
         </NavItem>
       )}
     </ul>

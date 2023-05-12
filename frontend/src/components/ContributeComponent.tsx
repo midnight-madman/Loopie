@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { Popover } from '@headlessui/react'
-import { classNames } from '../utils'
 import { createClient } from '@supabase/supabase-js'
 import dayjs from 'dayjs'
 import { filter, find, findIndex, get, includes, isEmpty, map, split } from 'lodash'
@@ -11,6 +10,7 @@ import { ConnectButton } from './ConnectButton'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ScoredNewsItem, Tag } from '../const'
+import clsx from 'clsx'
 
 dayjs().format()
 dayjs.extend(utc)
@@ -320,7 +320,7 @@ export function ContributeComponent () {
                     disabled={!isButtonEnabled}
                     // @ts-ignore
                     onClick={() => hasWeb3TagOnNewsItem ? removeTagFromNewsItemInSupabase(newsItem.id, web3Tag.id) : addTagToNewsItemInSupabase(newsItem.id, web3Tag.id)}
-                    className={classNames(
+                    className={clsx(
                       isButtonEnabled && (hasWeb3TagOnNewsItem ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'),
                       newsItemState === 'success' && 'bg-green-600',
                       isButtonEnabled && 'shadow-sm',
@@ -342,7 +342,7 @@ export function ContributeComponent () {
         <Popover
           as="header"
           className={({ open }) =>
-            classNames(
+            clsx(
               open ? 'fixed inset-0 z-40 overflow-y-auto' : '',
               'bg-white shadow-sm lg:static lg:overflow-y-visible'
             )
@@ -427,7 +427,7 @@ export function ContributeComponent () {
                         key={tab.name}
                         href={tab.href}
                         aria-current={tab.current ? 'page' : undefined}
-                        className={classNames(
+                        className={clsx(
                           tab.current ? 'text-gray-900' : 'text-gray-500',
                           tab.enabled ? 'hover:text-gray-700 hover:bg-gray-50' : 'bg-gray-50',
                           tabIdx === 0 ? 'rounded-l-lg' : '',
@@ -438,7 +438,7 @@ export function ContributeComponent () {
                         <span>{tab.name}</span>
                         <span
                           aria-hidden="true"
-                          className={classNames(
+                          className={clsx(
                             tab.current ? 'bg-rose-500' : 'bg-transparent',
                             'absolute inset-x-0 bottom-0 h-0.5'
                           )}

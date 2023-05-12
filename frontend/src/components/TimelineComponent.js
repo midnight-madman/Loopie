@@ -5,7 +5,7 @@ import {
   MegaphoneIcon,
   RectangleStackIcon
 } from '@heroicons/react/24/solid'
-import { classNames } from '../utils'
+import clsx from 'clsx'
 
 const timeline = [
   {
@@ -97,7 +97,7 @@ export default function TimelineComponent () {
               <div className="relative flex space-x-3">
                 <div>
                   <span
-                    className={classNames(
+                    className={clsx(
                       event.iconBackground,
                       'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
                     )}

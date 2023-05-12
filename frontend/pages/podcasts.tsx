@@ -13,18 +13,18 @@ import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import NewsItemRowComponent from '../src/components/NewsItemRowComponent'
 
-const VIDEO_TAG_TITLE = 'Video'
+const PODCAST_TAG_TITLE = 'Podcast'
 const SHOW_MORE_THRESHOLD = 5
 
 dayjs().format()
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
 
-interface VideosProps {
+interface PodcastsPageProps {
   newsItems: Array<ScoredNewsItem>;
 }
 
-const Videos = (props: VideosProps) => {
+const Podcasts = (props: PodcastsPageProps) => {
   let { newsItems } = props
 
   const [isShowingMore, setIsShowingMore] = useState(false)
@@ -34,7 +34,6 @@ const Videos = (props: VideosProps) => {
   }
 
   const renderVideoTile = (newsItem: ScoredNewsItem, index: number) => {
-    console.log(`renderVideoTile: ${newsItem.url} ${index}`)
     const canPlayVideo = ReactPlayer.canPlay(newsItem.url)
     if (!canPlayVideo) {
       return null
@@ -67,9 +66,9 @@ const Videos = (props: VideosProps) => {
     return <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8 lg:py-24">
       <div className="space-y-12 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
         <div className="space-y-5 sm:space-y-4">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Loopie Videos</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Podcasts</h2>
           <p className="text-xl text-gray-500">
-            Heavily shared videos from the Loopie-verse
+            Heavily shared podcasts from the Loopie-verse
           </p>
         </div>
         <div className="lg:col-span-2">
@@ -92,7 +91,7 @@ const Videos = (props: VideosProps) => {
       <div>
         <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <div className="xl:pl-64 flex flex-col flex-1" style={{ backgroundColor: '#FFFDF6' }}>
-          <NavBar setSidebarOpen={setSidebarOpen} />
+          <NavBar setSidebarOpen={setSidebarOpen}/>
           <div className="min-h-screen max-w-6xl px-4 sm:px-6 md:px-8">
             {renderVideosPageContent()}
           </div>
@@ -126,7 +125,7 @@ export const getStaticProps: GetStaticProps = async context => {
       ), 
       NewsItemToTag(Tag(title))
       `)
-    .contains('tags', [VIDEO_TAG_TITLE])
+    .contains('tags', [PODCAST_TAG_TITLE])
     .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(100)
@@ -140,7 +139,7 @@ export const getStaticProps: GetStaticProps = async context => {
     throw new Error('No news items returned from DB')
   }
   // @ts-ignore
-  const newsItems = filter(data, (newsItem) => includes(newsItem.tags, VIDEO_TAG_TITLE))
+  const newsItems = filter(data, (newsItem) => includes(newsItem.tags, PODCAST_TAG_TITLE))
   return {
     props: {
       newsItems
@@ -149,4 +148,4 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 }
 
-export default Videos
+export default Podcasts

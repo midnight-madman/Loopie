@@ -39,4 +39,6 @@ export enum NewsCategoriesEnum {
   DAO = 'DAO',
   BITCOIN = 'Bitcoin',
   NFT = 'NFT',
+  VIDEO = 'Video',
+  PODCAST = 'Podcast',
 }
