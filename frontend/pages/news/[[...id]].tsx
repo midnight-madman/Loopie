@@ -87,7 +87,8 @@ const NewsPage = (props: IndexProps) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = values(NewsCategoriesEnum).map(tab => ({ params: { id: [tab] } }))
-  console.log('[[..id]] getStaticPaths', paths)
+  console.log('[[..id]] getStaticPaths', JSON.stringify(paths))
+
   return {
     paths,
     fallback: false

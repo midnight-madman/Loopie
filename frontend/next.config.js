@@ -5,6 +5,15 @@ module.exports = (phase, { defaultConfig }) => {
     experimental: {
       appDir: true
     },
+    async redirects () {
+      return [
+        {
+          source: '/',
+          destination: '/news/Web3',
+          permanent: false
+        }
+      ]
+    },
     reactStrictMode: true,
     env: {
       SUPABASE_URL: process.env.SUPABASE_URL,
