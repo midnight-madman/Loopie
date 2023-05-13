@@ -12,16 +12,11 @@ const robotoFont = fetch(new URL('../../assets/Roboto-Light.ttf', import.meta.ur
   (res) => res.arrayBuffer()
 )
 
-const image = fetch(new URL('../../public/loopie_logo.png', import.meta.url)).then((res) =>
-  res.arrayBuffer()
-)
-
 export default async function (request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const tag = searchParams.get('tag') || ''
   const title = 'Loopie'
   const description = `${tag ? `${tag} ` : ''}news for the early enthusiast`
-  const imageData = await image
 
   const georgiaFontData = await georgiaFont
   const robotoFontData = await robotoFont
@@ -45,7 +40,7 @@ export default async function (request: NextRequest) {
         <img
           width="256"
           height="256"
-          src={imageData as unknown as string}
+          src={'https://loopie.site/loopie_logo.png'}
         />
         <div style={{
           display: 'flex',
