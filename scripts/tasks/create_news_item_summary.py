@@ -75,6 +75,7 @@ class CreateNewsItemSummary(BaseLoopieTask):
         self.df['summary'] = ''
         self.df['metadata'] = None
 
+        logger.info('Start creating summaries via OpenAI API')
         self.df = self.df.progress_apply(get_open_api_summary, axis=1)
         summaries_for_upsert = self.df[self.df.summary.str.len() > 0][['news_item_id', 'summary', 'metadata']] \
             .to_dict(orient='records')

@@ -3,6 +3,7 @@ from typing import Optional
 
 import luigi
 import pandas as pd
+from sentry_sdk import capture_exception
 
 from api.postgres import get_db_connection
 from supabase_utils import get_supabase_client
@@ -30,3 +31,9 @@ class BaseLoopieTask(luigi.Task):
         return pd.read_sql_query(query,
                                  con=self.db_connection,
                                  coerce_float=False)
+
+
+@BaseLoopieTask.event_handler(luigi.Event.FAILURE)
+def mourn_failure(task, exception):
+    capture_exception(exception, scope=task.__dict__)
+    logger.critical('Error occurred: {e}'.format(e=exception))
