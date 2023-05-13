@@ -14,6 +14,8 @@ export const getEmojiForCategory = (category: NewsCategoriesEnum) => {
       return '📺'
     case NewsCategoriesEnum.PODCAST:
       return '🎙'
+    case NewsCategoriesEnum.ZK:
+      return '🧲'
     default:
       return '📰'
   }
