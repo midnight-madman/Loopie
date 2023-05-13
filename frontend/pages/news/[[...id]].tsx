@@ -17,13 +17,14 @@ dayjs.extend(utc)
 dayjs.extend(relativeTime)
 
 interface IndexProps {
+  tags: Array<NewsCategoriesEnum>;
   newsItems: Array<object>;
 }
 
 const NEWS_ITEM_LEADERBOARD_LENGTH = 15
 
 const NewsPage = (props: IndexProps) => {
-  let { newsItems } = props
+  let { tags, newsItems } = props
   const canShowMore = newsItems.length > NEWS_ITEM_LEADERBOARD_LENGTH
   const [isShowingMore, setIsShowingMore] = useState(false)
 
@@ -49,7 +50,7 @@ const NewsPage = (props: IndexProps) => {
                 <table className="min-w-full">
                   <tbody className="">
                   {map(newsItems, (newsItem, index) =>
-                    <NewsItemRowComponent key={`url-row-${get(newsItem, 'id')}`} newsItem={newsItem}/>
+                    <NewsItemRowComponent key={`url-row-${get(newsItem, 'id')}`} newsItem={newsItem} hiddenTags={tags}/>
                   )}
                   </tbody>
                 </table>
@@ -101,7 +102,7 @@ export const getStaticProps: GetStaticProps = async context => {
   console.log('[[..id]] getStaticProps', context)
   // @ts-ignore
   const { params: { id } } = context
-  const tag = id || NewsCategoriesEnum.WEB3
+  const tags = id || [NewsCategoriesEnum.WEB3]
 
   const supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string)
   const tweetStartDate = dayjs().utc().subtract(2, 'days')
@@ -132,7 +133,7 @@ export const getStaticProps: GetStaticProps = async context => {
         )
       )
       `)
-    .contains('tags', tag)
+    .contains('tags', tags) // https://supabase.com/docs/reference/javascript/containedby
     .gte('last_tweet_date', tweetStartDate.format('YYYY-MM-DD'))
     .order('score', { ascending: false })
     .limit(25)
@@ -148,6 +149,7 @@ export const getStaticProps: GetStaticProps = async context => {
 
   return {
     props: {
+      tags,
       newsItems
     },
     revalidate: 15 * 60 // every 15mins

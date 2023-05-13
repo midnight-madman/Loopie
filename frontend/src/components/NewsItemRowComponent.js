@@ -1,4 +1,4 @@
-import { filter, isEmpty, map, orderBy, take, truncate, uniqBy } from 'lodash'
+import { filter, isEmpty, map, orderBy, take, truncate, uniqBy, without } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
@@ -17,13 +17,13 @@ dayjs.extend(isToday)
 dayjs.extend(isYesterday)
 
 const TWEET_LENGTH_ONLY_LINK = 23
-const WEB3_TAG_TITLE = 'Web3'
 const TWEETS_IN_EXPANDED_ROW = 4
 
 const NewsItemRowComponent = ({
   newsItem,
   isAlwaysExpanded = false,
-  showTags = true
+  showTags = false,
+  hiddenTags = []
 }) => {
   const summary = newsItem.NewsItemSummary && newsItem.NewsItemSummary[0] ? newsItem.NewsItemSummary[0].summary : null
   const [isExpandedRow, setIsExpandedRow] = useState(isAlwaysExpanded)
@@ -32,7 +32,7 @@ const NewsItemRowComponent = ({
   const latestShareDate = dayjs(new Date(newsItem.last_tweet_date))
   const newsItemDate = latestShareDate.isToday() ? 'today' : latestShareDate.isYesterday() ? 'yesterday' : latestShareDate.fromNow()
   const tweets = uniqBy(filter(map(newsItem.NewsItemToTweet, 'Tweet'), (tweet) => tweet.text && tweet.text.length > TWEET_LENGTH_ONLY_LINK), 'id')
-  const tags = showTags ? filter(newsItem.tags, (tag) => !isEmpty(tag) && tag !== WEB3_TAG_TITLE) : []
+  const tags = showTags ? without(newsItem.tags, ...hiddenTags) : []
 
   useEffect(() => {
     const shareButton = document.getElementById(`share-newsItem-${newsItem.id}`)
