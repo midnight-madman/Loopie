@@ -3,7 +3,7 @@ import NewsItemRowComponent from '../../src/components/NewsItemRowComponent'
 import Footer from '../../src/components/Footer'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { map, take, values } from 'lodash'
+import { get, map, take, values } from 'lodash'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -49,8 +49,7 @@ const NewsPage = (props: IndexProps) => {
                 <table className="min-w-full">
                   <tbody className="">
                   {map(newsItems, (newsItem, index) =>
-                    <NewsItemRowComponent key={`url-row-${newsItem.id}`}
-                                          newsItem={newsItem}/>
+                    <NewsItemRowComponent key={`url-row-${get(newsItem, 'id')}`} newsItem={newsItem}/>
                   )}
                   </tbody>
                 </table>
