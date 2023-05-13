@@ -45,7 +45,7 @@ export default async function (request: NextRequest) {
         <img
           width="256"
           height="256"
-          src={imageData}
+          src={imageData as string}
         />
         <div style={{
           display: 'flex',

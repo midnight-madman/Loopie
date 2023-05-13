@@ -49,7 +49,7 @@ const NewsPage = (props: IndexProps) => {
                 <table className="min-w-full">
                   <tbody className="">
                   {map(newsItems, (newsItem, index) =>
-                    <NewsItemRowComponent key={`url-row-${index}`}
+                    <NewsItemRowComponent key={`url-row-${newsItem.id}`}
                                           newsItem={newsItem}/>
                   )}
                   </tbody>
