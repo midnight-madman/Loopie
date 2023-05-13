@@ -17,4 +17,6 @@ DB_PASSWORD = os.environ.get('DB_PASSWORD')
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
 from dev_settings import *

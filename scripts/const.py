@@ -2004,10 +2004,12 @@ TAG_AUTOMATION = {
             'nansen.ai',
             'duneanalytics.com',
             'dune.com',
+            'l2beat.com'
         ],
         'keywords': [
             'Aave',
             'Altcoin',
+            'Arbitrum',
             'Binance',
             'Bitcoin',
             'Blockchain',
@@ -2049,6 +2051,7 @@ TAG_AUTOMATION = {
             'NFT',
             'Non-Fungible Token',
             'Open Platform',
+            'Play to Earn',
             'Polkadot',
             'Polygon',
             'PoS',
@@ -2067,6 +2070,7 @@ TAG_AUTOMATION = {
             'Stablecoin',
             'Token',
             'Trustless',
+            'Uniswap',
             'Web 3.0',
             'Web3',
             'Web.3',
@@ -2088,6 +2092,7 @@ TAG_AUTOMATION = {
             'knownorigin.io',
             'zora.co',
             'foundation.app',
+            'premint.xyz',
         ],
         'keywords': [
             'NFT',

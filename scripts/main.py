@@ -4,8 +4,9 @@ import sys
 from datetime import datetime, date
 
 import luigi
+import sentry_sdk
 
-from settings import DATE_FORMAT
+from settings import DATE_FORMAT, SENTRY_DSN
 from supabase_utils import get_supabase_client
 from tasks.copy_tweets_to_db import CopyTweetsToDB
 from tasks.create_news_item_summary import CreateNewsItemSummary
@@ -13,6 +14,12 @@ from tasks.create_news_item_to_tag_connections import CreateNewsItemToTagConnect
 from tasks.create_news_items import CreateNewsItems
 from tasks.get_metadata_for_urls import GetMetadataForUrls
 from tasks.update_author_scores import UpdateAuthorScores
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=1.0
+    )
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger('luigi-interface')

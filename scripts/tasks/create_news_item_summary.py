@@ -34,7 +34,7 @@ class CreateNewsItemSummary(BaseLoopieTask):
         left join "NewsItemSummary" nis on ni.id=nis.news_item_id
         where nis.id is NULL and last_tweet_date >= '{two_days_ago}' 
         order by ni.score DESC
-        limit 10;
+        limit 5;
         '''
 
     def get_df(self) -> Optional[pd.DataFrame]:
