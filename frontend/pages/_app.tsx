@@ -7,14 +7,18 @@ import { WagmiConfig } from 'wagmi'
 import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next-auth'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { chains, getSiweMessageOptions, wagmiConfig } from '../src/wagmi_config'
+import { useRouter } from 'next/router'
 
 const App = ({
   Component,
   pageProps
 }: AppProps) => {
+  const router = useRouter()
+
   const renderApp = () => {
-    const imageUrl = 'https://loopie.site/api/og'
-    const description = 'calm web3 news for the early enthusiast'
+    const tag = router.asPath.startsWith('/news/') ? router.asPath.replace('/news/', '') : ''
+    const imageUrl = `https://loopie.site/api/og?tag=${tag}`
+    const description = `${tag ? `${tag} ` : ''}news for the early enthusiast`
 
     return <html className="h-full bg-white">
     <Head>
@@ -26,7 +30,7 @@ const App = ({
       <meta property="og:url" content="https://www.loopie.site"/>
       <meta property="og:title" key="ogtitle" content="Loopie"/>
       <meta property="og:description" key="ogdesc" content={description}/>
-      <meta property="description" content={description} />
+      <meta property="description" content={description}/>
       <meta
         property="og:image"
         content={imageUrl}

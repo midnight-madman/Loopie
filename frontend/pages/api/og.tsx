@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og'
+import { NextRequest } from 'next/server'
 
 export const config = {
   runtime: 'edge'
@@ -11,10 +12,21 @@ const robotoFont = fetch(new URL('../../assets/Roboto-Light.ttf', import.meta.ur
   (res) => res.arrayBuffer()
 )
 
-export default async function () {
+const image = fetch(new URL('../../public/loopie_logo.png', import.meta.url)).then((res) =>
+  res.arrayBuffer()
+)
+
+export default async function (request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const tag = searchParams.get('tag') || ''
+  const title = 'Loopie'
+  const description = `${tag ? `${tag} ` : ''}news for the early enthusiast`
+  const imageData = await image
+
   const georgiaFontData = await georgiaFont
   const robotoFontData = await robotoFont
 
+  // noinspection TypeScriptValidateTypes
   return new ImageResponse(
     (
       <div
@@ -33,7 +45,7 @@ export default async function () {
         <img
           width="256"
           height="256"
-          src={'https://loopie.site/loopie_logo.png'}
+          src={imageData}
         />
         <div style={{
           display: 'flex',
@@ -43,11 +55,11 @@ export default async function () {
         }}>
             <h1 style={{ fontFamily: 'ui-serif,Georgia,Cambria,Times New Roman,Times,serif' }}
                 tw="text-9xl text-gray-900">
-              Loopie
+              {title}
             </h1>
             <p style={{ fontFamily: 'ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif' }}
               tw="max-w-xl font-sans text-6xl text-gray-500 text-center">
-              calm web3 news for the early enthusiast
+              {description}
             </p>
         </div>
       </div>
