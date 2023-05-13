@@ -3,7 +3,7 @@
 Stay in the loop with everything that's happening in web3 - a simple HackerNews/RektNews-style page with the most
 frequently shared links
 
-<img src="https://user-images.githubusercontent.com/94986441/193413164-d66b76b9-b747-4043-b260-258c37a6d979.png" width="600" />
+<img src="https://github.com/midnight-madman/Loopie/assets/94986441/20c94720-fcc5-4e69-8f87-c64abe074dea" width="600" />
 
 ## 💡 Ideas for Governance
 
