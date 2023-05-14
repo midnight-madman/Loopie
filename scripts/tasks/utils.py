@@ -26,9 +26,14 @@ def create_tags_for_news_items(news_items: list[dict]) -> list[dict]:
 
     tags = []
     for news_item in news_items:
+        title = news_item.get('title')
+
         for tag_title, tag_info in TAG_AUTOMATION.items():
             has_url = contains_key_in_list(news_item, 'url', tag_info['urls'])
-            has_keyword = contains_key_in_list(news_item, 'title', tag_info['keywords'])
+
+            has_keyword = False
+            if title:
+                has_keyword = contains_key_in_list(news_item, 'title', tag_info['keywords'])
 
             if has_url or has_keyword:
                 tags.append({
