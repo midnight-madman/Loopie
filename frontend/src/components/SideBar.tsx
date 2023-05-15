@@ -20,13 +20,13 @@ const SideBar = ({
     },
     {
       name: 'Videos',
-      path: '/videos',
+      path: '/video',
       icon: VideoCameraIcon,
       className: 'hover:cursor-pointer'
     },
     {
       name: 'Podcasts',
-      path: '/podcasts',
+      path: '/podcast',
       icon: SpeakerWaveIcon,
       className: 'hover:cursor-pointer'
     }
