@@ -9,7 +9,7 @@ from utils import chunkify
 logger = logging.getLogger('luigi-interface')
 
 
-class CreateNewsItemToTagConnections(BaseLoopieTask):
+class AddNewsItemTags(BaseLoopieTask):
     def get_query(self) -> str:
         # query for news items without tags
         return f'''

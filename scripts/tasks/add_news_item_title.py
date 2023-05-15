@@ -16,7 +16,7 @@ tqdm.pandas()
 logger = logging.getLogger('luigi-interface')
 
 
-class GetMetadataForUrls(BaseLoopieTask):
+class AddNewsItemTitle(BaseLoopieTask):
     start_date = luigi.DateParameter(default=datetime.today())
     # interval to next github action to get tweets is two hours
     MAX_ITEMS_TO_SCRAPE_IN_TWO_HOUR_INTERVAL = 1500

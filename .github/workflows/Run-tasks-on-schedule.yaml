@@ -51,7 +51,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main.py --task-name copy-tweets-to-db
+          pipenv run python scripts/main.py --task-name add-tweets
       - name: Create news items and get update metadata
         if: github.event.schedule == '0 */4 * * *' || contains(github.event.head_commit.message, 'force ci')
         env:
@@ -64,7 +64,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           pipenv run python scripts/main.py --task-name create-news-items
-          pipenv run python scripts/main.py --task-name get-metadata-for-urls
+          pipenv run python scripts/main.py --task-name add-news-item-title
       - name: Summarize news items
         if: github.event.schedule == '0 8,16 * * *'
         env:
@@ -76,7 +76,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          pipenv run python scripts/main.py --task-name create-news-item-summary
+          pipenv run python scripts/main.py --task-name add-news-item-summary
       - name: Update author scores
         if: github.event.schedule == '0 0 * * 2,4,6'
         env:

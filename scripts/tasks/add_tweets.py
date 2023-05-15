@@ -11,7 +11,7 @@ from utils import chunkify
 logger = logging.getLogger('luigi-interface')
 
 
-class CopyTweetsToDB(luigi.Task):
+class AddTweets(luigi.Task):
     last_tweet_id = luigi.Parameter()
 
     def __init__(self, *args, **kwargs):

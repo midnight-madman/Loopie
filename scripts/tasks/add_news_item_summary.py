@@ -22,19 +22,18 @@ logger = logging.getLogger('luigi-interface')
 BUCKET_NAME = 'NewsItemTexts'
 
 
-class CreateNewsItemSummary(BaseLoopieTask):
+class AddNewsItemSummary(BaseLoopieTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scraped_file_ids = [file.get('name') for file in self.supabase.storage.from_(BUCKET_NAME).list()]
 
     def get_query(self) -> Optional[str]:
-        two_days_ago = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
         return f'''
         select ni.id, ni.url from "scorednewsitem" ni
-        left join "NewsItemSummary" nis on ni.id=nis.news_item_id
-        where nis.id is NULL and last_tweet_date >= '{two_days_ago}' 
+            left join "NewsItemSummary" nis on ni.id=nis.news_item_id
+        where nis.id is NULL and last_tweet_date >= CURRENT_DATE - interval '3 day'
         order by ni.score DESC
-        limit 5;
+        limit 20;
         '''
 
     def get_df(self) -> Optional[pd.DataFrame]:
@@ -76,7 +75,7 @@ class CreateNewsItemSummary(BaseLoopieTask):
         self.df['metadata'] = None
 
         logger.info('Start creating summaries via OpenAI API')
-        self.df = self.df.progress_apply(get_open_api_summary, axis=1)
+        self.df = self.df[self.df.content.str.len() > 0].progress_apply(get_open_api_summary, axis=1)
         summaries_for_upsert = self.df[self.df.summary.str.len() > 0][['news_item_id', 'summary', 'metadata']] \
             .to_dict(orient='records')
 

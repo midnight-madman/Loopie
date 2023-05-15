@@ -8,11 +8,11 @@ import sentry_sdk
 
 from settings import DATE_FORMAT, SENTRY_DSN
 from supabase_utils import get_supabase_client
-from tasks.copy_tweets_to_db import CopyTweetsToDB
-from tasks.create_news_item_summary import CreateNewsItemSummary
-from tasks.create_news_item_to_tag_connections import CreateNewsItemToTagConnections
+from tasks.add_news_item_summary import AddNewsItemSummary
+from tasks.add_news_item_tags import AddNewsItemTags
+from tasks.add_news_item_title import AddNewsItemTitle
+from tasks.add_tweets import AddTweets
 from tasks.create_news_items import CreateNewsItems
-from tasks.get_metadata_for_urls import GetMetadataForUrls
 from tasks.update_author_scores import UpdateAuthorScores
 
 if SENTRY_DSN:
@@ -25,27 +25,27 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger('luigi-interface')
 
 task_name_to_config = {
-    'copy-tweets-to-db': {
-        'class': CopyTweetsToDB,
+    'add-tweets': {
+        'class': AddTweets,
         'args': ['last_tweet_id', ]
     },
     'create-news-items': {
         'class': CreateNewsItems,
         'args': ['start_date', ]
     },
-    'get-metadata-for-urls': {
-        'class': GetMetadataForUrls,
+    'add-news-item-title': {
+        'class': AddNewsItemTitle,
         'args': ['start_date', ]
     },
     'update-author-scores': {
         'class': UpdateAuthorScores,
         'args': ['last_updated_date', ]
     },
-    'create-news-item-to-tag-connections': {
-        'class': CreateNewsItemToTagConnections,
+    'add-news-item-tags': {
+        'class': AddNewsItemTags,
     },
-    'create-news-item-summary': {
-        'class': CreateNewsItemSummary
+    'add-news-item-summary': {
+        'class': AddNewsItemSummary
     }
 }
 
@@ -75,7 +75,7 @@ def run_from_cli_args(args):
         task_instance = task_config['class'](**kwargs)
         tasks = [task_instance]
     else:
-        tasks = [CopyTweetsToDB(last_tweet_id=last_tweet_id)]
+        tasks = [AddTweets(last_tweet_id=last_tweet_id)]
 
     luigi.build(tasks, workers=1, local_scheduler=True)
 

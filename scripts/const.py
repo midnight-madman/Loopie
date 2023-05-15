@@ -18,6 +18,11 @@ NON_NEWS_URLS = [
     'bio.link',
     'a.co',
     'amazon.com',
+    'amzn.to',
+    'dexscreener.com',
+    'app.uniswap.org',
+    'app.sushi.com',
+    'app.1inch.io',
 ]
 
 TWITTER_ACCOUNTS = [
@@ -2131,9 +2136,12 @@ TAG_AUTOMATION = {
             'overcast.fm',
             'podchaser.com',
             'podcasts.google.com',
-            'https://podcasts.apple.com'
+            'podcasts.apple.com'
+            'pod.link',
         ],
-        'keywords': ['Podcast']
+        'keywords': [
+            'Podcast',
+        ]
     },
     'Video': {
         'urls': ['youtube.com', 'youtu.be', 'lenstube.xyz'],
