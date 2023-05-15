@@ -4,9 +4,9 @@ from tqdm import tqdm
 from api.twitter_api import execute_twitter_api_request_with_retry
 from utils import chunkify
 
-QUANTILE_THRESHOLDS = [0.1, 0.3, 0.6, 0.8]
 VERIFIED_SCORE = 5
-QUANTILE_SCORE_MULTIPLIER = 10
+SCORE_MULTIPLIER = 10
+NR_BINS = 10
 
 TWITTER_API_REQUESTED_FIELDS = {'user.fields': 'public_metrics,location,name,username,verified,entities'}
 
@@ -37,12 +37,9 @@ def get_twitter_accounts_stats_by_ids(user_ids: list[str]) -> list[dict]:
     return account_stats
 
 
-def create_quantile_score_for_col(df: pd.DataFrame, col: str):
-    col_quantiles = df[col].quantile(QUANTILE_THRESHOLDS)
-
-    for threshold, quantile in list(zip(QUANTILE_THRESHOLDS, col_quantiles)):
-        df.loc[df[col] >= quantile, f'{col}_score'] = threshold * QUANTILE_SCORE_MULTIPLIER
-
+def create_binned_score_for_col(df: pd.DataFrame, col: str, multiplier: int):
+    ranges = pd.qcut(df[col], NR_BINS, labels=range(NR_BINS))
+    df[f'{col}_score'] = (ranges.cat.codes + 1) * multiplier
     return df
 
 
@@ -57,8 +54,8 @@ def create_accounts_with_scores_df(accounts: list[str]) -> pd.DataFrame:
     res = [r for r in res if r]
     df = pd.json_normalize(res, sep='_')
 
-    df = create_quantile_score_for_col(df, col='public_metrics_followers_count')
-    df = create_quantile_score_for_col(df, col='public_metrics_listed_count')
+    df = create_binned_score_for_col(df, col='public_metrics_followers_count', multiplier=SCORE_MULTIPLIER)
+    df = create_binned_score_for_col(df, col='public_metrics_listed_count', multiplier=2)
     df['verified_score'] = df.verified.apply(lambda v: VERIFIED_SCORE if v else 0)
     df['score'] = df.apply(get_score_for_row, axis=1)
     df.fillna({"score": 0}, inplace=True)

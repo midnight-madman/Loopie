@@ -58,4 +58,4 @@ class AddNewsItemTitle(BaseLoopieTask):
             except json.decoder.JSONDecodeError:
                 logger.exception(f'Failed to add new titles for news items {metadata_for_upsert}')
 
-        logger.info(f'Added {metadata_added_count} news item metadata')
+        logger.info(f'Added {metadata_added_count} news item titles')

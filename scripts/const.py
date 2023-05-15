@@ -23,6 +23,7 @@ NON_NEWS_URLS = [
     'app.uniswap.org',
     'app.sushi.com',
     'app.1inch.io',
+    'kyberswap.com',
 ]
 
 TWITTER_ACCOUNTS = [

@@ -3,6 +3,7 @@ from typing import Optional
 
 import luigi
 import pandas as pd
+import sentry_sdk
 from sentry_sdk import capture_exception
 
 from api.postgres import get_db_connection
