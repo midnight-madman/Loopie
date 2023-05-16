@@ -65,6 +65,7 @@ jobs:
         run: |
           pipenv run python scripts/main.py --task-name create-news-items
           pipenv run python scripts/main.py --task-name add-news-item-title
+          pipenv run python scripts/main.py --task-name add-news-item-tags
       - name: Summarize news items
         if: github.event.schedule == '0 8,16 * * *'
         env:
