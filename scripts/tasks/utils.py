@@ -26,20 +26,34 @@ def create_tags_for_news_items(news_items: list[dict]) -> list[dict]:
 
     tags = []
     for news_item in news_items:
+        news_item_id = news_item['id']
         title = news_item.get('title')
 
         for tag_title, tag_info in TAG_AUTOMATION.items():
+            parent_tag_title = tag_info.get('parent')
             has_url = contains_key_in_list(news_item, 'url', tag_info['urls'])
 
             has_keyword = False
             if title:
                 has_keyword = contains_key_in_list(news_item, 'title', tag_info['keywords'])
 
-            if has_url or has_keyword:
+            should_add_tag = has_url or has_keyword
+            if should_add_tag:
                 tags.append({
-                    'news_item_id': news_item['id'],
+                    'news_item_id': news_item_id,
                     'tag_id': tag_title_to_id[tag_title],
                     'wallet_address': 'AUTOMATION'
                 })
 
+                logger.info(f'added tag {tag_title} for news item {title}')
+
+                if parent_tag_title:
+                    tags.append({
+                        'news_item_id': news_item_id,
+                        'tag_id': tag_title_to_id[parent_tag_title],
+                        'wallet_address': 'AUTOMATION'
+                    })
+
+    # tags might have duplicates, make it unique
+    tags = [dict(t) for t in {tuple(d.items()) for d in tags}]
     return tags

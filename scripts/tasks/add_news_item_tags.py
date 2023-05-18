@@ -19,7 +19,7 @@ class AddNewsItemTags(BaseLoopieTask):
                     left join "Tag" tag on nitt.tag_id = tag.id
             group by news_item.id
             HAVING count(tag.id) = 0 and news_item.title is not NULL 
-            and news_item.created_at::date >= CURRENT_DATE - interval '7 day'
+            and news_item.created_at::date >= CURRENT_DATE - interval '5 day'
             order by news_item.created_at desc
             limit 1000;
         '''

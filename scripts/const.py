@@ -2011,9 +2011,12 @@ TAG_AUTOMATION = {
             'duneanalytics.com',
             'dune.com',
             'l2beat.com'
+            'sushi.com',
+            'decentraland.org'
         ],
         'keywords': [
             'Aave',
+            'Alchemix',
             'Altcoin',
             'Arbitrum',
             'Binance',
@@ -2021,6 +2024,7 @@ TAG_AUTOMATION = {
             'Blockchain',
             'BAYC',
             'ChainLink',
+            'Coinbase',
             'Consensus Mechanism',
             'Consensys',
             'Crypto',
@@ -2031,9 +2035,11 @@ TAG_AUTOMATION = {
             'Decentralization',
             'Decentralized Finance',
             'Decentralized',
+            'Decentraland',
             'DeFi',
             'Distributed Ledger Technology',
             'Distributed Ledger',
+            'ENS',
             'ERC',
             'ETH',
             'Ethereum Request for Comment',
@@ -2072,8 +2078,11 @@ TAG_AUTOMATION = {
             'Smart Contract',
             'Soft Fork',
             'Solana',
+            'Sushi pool',
             'Solidity',
             'Stablecoin',
+            'Staking',
+            'Tezos',
             'Token',
             'Trustless',
             'Uniswap',
@@ -2089,6 +2098,7 @@ TAG_AUTOMATION = {
         ]
     },
     'NFT': {
+        'parent': 'Web3',
         'urls': [
             'opensea.io',
             'niftygateway.com',
@@ -2128,6 +2138,7 @@ TAG_AUTOMATION = {
             'Invisible Friends',
             'Pudgy Penguins',
             'VeeFriends',
+            'VeeCon',
         ]
     },
     'Podcast': {
@@ -2149,10 +2160,12 @@ TAG_AUTOMATION = {
         'keywords': []
     },
     'Bitcoin': {
+        'parent': 'Web3',
         'urls': ['bitcoin.org', 'bitcoin.com', 'blockstream.com'],
         'keywords': ['Bitcoin', 'BTC', 'Satoshi Nakamoto', 'Lightning Network', ]
     },
     'Ethereum': {
+        'parent': 'Web3',
         'urls': ['ethereum.org', 'ethhub.io', 'ethereum.foundation', ],
         'keywords': [
             'Ethereum',
@@ -2163,6 +2176,7 @@ TAG_AUTOMATION = {
         ]
     },
     'ZK': {
+        'parent': 'Web3',
         'urls': ['zk.money', 'zkvalidator.com', 'zkopru.network', 'zkswap.info', 'aztec.network', 'zksync.io'],
         'keywords': [
             'Zero Knowledge',
@@ -2204,6 +2218,7 @@ TAG_AUTOMATION = {
         ]
     },
     'DAO': {
+        'parent': 'Web3',
         'urls': [
             'daohaus.club',
             'daostack.io',
@@ -2226,6 +2241,7 @@ TAG_AUTOMATION = {
         ],
         'keywords': [
             ' AI ',
+            'AI-Based',
             'Artificial Intelligence',
             'AGI',
             'embeddings',

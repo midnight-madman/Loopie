@@ -29,7 +29,7 @@ class AddNewsItemSummary(BaseLoopieTask):
 
     def get_query(self) -> Optional[str]:
         return f'''
-        select ni.id, ni.url from "scorednewsitem" ni
+        select ni.news_item_id as id, ni.url from "scorednewsitem" ni
             left join "NewsItemSummary" nis on ni.news_item_id=nis.news_item_id
         where nis.id is NULL and last_tweet_date >= CURRENT_DATE - interval '3 day'
         order by ni.score DESC
