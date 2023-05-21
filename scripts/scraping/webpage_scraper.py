@@ -1,10 +1,9 @@
 import logging
 
 from selenium.common.exceptions import TimeoutException, WebDriverException
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 logger = logging.getLogger(__name__)
@@ -17,14 +16,14 @@ class WebpageScraper:
 
         options = Options()
         options.headless = True
-        self.driver = Firefox(options=options)
+        self.driver = Chrome(options=options)
 
     def load_page(self, url):
         try:
             self.driver.get(url)
             w = WebDriverWait(self.driver, 20)
             # w.until(EC.presence_of_element_located(title_xpath_locator))
-            w.until(lambda wd: self.driver.execute_script("return document.readyState") == 'complete',)
+            w.until(lambda wd: self.driver.execute_script("return document.readyState") == 'complete', )
         except TimeoutException:
             logger.info(f'Timeout when scraping url: {url}')
             return False
