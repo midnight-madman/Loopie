@@ -33,7 +33,7 @@ def get_open_api_summary(row):
     else:
         text = text[:OPENAI_MODEL_MAX_CHARACTERS]
         try:
-            prompt = f"{text}\n\nSummarize the text above in three sentences."
+            prompt = f"{text}\n\nSummarize the text above in a short paragraph for a tech savvy audience:\n\nSummary:"
             response = openai.ChatCompletion.create(
                 messages=[
                     {"role": "user", "content": prompt}

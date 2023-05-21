@@ -1,10 +1,12 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+  // openAnalyzer: false,
+})
+
 /** @type {import('next').NextConfig} */
 module.exports = (phase, { defaultConfig }) => {
-  return {
+  const config = {
     ...defaultConfig,
-    experimental: {
-      appDir: true
-    },
     async redirects () {
       return [
         {
@@ -34,4 +36,5 @@ module.exports = (phase, { defaultConfig }) => {
       return config
     }
   }
+  return withBundleAnalyzer(config)
 }

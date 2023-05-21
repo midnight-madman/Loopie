@@ -25,7 +25,18 @@ BUCKET_NAME = 'NewsItemTexts'
 class AddNewsItemSummary(BaseLoopieTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.scraped_file_ids = [file.get('name') for file in self.supabase.storage.from_(BUCKET_NAME).list()]
+        self.scraped_file_ids = []
+
+        LIMIT = 500
+        offset = 0
+        while True:
+            files = self.supabase.storage.from_(BUCKET_NAME).list(options=dict(limit=LIMIT, offset=offset))
+            if len(files) == 0:
+                break
+
+            self.scraped_file_ids.extend([file.get('name') for file in files])
+            offset += LIMIT
+
         logger.info(f'AddNewsItemSummary: has files in supabase storage: {len(self.scraped_file_ids)}')
 
     def get_query(self) -> Optional[str]:
