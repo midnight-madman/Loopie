@@ -1,8 +1,10 @@
 import tempfile
 
 from supabase import Client, create_client
+import logging
 
 from settings import SUPABASE_URL, SUPABASE_KEY
+logger = logging.getLogger('luigi-interface')
 
 
 def get_supabase_client() -> Client:
@@ -13,11 +15,16 @@ def upload_content_to_supabase(supabase: Client, content: str, bucket: str, dest
     if not content:
         return False
 
+    logger.info(f'uploading content to supabase to {bucket}/{destination}')
     with tempfile.NamedTemporaryFile() as file:
         file.write(content.encode())
         file.seek(0)
 
-        res = supabase.storage.from_(bucket).upload(destination, file.name)
-        print(f'uploaded content to supabase to {destination}. res: {res}')
-
+        try:
+            res = supabase.storage.from_(bucket).upload(destination, file.name)
+            print(f'uploaded content to supabase to {destination}. res: {res}')
+        except Exception as e:
+            logger.error(f'error uploading content to supabase to {bucket}/{destination}: {e}')
+            return False
+        
     return True

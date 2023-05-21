@@ -45,7 +45,7 @@ def create_tags_for_news_items(news_items: list[dict]) -> list[dict]:
                     'wallet_address': 'AUTOMATION'
                 })
 
-                logger.info(f'added tag {tag_title} for news item {title}')
+                logger.info(f'added tag {tag_title} for news item {title} - reason: url {has_url} keyword {has_keyword}')
 
                 if parent_tag_title:
                     tags.append({
@@ -53,6 +53,7 @@ def create_tags_for_news_items(news_items: list[dict]) -> list[dict]:
                         'tag_id': tag_title_to_id[parent_tag_title],
                         'wallet_address': 'AUTOMATION'
                     })
+                    logger.info(f'added tag {tag_title_to_id[parent_tag_title]} for news item {title} - reason: parent')
 
     # tags might have duplicates, make it unique
     tags = [dict(t) for t in {tuple(d.items()) for d in tags}]

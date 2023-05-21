@@ -26,6 +26,7 @@ class AddNewsItemSummary(BaseLoopieTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scraped_file_ids = [file.get('name') for file in self.supabase.storage.from_(BUCKET_NAME).list()]
+        logger.info(f'AddNewsItemSummary: has files in supabase storage: {len(self.scraped_file_ids)}')
 
     def get_query(self) -> Optional[str]:
         return f'''
